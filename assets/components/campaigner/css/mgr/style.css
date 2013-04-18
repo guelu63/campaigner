@@ -1,0 +1,70 @@
+.group {
+    width: 14px; height: 14px; float: left; margin-right: 2px;
+    border: 2px solid #808080;
+}
+.group-small {
+    width: 14px; height: 14px; float: left; margin-right: 2px;
+    border: 1px solid #808080;
+}
+
+.x-form-field-wrap .x-form-color-trigger {
+    background:transparent url(../../images/color-trigger.png) no-repeat 0 0;
+    cursor:pointer; 
+}
+
+#campaigner-tab-queue table tbody img {
+    width: 16px;
+    height: 16px;
+}
+
+img.small {
+    width: 16px;
+    height: 16px;
+}
+
+.subscriber-window-groups-header {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.window-description {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: rgb(112, 112, 112);
+    font-size: 1.1em;
+}
+
+.x-menu-item-text strong {
+    font-weight: 700;
+}
+
+.campaigner-spacer {
+    background: URL(../../images/bg.jpg) left center repeat-x;
+    margin: 20px 0;
+}
+
+.campaigner-spacer span {
+    background: #F5F5F5;
+    display: inline-block;
+    padding: 2px 10px;
+    margin-left: 20px;
+}
+
+.campaigner-hidden {
+    display: none;
+}
+
+.campaigner-preview {
+    border: 1px solid #000000;
+    background: #FFFFFF;
+}
+
+.no {
+    color: #FF0000;
+}
+
+.campaigner-default {
+    color: #00AA00;
+    font-weight: bold;
+}
