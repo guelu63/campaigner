@@ -202,6 +202,15 @@ $components = array(
             'value' => 'rt@domain.com',
             'area' => 'system',
         ),
+        'campgaigner.has_autonewsletter' => array( // key
+            'key' => 'campgaigner.has_autonewsletter',
+            'name' => 'Campaigner has Autonewsletters',
+            'description' => 'Campaigner with Autonewsletters',
+            'namespace' => 'campaigner',
+            'xtype' => 'combo-boolean',
+            'value' => true,
+            'area' => 'system',
+        ),
         //Structure
         'campaigner.autonewsletter_folder' => array( // key
             'key' => 'campaigner.autonewsletter_folder',
