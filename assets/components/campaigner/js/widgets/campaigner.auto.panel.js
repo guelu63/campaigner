@@ -27,6 +27,19 @@ Campaigner.panel.Main = function(config) {
                     preventRender: true
                 }]
             }, {
+                title: _('campaigner.autonewsletter'),
+                defaults: { autoHeight: true },
+                id: 'campaigner-tab-autonewsletter',
+                items: [{
+                    html: '<p>'+_('campaigner.autonewsletter.info')+'</p>',
+                    border: false,
+                    bodyStyle: 'padding: 10px'
+                },{
+                    xtype: 'campaigner-grid-autonewsletter',
+                    id: 'campaigner-grid-autonewsletter',
+                    preventRender: true
+                }]
+            }, {
                 title: _('campaigner.groups'),
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-groups',

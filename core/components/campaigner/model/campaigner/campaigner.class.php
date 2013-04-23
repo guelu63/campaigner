@@ -1,7 +1,5 @@
 <?php
 
-// require_once '/var/www/modx/buli/v1.1/core/model/modx/mail/modphpmailer.class.php';
-
 /**
  * The campaigner base class
  * @todo Implement MODx logging
@@ -21,6 +19,9 @@ class Campaigner
     function __construct(modX &$modx,array $config = array())
     {
         $this->modx =& $modx;
+        
+        // PHPMailer
+        require_once $this->modx->getOption('core_path') .'/model/modx/mail/modphpmailer.class.php';
 
         $basePath = $this->modx->getOption('campaigner.core_path',$config,$this->modx->getOption('core_path').'components/campaigner/');
         $assetsUrl = $this->modx->getOption('campaigner.assets_url',$config,$this->modx->getOption('assets_url').'components/campaigner/');
@@ -334,8 +335,9 @@ class Campaigner
         $c->sortby('`Newsletter`.`priority`', 'ASC');
 		$c->sortby('`modDocument`.`publishedon`', 'ASC'); // first document first
         $c->limit(1, 0); // one per run is enough
-        $c->prepare();
-		//$this->modx->log($this->modx->LOG_LEVEL_ERROR, "SQL NEWSLETTER QUERY --> " . $c->toSql());
+        // $c->prepare();
+		// echo $c->toSQL();
+        //$this->modx->log($this->modx->LOG_LEVEL_ERROR, "SQL NEWSLETTER QUERY --> " . $c->toSql());
         $newsletter = $this->modx->getObject('Newsletter',$c);
         if(!$newsletter) {
 			//fwrite($fileHandlerCreate,"NO createQueue [".date('d.m.Y H:i:s',time())."]:\n");

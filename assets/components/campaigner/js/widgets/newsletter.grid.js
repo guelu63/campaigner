@@ -65,7 +65,7 @@ Campaigner.grid.Newsletter = function(config) {
             ,dataIndex: 'bounced'
             ,sortable: true
             ,width: 8
-	    ,renderer: this._renderCount
+        ,renderer: this._renderCount
         }],  
          /* Top toolbar */  
          tbar : ['->', {
@@ -339,6 +339,20 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
             }
         });
     }
+    ,kickNewsletter: function(e) {
+        MODx.msg.confirm({
+            title: 'Ausl&ouml;sen des Newsletters'
+            ,text: 'Wollen Sie diesen Newsletter wirklich ausl&ouml;sen?'
+            ,url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/newsletter/kick'
+                ,id: this.menu.record.id
+            }
+            ,listeners: {
+                'success': {fn:this.refresh,scope:this}
+            }
+        });
+    }
     ,addNewsletter: function(e) {
 	var w = MODx.load({
 	    xtype: 'campaigner-window-newsletter'
@@ -477,6 +491,11 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
                 ,handler: this.testNewsletter
             });
         }
+        m.push('-');
+        m.push({
+            text: _('campaigner.newsletter.kicknow')
+            ,handler: this.kickNewsletter
+        });
         if (m.length > 0) {
             this.addContextMenuItem(m);
         }

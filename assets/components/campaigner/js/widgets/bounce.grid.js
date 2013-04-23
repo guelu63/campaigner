@@ -1,4 +1,10 @@
 /*
+    CONSOLE
+ */
+var topic = '/bounces/';
+var register = 'mgr';
+
+/*
  ######################################################
     GRIDS
  ######################################################
@@ -14,7 +20,7 @@ Campaigner.grid.Soft = function(config) {
         ,autosave: false
         ,remoteSort: true
         ,primaryKey: 'id'
-	,sm: this.sm
+	    ,sm: this.sm
         ,columns: [this.sm,{
             header: _('campaigner.subscriber.id')
             ,dataIndex: 'subscriber'
@@ -41,24 +47,62 @@ Campaigner.grid.Soft = function(config) {
             ,dataIndex: 'last'
             //,width: 10
         }],
-	tbar : [{
-	    xtype: 'button'
-            ,text: _('campaigner.bounce.soft.deleteMarkedSubscribers')
-            ,handler: this.deleteSubscriber
-	 }, {  
-            xtype : "button"
-            ,text : _( "campaigner.bounce.soft.deactivateMarkedSubscribers" )
-	    ,handler: this.deactivateSubscriber            
-        }, {  
-            xtype : "button"
-            ,text : _( "campaigner.bounce.soft.ctivateMarkedSubscribers" )
-	    ,handler: this.activateSubscriber            
-        }]
+        tbar : [{
+	        xtype: 'button'
+                ,text: _('campaigner.bounce.soft.deleteMarkedSubscribers')
+                ,handler: this.deleteSubscriber
+            },{
+                xtype : "button"
+                ,text : _( "campaigner.bounce.soft.deactivateMarkedSubscribers" )
+                ,handler: this.deactivateSubscriber            
+            },{
+                xtype : "button"
+                ,text : _( "campaigner.bounce.soft.activateMarkedSubscribers" )
+                ,handler: this.activateSubscriber            
+            },{
+                xtype: 'button'
+                ,text: _('campaigner.bounce.fetch')
+                ,handler: this.fetchBounces
+            }
+        ]
     });
     Campaigner.grid.Soft.superclass.constructor.call(this,config)
 };
 Ext.extend(Campaigner.grid.Soft,MODx.grid.Grid,{
-    showDetails: function(e) {
+    fetchBounces: function() {
+
+        if (this.console == null || this.console == undefined) {
+            this.console = MODx.load({
+               xtype: 'modx-console'
+               ,register: register
+               ,topic: topic
+               ,show_filename: 0
+               ,listeners: {
+                 'shutdown': {fn:function() {
+                     // Ext.getCmp('modx-layout').refreshTrees();
+                 },scope:this}
+               }
+            });
+        } else {
+            this.console.setRegister(register, topic);
+        }
+        this.console.show(Ext.getBody());
+
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/bounce/fetch',
+                register: register,
+                topic: topic
+            }
+            ,listeners: {
+                'success': {fn:function() {
+                    this.console.fireEvent('complete');
+                }, scope:this}
+            }
+        })
+    }
+    ,showDetails: function(e) {
 	softDetailWindow = MODx.load({
 	    xtype: 'campaigner-window-softDetail'
 	    ,record: this.menu.record
@@ -212,7 +256,7 @@ Campaigner.grid.Hard = function(config) {
 			,sortable: true
             //,width: 10
         },{
-            header: _('campaigner.bounce.recieved')
+            header: _('campaigner.bounce.received')
             ,dataIndex: 'recieved'
 			,sortable: true
             //,width: 10
@@ -631,153 +675,3 @@ Campaigner.window.SoftDetail = function(config) {
 };
 Ext.extend(Campaigner.window.SoftDetail,MODx.Window);
 Ext.reg('campaigner-window-softDetail',Campaigner.window.SoftDetail);
-
-
-/*
- ######################################################
-    ALTES NICHT MEHR VERWENDETES RESEND WINDOW
- ######################################################
-*/
-/*
-Campaigner.window.Resend = function(config) {
-     config = config || {};
-    this.ident = config.ident || 'campaigner-'+Ext.id();
-    Ext.applyIf(config,{
-        title: _('campaigner.newsletter.properties')
-        ,id: this.ident
-        ,height: 400
-        ,width: 475
-        ,url: Campaigner.config.connector_url
-        ,action: 'mgr/bounce/resendNewsletter'
-        ,fields: [{
-            xtype: 'hidden'
-            ,name: 'id'
-            ,id: 'campaigner-'+this.ident+'-id'
-        },{
-            xtype: 'hidden'
-            ,name: 'subscriber'
-            ,id: 'subscriber-'+this.ident+'-id'
-        },{
-	    tag: 'p'
-	    ,cls: 'window-description'
-	    ,html: _('campaigner.soft.detail.resend.description')
-	},{
-            xtype: 'datefield'
-            ,fieldLabel: _('campaigner.bounce.date')
-            ,name: 'date'
-	    ,format: 'd.m.Y'
-            ,id: 'campaigner-'+this.ident+'-date'
-        },{
-            xtype: 'timefield'
-            ,fieldLabel: _('campaigner.autonewsletter.time')
-            ,name: 'time'
-            ,id: 'campaigner-'+this.ident+'-time'
-            ,format: 'H:i:s'
-        }]
-    });
-    Campaigner.window.Resend.superclass.constructor.call(this,config);
-};
-Ext.extend(Campaigner.window.Resend,MODx.Window);
-Ext.reg('campaigner-window-resendNewsletter',Campaigner.window.Resend);
-*/
-
-/*
- ######################################################
-    ALTE NICHT MEHR VERWENDETE BOUNCE GRID FUNKTION
- ######################################################
-*/
-/*Campaigner.grid.Bounce = function(config) {
-    config = config || {};
-    this.sm = new Ext.grid.CheckboxSelectionModel();
-    Ext.applyIf(config,{
-        url: Campaigner.config.connector_url
-        ,baseParams: { action: 'mgr/bounce/getList' }
-        ,fields: ['id', 'firstname', 'lastname', 'email', 'newsletterTitle', 'reason', 'date', 'docid', 'state', 'type']
-        ,paging: true
-        ,autosave: false
-        ,remoteSort: true
-        ,primaryKey: 'id'
-        ,columns: [{
-            header: _('campaigner.bounce.firstname')
-            ,dataIndex: 'firstname'
-            //,width: 10
-        },{
-            header: _('campaigner.bounce.lastname')
-            ,dataIndex: 'lastname'
-            //,width: 10
-        },{           
-	    header: _('campaigner.bounce.email')
-            ,dataIndex: 'email'
-            //,width: 200
-        },{
-            header: _('campaigner.bounce.newsletter')
-            ,dataIndex: 'newsletterTitle'
-            //,width: 300
-	    ,renderer: this._renderNewsletter
-        },{
-            header: _('campaigner.bounce.reason')
-            ,dataIndex: 'reason'
-            //,width: 150
-        },{
-            header: _('campaigner.bounce.type')
-            ,dataIndex: 'type'
-            //,width: 30
-        },{
-            header: _('campaigner.bounce.date')
-            ,dataIndex: 'date'
-           // ,width: 100
-        },{
-            header: _('campaigner.bounce.state')
-            //,width: 250
-	    ,renderer: this._renderState
-        }]
-	,defaults: {
-	    sortable: true,
-	    menuDisabled: true,
-	    width: 50
-	}
-    });
-    Campaigner.grid.Bounce.superclass.constructor.call(this,config)
-};
-
-Ext.extend(Campaigner.grid.Bounce,MODx.grid.Grid,{
-    _renderNewsletter: function(value, p, rec) {
-	return '<a href="?a=30&id='+ rec.data.docid +'">'+ value +'</a>';
-    }
-    ,_renderState: function(value, p, rec) {
-	return rec.data.state;
-    }
-    ,getMenu: function() {
-	var m = [];
-	m.push({
-	    text: _('campaigner.bounce.dontDeactivate')
-	    ,handler: this.dontDeactivate
-	});
-	m.push('-');
-	m.push({
-	    text: _('campaigner.bounce.deactivateNow')
-	    ,handler: this.deactivateNow
-	});
-	
-        if (m.length > 0) {
-            this.addContextMenuItem(m);
-        }
-	return m;    
-    }
-    ,dontDeactivate: function() {
-	MODx.Ajax.request({
-            url: Campaigner.config.connector_url
-            ,params: {
-                action: 'mgr/bounce/dontDeactivate'
-                ,id: this.menu.record.id
-            }
-            ,listeners: {
-                'success': {fn:function(r) {
-                    this.refresh();
-                },scope:this}
-            }
-        });
-    }
-});
-Ext.reg('campaigner-grid-bounce',Campaigner.grid.Bounce);
-*/
