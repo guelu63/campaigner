@@ -104,7 +104,7 @@ $_lang['campaigner.group.removed'] = 'Gruppe wurde entfernt.';
 $_lang['campaigner.group.update'] = 'Gruppe bearbeiten';
 $_lang['campaigner.group.saved'] = 'Gruppe wurde gespeichert';
 $_lang['campaigner.group.notfound'] = 'Gruppe wurde nicht gefunden.';
-$_lang['campaigner.group.filter.public'] = 'öffentliche filtern...';
+$_lang['campaigner.group.filter.public'] = '&ouml;ffentliche filtern...';
 
 
 $_lang['campaigner.group.error.noname'] = 'Gruppenname muss angegeben werden.';
@@ -179,7 +179,7 @@ $_lang['campaigner.queue.error.notfound'] = 'Queue item was not found';
 
 $_lang['campaigner.queue.remove.title'] = 'Element wirklich entfernen?';
 $_lang['campaigner.queue.remove.confirm'] = 'Wollen sie dieses Element wirklich entferenen?';
-$_lang['campaigner.queue.remove.unsend'] = 'Wollen sie dieses Element wirklich entfernen? Der Newsletter wurde noch nicht an den Empf&auml;nger versandt. Wenn sie dieses Element jetzt löschen wird das auch nicht geschehen.';
+$_lang['campaigner.queue.remove.unsend'] = 'Wollen sie dieses Element wirklich entfernen? Der Newsletter wurde noch nicht an den Empf&auml;nger versandt. Wenn sie dieses Element jetzt l&ouml;schen wird das auch nicht geschehen.';
 
 $_lang['campaigner.autonewsletter'] = 'Auto-Newsletter';
 $_lang['campaigner.autonewsletter.info'] = 'Auto-Newsletter werden automatisch an vorbestimmten Zeiten versendet';
@@ -194,3 +194,83 @@ $_lang['campaigner.autonewsletter.error.notfound'] = 'Newsletter wurde nicht.';
 //settings
 $_lang['campaigner.settings.use_modxmailer'] = 'Use the Modx Mailer';
 $_lang['campaigner.settings.use_modxmailer.desc'] = 'If this option is set to yes the integrated Modx mailer and the core mailer settings will be used for sending. Otherwise you can specify your own SMTP settings.';
+
+$_lang['campaigner.settings'] = 'Settings';
+$_lang['campaigner.settings.name'] = 'Name';
+$_lang['campaigner.settings.email'] = 'Email';
+$_lang['campaigner.settings.bounceemail'] = 'Bounce email address';
+$_lang['campaigner.settings.confirmpage'] = 'Confirmation page';
+$_lang['campaigner.settings.unsubscribepage'] = 'Unsubscribe page';
+$_lang['campaigner.settings.template'] = 'Template';
+$_lang['campaigner.settings.saved'] = 'Settings saved';
+$_lang['campaigner.settings.error'] = 'Error while saving settings';
+
+// Bounce lexicons
+$_lang['campaigner.bounce'] = 'Bouncing';
+$_lang['campaigner.bounce.hard'] = 'Hard';
+$_lang['campaigner.bounce.hard.info'] = 'Hier werden alle Hardbounces angezeigt. Wurde bei einem Abonennten ein Hardbounce erfasst, wird er sofort aus all seinen Gruppen entfernt. Mit einem Rechtsklick auf einen Hardbounce kann man den Abonennten mit einer anderen Email-Adresse wieder in seine Gruppen eintragen lassen.';
+$_lang['campaigner.bounce.soft'] = 'Soft';
+$_lang['campaigner.bounce.soft.info'] = 'In dieser Liste sieht man alle Abonnenten, bei denen zumindest ein Softbounce erfasst wurde. Der Grund des Bounces kann in der Spalte "Grund" nachgelesen werden. Wenn bei einem Abonnenten eine hohe Anzahl an Softbounces erreicht wurde, kann man diesen per Rechtsklick löschen, oder mehrere markieren und mit dem Button "Markierte Abonnenten löschen" diese Prozedur auf mehrere Abonnenten anwenden.';
+$_lang['campaigner.bounce.resend'] = 'Resend';
+$_lang['campaigner.bounce.resend.info'] = 'Hier werden alle Aufträge zum erneuten Senden einer Nachricht an einen Abonennten angezeigt. Durch den Status kann man feststellen ob ein erneutes Senden erfolgreich war oder nicht. Das Erneute Senden einer Nachricht ist nur im Falle eines Softbounces möglich (Reiter Soft).';
+
+$_lang['campaigner.bounce.name'] = 'Name';
+$_lang['campaigner.bounce.count'] = 'Anzahl';
+$_lang['campaigner.bounce.last'] = 'Zuletzt';
+$_lang['campaigner.bounce.soft.deleteMarkedSubscribers'] = 'Markierte l&ouml;schen';
+$_lang['campaigner.bounce.soft.deactivateMarkedSubscribers'] = 'Markierte deaktivieren';
+$_lang['campaigner.bounce.code'] = 'Code';
+$_lang['campaigner.bounce.reason'] = 'Grund';
+$_lang['campaigner.bounce.received'] = 'Erhalten';
+$_lang['campaigner.bounce.newsletter'] = 'Newsletter';
+$_lang['campaigner.bounce.recipient'] = 'Emfp&auml;nger';
+$_lang['campaigner.bounce.time'] = 'Zeit';
+$_lang['campaigner.bounce.state'] = 'Status';
+
+$_lang['campaigner.bounce.soft.activateMarkedSubscribers'] = 'Markierte aktivieren';
+$_lang['campaigner.bounce.fetch'] = 'Bounces abholen';
+$_lang['campaigner.bounce.soft.removeTitle'] = '';
+$_lang['campaigner.bounce.soft.removeConfirm'] = 'L&ouml;schen best&auml;tigen';
+$_lang['campaigner.bounce.soft.deactivateTitle'] = '';
+$_lang['campaigner.bounce.soft.deactivateConfirm'] = 'Deaktivieren best&auml;tigen';
+$_lang['campaigner.bounce.soft.activateTitle'] = '';
+$_lang['campaigner.bounce.soft.activateConfirm'] = 'Aktivieren best&auml;tigen';
+$_lang['campaigner.bounce.soft.details'] = 'Details';
+$_lang['campaigner.bounce.soft.deactivateSubscriber'] = 'Abonnent deaktivieren';
+$_lang['campaigner.bounce.soft.activateSubscriber'] = 'Abonnent aktivieren';
+$_lang['campaigner.bounce.soft.deleteSubscriber'] = 'Abonnent l&ouml;schen';
+$_lang['campaigner.bounce.soft.deleteMarkedSubscribers'] = 'Markierte Abonnenten l&ouml;schen';
+$_lang['campaigner.bounce.hard.reactivate'] = 'Reaktvieren';
+$_lang['campaigner.bounce.soft.deleteSubscriber'] = 'Abonnent l&ouml;schen';
+$_lang['campaigner.bounce.resend.deleteMarkedJobs'] = 'Markierte Jobs l&ouml;schen';
+$_lang['campaigner.bounce.resend.cancelJob'] = 'Resend-Job abbrechen';
+$_lang['campaigner.bounce.resend.deleteJob'] = 'Resend-Job l&ouml;schen';
+$_lang['campaigner.bounce.resend.cancelTitle'] = '';
+$_lang['campaigner.bounce.resend.cancelConfirm'] = 'Resend-Job Abbruch';
+$_lang['campaigner.bounce.resend.removeTitle'] = '';
+$_lang['campaigner.bounce.resend.removeConfirm'] = 'Resend-Job best&auml;tigen';
+$_lang['campaigner.bounce.resend.multiRemoveTitle'] = '';
+$_lang['campaigner.bounce.resend.multiRemoveConfirm'] = '';
+$_lang['campaigner.bounce.soft.resendTitle'] = '';
+$_lang['campaigner.bounce.soft.resendConfirm'] = '';
+$_lang['campaigner.hard.reactivate.description'] = '';
+$_lang['campaigner.hard.reactivate.groupDescription'] = 'Gruppenbeschreibung';
+$_lang['campaigner.bounce.soft.detail.info'] = 'Details';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';

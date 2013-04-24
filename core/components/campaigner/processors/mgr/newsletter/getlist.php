@@ -56,7 +56,9 @@ $c->leftJoin('Group', 'Group', '`Group`.`id` = `NewsletterGroup`.`group`');
 $c->groupby('`Newsletter`.`id`');
 
 $c->select(array(
-    'newsletter' => '`Newsletter`.*',
+    'newsletter' => $modx->getSelectColumns('Newsletter','Newsletter','',array('id', 'docid', 'state', 'sent_date', 'total', 'sent', 'bounced', 'sender', 'sender_email', 'auto', 'priority')),
+    // Seems to be a problem...
+    // 'newsletter' => '`Newsletter`.*',
     'subject' => '`Document`.`pagetitle`',
     'date' => '`Document`.`publishedon`',
     'groups' => 'GROUP_CONCAT(";", CONCAT_WS(",", Group.id,Group.name,Group.color))'
@@ -64,7 +66,8 @@ $c->select(array(
 
 $c->sortby($sort,$dir);
 if ($isLimit) $c->limit($limit,$start);
-
+// $c->prepare();
+// echo $c->toSQL();
 $newsletters = $modx->getCollection('Newsletter',$c);
 
 /* iterate through newsletters */

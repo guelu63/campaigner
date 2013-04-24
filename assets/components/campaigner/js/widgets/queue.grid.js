@@ -9,6 +9,7 @@ Campaigner.grid.Queue = function(config) {
         ,autosave: false
         ,remoteSort: true
         ,primaryKey: 'id'
+        ,sm: this.sm
         ,columns: [{
             header: _('campaigner.queue.newsletter')
             ,dataIndex: 'newsletter'

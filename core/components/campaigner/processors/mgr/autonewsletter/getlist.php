@@ -37,7 +37,7 @@ $c->leftJoin('Group', 'Group', '`Group`.`id` = `AutonewsletterGroup`.`group`');
 $c->groupby('`Autonewsletter`.`id`');
 
 $c->select(array(
-    'autonewsletter' => '`Autonewsletter`.*',
+    'autonewsletter' => $modx->getSelectColumns('Autonewsletter','Autonewsletter','',array('id', 'docid', 'state', 'start', 'last', 'frequency', 'time', 'total', 'sender', 'sender_email', 'description')),
     'subject' => '`Document`.`pagetitle`',
     'date' => '`Document`.`publishedon`',
     'groups' => 'GROUP_CONCAT(";", CONCAT_WS(",", Group.id,Group.name,Group.color))'
