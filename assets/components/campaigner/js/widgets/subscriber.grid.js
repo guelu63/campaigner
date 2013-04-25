@@ -259,20 +259,36 @@ Ext.extend(Campaigner.grid.Subscriber,MODx.grid.Grid,{
     // window.location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportcsv&HTTP_MODAUTH=' + Campaigner.site_id + params;
 }
 ,exportXml: function() {
-    var params = '';
-    if(this.getStore().baseParams.text) {
-       params += '&text=' + this.getStore().baseParams.text;
-   }
-   if(this.getStore().baseParams.group) {
-       params += '&group=' + this.getStore().baseParams.group;
-   }
-   if(typeof this.getStore().baseParams.active != "undefined") {
-       params += '&active=' + this.getStore().baseParams.active;
-   }
-   if(typeof this.getStore().baseParams.search != "undefined") {
-       params += '&search=' + this.getStore().baseParams.search;
-   }
-   window.location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportxml&HTTP_MODAUTH=' + Campaigner.site_id + params;
+
+    MODx.Ajax.request({
+        url: Campaigner.config.connector_url
+        ,params: {
+            action: 'mgr/subscriber/exportxml'
+            // ,id: this.menu.record.id
+        }
+        // ,method: 'remote'
+        ,listeners: {
+            'success': {fn:function(r) {
+                location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportxml&export=1&HTTP_MODAUTH=' + MODx.siteId;
+                // this.refresh();
+            },scope:this}
+        }
+    });
+
+    // var params = '';
+    // if(this.getStore().baseParams.text) {
+ //       params += '&text=' + this.getStore().baseParams.text;
+ //   }
+ //   if(this.getStore().baseParams.group) {
+ //       params += '&group=' + this.getStore().baseParams.group;
+ //   }
+ //   if(typeof this.getStore().baseParams.active != "undefined") {
+ //       params += '&active=' + this.getStore().baseParams.active;
+ //   }
+ //   if(typeof this.getStore().baseParams.search != "undefined") {
+ //       params += '&search=' + this.getStore().baseParams.search;
+ //   }
+ //   window.location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportxml&HTTP_MODAUTH=' + Campaigner.site_id + params;
 }
 ,filterActive: function(tf,newValue,oldValue) {
     var nv = newValue;

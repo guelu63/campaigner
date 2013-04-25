@@ -1,6 +1,6 @@
 <?php
-header("Content-type: text/xml");
-header("Content-Disposition: attachment; filename=subscribers.xml");
+if(!$_GET['export'] && !$_GET['export'] == 1)
+    return $modx->error->success('');
 
 $names = array(
     str_replace(' ', '_', $modx->lexicon('campaigner.subscriber')),
@@ -49,16 +49,16 @@ $c->select('`Subscriber`.*');
 
 $subscribers = $modx->getCollection('Subscriber',$c);
 
-echo '<'. $modx->lexicon('campaigner.subscribers') .'>' . "\n\r";
+$o = '<'. $modx->lexicon('campaigner.subscribers') .'>' . "\n\r";
 foreach($subscribers as $subscriber)
 {
-    echo "\t". '<'. $names[0] .'>' . "\n\r";
-    echo "\t\t". '<'. $names[1] .'>' . $subscriber->get('email') . '</'. $names[1] .'>' . "\n\r";
-    echo "\t\t". '<'. $names[2] .'>' . $subscriber->get('firstname') . '</'. $names[2] .'>' . "\n\r";
-    echo "\t\t". '<'. $names[3] .'>' . $subscriber->get('lastname') . '</'. $names[3] .'>' . "\n\r";
-    echo "\t\t". '<'. $names[4] .'>' . $subscriber->get('active') . '</'. $names[4] .'>' . "\n\r";
+    $o .= "\t". '<'. $names[0] .'>' . "\n\r";
+    $o .= "\t\t". '<'. $names[1] .'>' . $subscriber->get('email') . '</'. $names[1] .'>' . "\n\r";
+    $o .= "\t\t". '<'. $names[2] .'>' . $subscriber->get('firstname') . '</'. $names[2] .'>' . "\n\r";
+    $o .= "\t\t". '<'. $names[3] .'>' . $subscriber->get('lastname') . '</'. $names[3] .'>' . "\n\r";
+    $o .= "\t\t". '<'. $names[4] .'>' . $subscriber->get('active') . '</'. $names[4] .'>' . "\n\r";
     
-    echo "\t\t". '<'. $names[5] .'>' . "\n\r";
+    $o .= "\t\t". '<'. $names[5] .'>' . "\n\r";
     $grpArray = array();
     $c = $modx->newQuery('Group');
     $c->leftJoin('GroupSubscriber', 'GroupSubscriber', '`GroupSubscriber`.`group` = `Group`.`id`');
@@ -68,11 +68,14 @@ foreach($subscribers as $subscriber)
     
     $groups = $modx->getCollection('Group', $c);
     foreach($groups as $grp) {
-        echo "\t\t\t". '<'. $names[6] .'>' . $grp->get('name') . '</'. $names[6] .'>' . "\n\r";
+        $o .= "\t\t\t". '<'. $names[6] .'>' . $grp->get('name') . '</'. $names[6] .'>' . "\n\r";
     }
-    echo "\t\t". '</'. $names[5] .'>' . "\n\r";
-    echo "\t". '</'. $names[0] .'>';
+    $o .= "\t\t". '</'. $names[5] .'>' . "\n\r";
+    $o .= "\t". '</'. $names[0] .'>';
 }
 
-echo '</'. $modx->lexicon('campaigner.subscribers') .'>';
-exit;
+$o .= '</'. $modx->lexicon('campaigner.subscribers') .'>';
+
+header('Content-Type: application/force-download');
+header('Content-Disposition: attachment; filename="subscriber.xml"'); 
+return $o;
