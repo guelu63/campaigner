@@ -14,31 +14,31 @@ Campaigner.grid.Newsletter = function(config) {
             ,dataIndex: 'subject'
             ,sortable: true
             ,width: 40
-        ,renderer: this._renderNewsletter
+            ,renderer: this._renderNewsletter
         },{
             header: _('campaigner.newsletter.sender')
             ,dataIndex: 'sender'
             ,sortable: true
             ,width: 20
-        ,renderer: this._renderSender
+            ,renderer: this._renderSender
         },{
             header: _('campaigner.newsletter.date')
             ,dataIndex: 'date'
             ,sortable: true
             ,width: 12
-        ,renderer: this._renderDate
+            ,renderer: this._renderDate
         },{
             header: _('campaigner.newsletter.state')
             ,dataIndex: 'state'
             ,sortable: true
             ,width: 10
-        ,renderer: this._renderState
+            ,renderer: this._renderState
         },{
             header: _('campaigner.newsletter.groups')
             ,dataIndex: 'groups'
             ,sortable: true
             ,width: 35
-        ,renderer: this._renderGroups
+            ,renderer: this._renderGroups
         },{
             header: _('campaigner.newsletter.priority')
             ,dataIndex: 'priority'
@@ -59,21 +59,21 @@ Campaigner.grid.Newsletter = function(config) {
             ,dataIndex: 'sent'
             ,sortable: true
             ,width: 8
-        ,renderer: this._renderCount
+            ,renderer: this._renderCount
         },{
             header: _('campaigner.newsletter.bounced')
             ,dataIndex: 'bounced'
             ,sortable: true
             ,width: 8
-        ,renderer: this._renderCount
-        }],  
-         /* Top toolbar */  
-         tbar : ['->', {
+            ,renderer: this._renderCount
+        }],
+        /* Top toolbar */
+        tbar : ['->', {
             xtype: 'combo'
             ,name: 'sent'
             ,id: 'campaigner-filter-sent'
-        ,store: [
-        ['-', _('campaigner.all')],
+            ,store: [
+                ['-', _('campaigner.all')],
                 [1, _('campaigner.newsletter.sent')],
                 [0, _('campaigner.newsletter.sheduled')]
             ]
@@ -82,7 +82,7 @@ Campaigner.grid.Newsletter = function(config) {
             ,lastQuery: ''
             ,hiddenName: 'sent'
             ,submitValue: false
-        ,emptyText: _('campaigner.newsletter.filter.sent')
+            ,emptyText: _('campaigner.newsletter.filter.sent')
             ,listeners: {
                 'change': {fn: this.filterSent, scope: this}
                 ,'render': {fn: function(cmp) {
@@ -96,12 +96,12 @@ Campaigner.grid.Newsletter = function(config) {
                     });
                 },scope:this}
             }
-     },{
+        },{
             xtype: 'combo'
             ,name: 'state'
             ,id: 'campaigner-filter-state'
-        ,store: [
-        ['-', _('campaigner.all')],
+            ,store: [
+                ['-', _('campaigner.all')],
                 [1, _('campaigner.newsletter.approved')],
                 [0, _('campaigner.newsletter.unapproved')]
             ]
@@ -110,7 +110,7 @@ Campaigner.grid.Newsletter = function(config) {
             ,lastQuery: ''
             ,hiddenName: 'state'
             ,submitValue: false
-        ,emptyText: _('campaigner.newsletter.filter.state')
+            ,emptyText: _('campaigner.newsletter.filter.state')
             ,listeners: {
                 'change': {fn: this.filterState, scope: this}
                 ,'render': {fn: function(cmp) {
@@ -132,14 +132,14 @@ Campaigner.grid.Newsletter = function(config) {
                 'click': {fn: this.toggleMedia, scope: this}
             }
         },{
-           xtype: 'button'
-           ,id: 'campaigner-filter-autonewsletter'
-           ,text: 'ohne Auto-Newsletter'
-           ,listeners: {
+            xtype: 'button'
+            ,id: 'campaigner-filter-autonewsletter'
+            ,text: 'ohne Auto-Newsletter'
+            ,listeners: {
               'click': {fn: this.toggleAuto, scope: this}
-           }
-       }
-       // },{
+            }
+        }
+    // },{
     //         xtype: 'combo'
     //         ,name: 'cleaner'
     //         ,id: 'campaigner-cleaner-mediainfo'
@@ -197,18 +197,18 @@ Campaigner.grid.Newsletter = function(config) {
             }
         }]
     });
-    Campaigner.grid.Newsletter.superclass.constructor.call(this,config)
+    Campaigner.grid.Newsletter.superclass.constructor.call(this,config);
 };
 
 Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
     filterState: function(tf,newValue,oldValue) {
         var nv = newValue;
         var s = this.getStore();
-    if(nv == '-') {
-        delete s.baseParams.state;
-    } else {
-            s.baseParams.state = nv;
-    }
+        if(nv == '-') {
+            delete s.baseParams.state;
+        } else {
+                s.baseParams.state = nv;
+        }
         this.getBottomToolbar().changePage(1);
         this.refresh();
         return true;
@@ -216,11 +216,11 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
     ,filterSent: function(tf,newValue,oldValue) {
         var nv = newValue;
         var s = this.getStore();
-    if(nv == '-') {
-        delete s.baseParams.sent;
-    } else {
+        if(nv == '-') {
+            delete s.baseParams.sent;
+        } else {
             s.baseParams.sent = nv;
-    }
+        }
         this.getBottomToolbar().changePage(1);
         this.refresh();
         return true;
@@ -229,10 +229,10 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
         var s = this.getStore();
         if (btn.text == 'nur Mediainfo') {
             s.setBaseParam('media',1);
-        btn.setText('Alle')
+            btn.setText('Alle');
         } else {
             s.setBaseParam('media',0);
-        btn.setText('nur Mediainfo')
+            btn.setText('nur Mediainfo');
         }
         this.getBottomToolbar().changePage(1);
         this.refresh();
@@ -244,7 +244,6 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
                 action: 'mgr/newsletter/archive',
                 cleaner: args.cleaner
             }
-            
             ,listeners: {
                 'success': {fn:function(r) {
                     this.getBottomToolbar().changePage(1);
@@ -259,10 +258,10 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
     var s = this.getStore();
         if (btn.text == 'ohne Auto-Newsletter') {
             s.setBaseParam('auto',1);
-        btn.setText('Alle')
+            btn.setText('Alle');
         } else {
             s.setBaseParam('auto',0);
-        btn.setText('ohne Auto-Newsletter')
+            btn.setText('ohne Auto-Newsletter');
         }
         this.getBottomToolbar().changePage(1);
         this.refresh();
@@ -271,40 +270,38 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
     return '<a href="?a=30&id='+ rec.data.docid +'">'+ value +'</a>';
     }
     ,_renderSender: function(value, p, rec) {
-    if(!value && !rec.data.sender_email) {
-        return '<span class="campaigner-default">' + _('campaigner.usedefault') +'<span>';
-    }
-    return value + ' &lt;' + rec.data.sender_email + '&gt;';
+        if(!value && !rec.data.sender_email) {
+            return '<span class="campaigner-default">' + _('campaigner.usedefault') +'<span>';
+        }
+        return value + ' &lt;' + rec.data.sender_email + '&gt;';
     }
     ,_renderState: function(value, p, rec) {
-    if(value == 1) {
-        return '<img src="'+ Campaigner.config.base_url +'images/mgr/yes.png" alt="' + _('campaigner.newsletter.approved') + '" />';
-    }
-    return '<img src="'+ Campaigner.config.base_url +'images/mgr/no.png" alt="' + _('campaigner.newsletter.unapproved') + '" />';
-    }
+        if(value == 1) {
+            return '<img src="'+ Campaigner.config.base_url +'images/mgr/yes.png" alt="' + _('campaigner.newsletter.approved') + '" />';
+        }
+        return '<img src="'+ Campaigner.config.base_url +'images/mgr/no.png" alt="' + _('campaigner.newsletter.unapproved') + '" />';
+        }
     ,_renderDate: function(value, p, rec) {
-    if(value == _('unpublished')) {
-        return '<span class="no">' + value + '</span>';
-    }
-    return value;
+        if(value == _('unpublished')) {
+            return '<span class="no">' + value + '</span>';
+        }
+        return value;
     }
     ,_renderGroups: function(value, p, rec) {
-    var out = '';
-    var id  = Ext.id();
-    var tip = '';
-    
-    if(value) {
-        for(var i = 0; i < value.length; i++) {
-            if(value[i][2]) {
-            out += '<div class="group" title="'+ value[i][1]  +'" id="campaigner-group-' + id + '-'+ value[i][0] +'" style=" background: '+ value[i][2] +'"></div>';
-            tip += value[i][1] + ' ';
+        var out = '';
+        var id  = Ext.id();
+        var tip = '';
+        if(value) {
+            for(var i = 0; i < value.length; i++) {
+                if(value[i][2]) {
+                    out += '<div class="group" title="'+ value[i][1]  +'" id="campaigner-group-' + id + '-'+ value[i][0] +'" style=" background: '+ value[i][2] +'"></div>';
+                    tip += value[i][1] + ' ';
+                }
+            }
+            p.attr = 'ext:qtip="'+ tip +'" ext:qtitle="'+ _('campaigner.groups') +'"';
         }
-        }
-        p.attr = 'ext:qtip="'+ tip +'" ext:qtitle="'+ _('campaigner.groups') +'"';
-    }
-    return out;
-    }
-    ,_renderCount: function(value, p, rec) {
+        return out;
+    },_renderCount: function(value, p, rec) {
     var extend = '';
     if(value > 0) {
         extend += ' (' + Math.round(value*100 / rec.data.total) + '%)';
@@ -312,7 +309,7 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
     return value + extend;
     }
     ,approveNewsletter: function() {
-    MODx.Ajax.request({
+        MODx.Ajax.request({
             url: Campaigner.config.connector_url
             ,params: {
                 action: 'mgr/newsletter/approve'
@@ -326,7 +323,7 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
         });
     }
     ,unapproveNewsletter: function() {
-    MODx.Ajax.request({
+        MODx.Ajax.request({
             url: Campaigner.config.connector_url
             ,params: {
                 action: 'mgr/newsletter/unapprove'
@@ -354,61 +351,61 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
         });
     }
     ,addNewsletter: function(e) {
-    var w = MODx.load({
-        xtype: 'campaigner-window-newsletter'
+        var w = MODx.load({
+            xtype: 'campaigner-window-newsletter'
             ,listeners: {
                 'success': {fn:this.refresh,scope:this}
             }
         });
-    w.show(e);
-    return;
+        w.show(e);
+        return;
     }
     ,editNewsletter: function() {
-    window.location.href = '?a=30&id='+ this.menu.record.docid;
-    return;
+        window.location.href = '?a=30&id='+ this.menu.record.docid;
+        return;
     }
     ,editProperties: function(e) {
-    var w = MODx.load({
-        xtype: 'campaigner-window-newsletter-properties'
+        var w = MODx.load({
+            xtype: 'campaigner-window-newsletter-properties'
             ,listeners: {
                 'success': {fn:this.refresh,scope:this}
             }
         });
-    w.setValues(this.menu.record);
-    w.show(e);
-    return;
+        w.setValues(this.menu.record);
+        w.show(e);
+        return;
     }
     ,assignGroups: function(e) {
-    var w = MODx.load({
-        xtype: 'campaigner-window-newsletter-groups'
-        ,record: this.menu.record
-            ,listeners: {
-                'success': {fn:this.refresh,scope:this}
-            }
-        });
-    w.setValues(this.menu.record);
-    w.show(e);
-    return;
+        var w = MODx.load({
+            xtype: 'campaigner-window-newsletter-groups'
+            ,record: this.menu.record
+                ,listeners: {
+                    'success': {fn:this.refresh,scope:this}
+                }
+            });
+        w.setValues(this.menu.record);
+        w.show(e);
+        return;
     }
     ,testNewsletter: function(e) {
-    var w = MODx.load({
-        xtype: 'campaigner-window-newsletter-test'
-        ,record: this.menu.record
-            ,listeners: {
-                'success': {fn:this.refresh,scope:this}
-            }
-        });
-    w.setValues(this.menu.record);
-    w.show(e);
-    return;
+        var w = MODx.load({
+            xtype: 'campaigner-window-newsletter-test'
+            ,record: this.menu.record
+                ,listeners: {
+                    'success': {fn:this.refresh,scope:this}
+                }
+            });
+        w.setValues(this.menu.record);
+        w.show(e);
+        return;
     }
     ,previewNewsletter: function(e) {
-    var w = MODx.load({
-        xtype: 'campaigner-window-newsletter-preview'
-        });
-    w.setValues(this.menu.record);
-    w.show(e);
-    return;
+        var w = MODx.load({
+            xtype: 'campaigner-window-newsletter-preview'
+            });
+        w.setValues(this.menu.record);
+        w.show(e);
+        return;
     }
     ,removeNewsletter: function(e) {
         MODx.msg.confirm({
@@ -419,86 +416,82 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
                 action: 'mgr/newsletter/remove'
                 ,id: this.menu.record.id
             }
-            ,listeners: {
-                'success': {fn: function() {
-            MODx.msg.confirm({
-            title: _('campaigner.newsletter.remove.title')
-            ,text: _('campaigner.newsletter.remove.confirm')
-            ,url: Campaigner.config.connector_url
-            ,params: {
-                action: 'mgr/newsletter/remove'
-                ,id: this.menu.record.docid
-            }
-            ,listeners: {
-                'success': {fn:this.refresh,scope:this}
-            }
-            }); 
-        },scope:this}
-            }
+            // ,listeners: {
+            //     'success': {fn: function() {
+            //         MODx.msg.confirm({
+            //             title: _('campaigner.newsletter.remove.title')
+            //             ,text: _('campaigner.newsletter.remove.confirm')
+            //             ,url: Campaigner.config.connector_url
+            //             ,params: {
+            //                 action: 'mgr/newsletter/remove'
+            //                 ,id: this.menu.record.docid
+            //             }
+            //             ,listeners: {
+            //                 'success': {fn:this.refresh,scope:this}
+            //             }
+            //         });
+            //     },scope:this}
+            // }
         });
     }
     ,getMenu: function() {
         var m = [];
         if (this.getSelectionModel().getCount() == 1) {
             var rs = this.getSelectionModel().getSelections();
-            
-        
-        if(!this.menu.record.sent_date) {
-        if(this.menu.record.state == 1) {
-            m.push({
-            text: _('campaigner.newsletter.unapprove')
-            ,handler: this.unapproveNewsletter
-            })
-        } else {
-            m.push({
-            text: _('campaigner.newsletter.approve')
-            ,handler: this.approveNewsletter
-            })  
-        }
-        m.push('-');
-        m.push({
-            text: _('campaigner.newsletter.editproperties')
-            ,handler: this.editProperties
-        });
-        m.push({
-            text: _('campaigner.newsletter.assigngroups')
-            ,handler: this.assignGroups
-        });
-        m.push('-');
-        }
-        
+
+            if(!this.menu.record.sent_date) {
+                if(this.menu.record.state == 1) {
+                    m.push({
+                        text: _('campaigner.newsletter.unapprove')
+                        ,handler: this.unapproveNewsletter
+                    });
+                } else {
+                    m.push({
+                        text: _('campaigner.newsletter.approve')
+                        ,handler: this.approveNewsletter
+                    });
+                }
+                m.push('-');
+                m.push({
+                    text: _('campaigner.newsletter.editproperties')
+                    ,handler: this.editProperties
+                });
+                m.push({
+                    text: _('campaigner.newsletter.assigngroups')
+                    ,handler: this.assignGroups
+                });
+                m.push('-');
+            }
             m.push({
                 text: _('campaigner.newsletter.edit')
                 ,handler: this.editNewsletter
             });
-        /*m.push({
+            m.push({
                 text: _('campaigner.newsletter.remove')
                 ,handler: this.removeNewsletter
             });
-        m.push('-');
+            // m.push({
+            //     text: _('campaigner.newsletter.sendagain')
+            //     ,handler: this.resendNewsletter
+            // });
+            m.push('-');
             m.push({
-                text: _('campaigner.newsletter.sendagain')
-                ,handler: this.resendNewsletter
-            });*/
-        
-        m.push('-');
-        m.push({
-                text: _('campaigner.newsletter.preview')
-                ,handler: this.previewNewsletter
-            });
+                    text: _('campaigner.newsletter.preview')
+                    ,handler: this.previewNewsletter
+                });
+                m.push({
+                    text: '<strong>' + _('campaigner.newsletter.sendtest') + '</strong>'
+                    ,handler: this.testNewsletter
+                });
+            }
+            m.push('-');
             m.push({
-                text: '<strong>' + _('campaigner.newsletter.sendtest') + '</strong>'
-                ,handler: this.testNewsletter
+                text: _('campaigner.newsletter.kicknow')
+                ,handler: this.kickNewsletter
             });
-        }
-        m.push('-');
-        m.push({
-            text: _('campaigner.newsletter.kicknow')
-            ,handler: this.kickNewsletter
-        });
-        if (m.length > 0) {
-            this.addContextMenuItem(m);
-        }
+            if (m.length > 0) {
+                this.addContextMenuItem(m);
+            }
     }
 });
 Ext.reg('campaigner-grid-newsletter',Campaigner.grid.Newsletter);

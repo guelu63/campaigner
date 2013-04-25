@@ -1,12 +1,14 @@
 <?php
-header("Content-type: text/plain");
-header("Content-Disposition: attachment; filename=subscribers.csv");
+if(!$_GET['export'] && !$_GET['export'] == 1)
+    return $modx->error->success('');
+// header("Content-type: text/plain");
+// header("Content-Disposition: attachment; filename=subscribers.csv");
 
-echo $modx->lexicon('campaigner.subscriber.email').';'
+$out = $modx->lexicon('campaigner.subscriber.email').';'
    . $modx->lexicon('campaigner.subscriber.firstname').';'
    . $modx->lexicon('campaigner.subscriber.lastname').';'
    . $modx->lexicon('campaigner.subscriber.active').';'
-   . $modx->lexicon('campaigner.subscriber.groups').';'. PHP_EOL;
+   . $modx->lexicon('campaigner.subscriber.groups'). PHP_EOL;
 
 
 $sort       = $modx->getOption('sort',$_REQUEST,'id');
@@ -44,10 +46,10 @@ $subscribers = $modx->getCollection('Subscriber',$c);
 
 foreach($subscribers as $subscriber)
 {
-    echo $subscriber->get('email').';';
-    echo $subscriber->get('firstname').';';
-    echo $subscriber->get('lastname').';';
-    echo $subscriber->get('active').';';
+    $out .= $subscriber->get('email').';';
+    $out .= $subscriber->get('firstname').';';
+    $out .= $subscriber->get('lastname').';';
+    $out .= $subscriber->get('active').';';
 
     $grpArray = array();
     $c = $modx->newQuery('Group');
@@ -59,8 +61,12 @@ foreach($subscribers as $subscriber)
     foreach($groups as $grp) {
         $grpArray[] = $grp->get('name');
     }
-    echo implode(',', $grpArray);
-    echo PHP_EOL;
+    $out .= implode(',', $grpArray);
+    $out .= PHP_EOL;
 }
+// echo $out;
 
-exit;
+// exit;
+header('Content-Type: application/force-download');
+header('Content-Disposition: attachment; filename="subscriber.csv"'); 
+return $out;
