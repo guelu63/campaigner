@@ -255,7 +255,7 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
         this.refresh();
     }
     ,toggleAuto: function(btn,e) {
-    var s = this.getStore();
+	var s = this.getStore();
         if (btn.text == 'ohne Auto-Newsletter') {
             s.setBaseParam('auto',1);
             btn.setText('Alle');
@@ -267,7 +267,7 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
         this.refresh();
     }
     ,_renderNewsletter: function(value, p, rec) {
-    return '<a href="?a=30&id='+ rec.data.docid +'">'+ value +'</a>';
+	return '<a href="?a=30&id='+ rec.data.docid +'">'+ value +'</a>';
     }
     ,_renderSender: function(value, p, rec) {
         if(!value && !rec.data.sender_email) {
@@ -302,11 +302,11 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
         }
         return out;
     },_renderCount: function(value, p, rec) {
-    var extend = '';
-    if(value > 0) {
-        extend += ' (' + Math.round(value*100 / rec.data.total) + '%)';
-    }
-    return value + extend;
+	var extend = '';
+	if(value > 0) {
+		extend += ' (' + Math.round(value*100 / rec.data.total) + '%)';
+	}
+	return value + extend;
     }
     ,approveNewsletter: function() {
         MODx.Ajax.request({
@@ -509,7 +509,7 @@ Campaigner.window.Newsletter = function(config) {
         ,fields: [{
             tag: 'div'
             ,html: _('campaigner.newsletter.create.info')
-        ,cls: 'campaigner-window-info'
+	    ,cls: 'campaigner-window-info'
         },{
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.subject')
@@ -552,7 +552,7 @@ Campaigner.window.NewsletterProperties = function(config) {
             ,name: 'campaigner'
             ,id: 'campaigner-'+this.ident+'-priority'
             ,width: 200
-        ,emptyText: '5'
+	    ,emptyText: '5'
             ,fields: [
                 'id',
                 'display'
@@ -561,22 +561,22 @@ Campaigner.window.NewsletterProperties = function(config) {
                 [1, 'Sehr wichtig'],
                 [2, 'Schon wichtig'],
                 [3, 'Wichtig'],
-        [4, 'Geht so'],
-        [5, 'Unwichtig']
+		[4, 'Geht so'],
+		[5, 'Unwichtig']
             ]
             ,valueField: 'id'
             ,displayField: 'display'
             ,triggerAction: 'all'
-        ,forceSelection: true
+	    ,forceSelection: true
             ,lastQuery: ''
             ,triggerAction: 'all'
             ,hiddenName: 'priority'
         },
-    {
+	{
             xtype: 'combo'
             ,name: 'state'
             ,id: 'campaigner-'+this.ident+'-state'
-        ,store: [
+	    ,store: [
                 [1, _('campaigner.newsletter.approved')],
                 [0, _('campaigner.newsletter.unapproved')]
             ]
@@ -585,7 +585,7 @@ Campaigner.window.NewsletterProperties = function(config) {
             ,lastQuery: ''
             ,hiddenName: 'state'
             ,submitValue: false
-    }]
+	}]
     });
     Campaigner.window.NewsletterProperties.superclass.constructor.call(this,config);
 };
@@ -612,43 +612,43 @@ Campaigner.window.NewsletterGroups = function(config) {
     Campaigner.window.NewsletterGroups.superclass.constructor.call(this,config);
     
     this.addListener('show', function(cmp) {
-        MODx.Ajax.request({
-            url: Campaigner.config.connector_url
-            ,params: {
-            action: 'mgr/group/getSubscriberList'
-            }
-            ,scope: this
-            ,listeners: {
-            'success': {fn: function(response) {
-                var groups = Ext.decode(response.responseText);
-                var checked = false;
-                groups = response.object;
-                
-                if(groups.length > 0) {
-                Ext.each(groups, function(item, key) {
-                    checked = false;
-                    if(cmp.record.groups) {
-                    Ext.each(cmp.record.groups, function(i, k) {
-                        if(item.id == i[0]) checked = true;
-                    });
-                    }
-                    this.items.items[0].add({
-                    xtype: 'checkbox'
-                    ,name: 'groups[]'
-                    ,fieldLabel: item.name
-                    ,inputValue: item.id
-                    ,checked: checked
-                    ,labelSeparator: ''
-                    ,hideLabel: true
-                    ,boxLabel: '<span style="color: ' + item.color + ';">' + item.name + '</span>'
-                    });
-                }, this);
-                }
-               this.doLayout(false, true);
-            }, scope: this }
-            }
-        });
-        
+		MODx.Ajax.request({
+		    url: Campaigner.config.connector_url
+		    ,params: {
+			action: 'mgr/group/getSubscriberList'
+		    }
+		    ,scope: this
+		    ,listeners: {
+			'success': {fn: function(response) {
+			    var groups = Ext.decode(response.responseText);
+			    var checked = false;
+			    groups = response.object;
+			    
+			    if(groups.length > 0) {
+				Ext.each(groups, function(item, key) {
+				    checked = false;
+				    if(cmp.record.groups) {
+					Ext.each(cmp.record.groups, function(i, k) {
+					    if(item.id == i[0]) checked = true;
+					});
+				    }
+				    this.items.items[0].add({
+					xtype: 'checkbox'
+					,name: 'groups[]'
+					,fieldLabel: item.name
+					,inputValue: item.id
+					,checked: checked
+					,labelSeparator: ''
+					,hideLabel: true
+					,boxLabel: '<span style="color: ' + item.color + ';">' + item.name + '</span>'
+				    });
+				}, this);
+			    }
+			   this.doLayout(false, true);
+			}, scope: this }
+		    }
+		});
+		
             }, this);
 };
 Ext.extend(Campaigner.window.NewsletterGroups,MODx.Window);
@@ -674,57 +674,58 @@ Campaigner.window.NewsletterTest = function(config) {
             ,fieldLabel: _('campaigner.newsletter.sendtest.personalize')
             ,name: 'personalize'
             ,id: this.ident+'-personalize'
-        ,inputValue: 1
-        ,labelSeparator: ''
-        ,hideLabel: true
-        ,boxLabel: _('campaigner.newsletter.sendtest.personalize')
+	    ,inputValue: 1
+	    ,labelSeparator: ''
+	    ,hideLabel: true
+	    ,boxLabel: _('campaigner.newsletter.sendtest.personalize')
         },{
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.newsletter.sendtest.email')
             ,name: 'email'
+            ,value: MODx['config']['campaigner.test_mail']
             ,id: this.ident+'-email'
         }, {
-        tag: 'div'
-        ,html: '<span>' + _('campaigner.or') + '</span>'
-        ,cls: 'campaigner-spacer'
-    }, {
-        tag: 'div'
-        ,html: '<span>' + _('campaigner.newsletter.sendtest.selectgroup') + '</span>'
-    }]
+	    tag: 'div'
+	    ,html: '<span>' + _('campaigner.or') + '</span>'
+	    ,cls: 'campaigner-spacer'
+	}, {
+	    tag: 'div'
+	    ,html: '<span>' + _('campaigner.newsletter.sendtest.selectgroup') + '</span>'
+	}]
     });
     Campaigner.window.NewsletterTest.superclass.constructor.call(this,config);
     
         this.addListener('show', function(cmp) {
-        MODx.Ajax.request({
-            url: Campaigner.config.connector_url
-            ,params: {
-            action: 'mgr/group/getSubscriberList'
-            }
-            ,scope: this
-            ,listeners: {
-            'success': {fn: function(response) {
-                var groups = Ext.decode(response.responseText);
-                groups = response.object;
-                
-                if(groups.length > 0) {
-                Ext.each(groups, function(item, key) {
-                    this.items.items[0].add({
-                    xtype: 'checkbox'
-                    ,name: 'groups[]'
-                    ,fieldLabel: item.name
-                    ,inputValue: item.id
-                    ,checked: false
-                    ,labelSeparator: ''
-                    ,hideLabel: true
-                    ,boxLabel: '<span style="color: ' + item.color + ';">' + item.name + '</span>'
-                    });
-                }, this);
-                }
-               this.doLayout(false, true);
-            }, scope: this }
-            }
-        });
-        
+		MODx.Ajax.request({
+		    url: Campaigner.config.connector_url
+		    ,params: {
+			action: 'mgr/group/getSubscriberList'
+		    }
+		    ,scope: this
+		    ,listeners: {
+			'success': {fn: function(response) {
+			    var groups = Ext.decode(response.responseText);
+			    groups = response.object;
+			    
+			    if(groups.length > 0) {
+				Ext.each(groups, function(item, key) {
+				    this.items.items[0].add({
+					xtype: 'checkbox'
+					,name: 'groups[]'
+					,fieldLabel: item.name
+					,inputValue: item.id
+					,checked: false
+					,labelSeparator: ''
+					,hideLabel: true
+					,boxLabel: '<span style="color: ' + item.color + ';">' + item.name + '</span>'
+				    });
+				}, this);
+			    }
+			   this.doLayout(false, true);
+			}, scope: this }
+		    }
+		});
+		
             }, this);
 };
 Ext.extend(Campaigner.window.NewsletterTest,MODx.Window);
@@ -750,53 +751,53 @@ Campaigner.window.NewsletterPreview = function(config) {
             ,fieldLabel: _('campaigner.newsletter.preview.persona')
             ,name: 'persona'
             ,id: this.ident+'-persona'
-        ,columns: 1
-        ,items: [
+	    ,columns: 1
+	    ,items: [
                 {boxLabel: _('campaigner.newsletter.preview.nopersona'), name: 'persona', inputValue: '', checked: true},
                 {boxLabel: _('campaigner.newsletter.preview.personalize'), name: 'persona', inputValue: 1},
             ]
-        ,listeners: {
-        'change': {fn: function() {
-            this.fireEvent('show');
-            Ext.get(this.ident+'-email').toggleClass('campaigner-hidden');
-        }, scope: this }
-        }
+	    ,listeners: {
+		'change': {fn: function() {
+		    this.fireEvent('show');
+		    Ext.get(this.ident+'-email').toggleClass('campaigner-hidden');
+		}, scope: this }
+	    }
         },{
             xtype: 'textfield'
             ,fieldLabel: ''
             ,name: 'email'
             ,id: this.ident+'-email'
-        ,cls: 'campaigner-hidden'
-        ,listeners: {
-        'change': { fn: function() {
-            this.fireEvent('show');
-            }, scope: this }
-        }
+	    ,cls: 'campaigner-hidden'
+	    ,listeners: {
+		'change': { fn: function() {
+		    this.fireEvent('show');
+	        }, scope: this }
+	    }
         }, {
-        tag: 'div'
-        ,html: '<span>' + _('campaigner.newsletter.preview') + '</span>'
-        ,cls: 'campaigner-spacer'
-    }, {
-        xtype: 'button'
-        ,id: this.ident+'-text'
+	    tag: 'div'
+	    ,html: '<span>' + _('campaigner.newsletter.preview') + '</span>'
+	    ,cls: 'campaigner-spacer'
+	}, {
+	    xtype: 'button'
+	    ,id: this.ident+'-text'
             ,text: _('campaigner.newsletter.preview.showtext')
             ,listeners: {
                 'click': {fn: function(btn) {
-            if(btn.text == _('campaigner.newsletter.preview.showhtml')) {
-                btn.setText(_('campaigner.newsletter.preview.showtext'));
-            Ext.get(this.ident+'-preview-box').update(this.message.message);
-            } else {
-            btn.setText(_('campaigner.newsletter.preview.showhtml'));
-            Ext.get(this.ident+'-preview-box').update(this.message.text);
+		    if(btn.text == _('campaigner.newsletter.preview.showhtml')) {
+		        btn.setText(_('campaigner.newsletter.preview.showtext'));
+			Ext.get(this.ident+'-preview-box').update(this.message.message);
+		    } else {
+			btn.setText(_('campaigner.newsletter.preview.showhtml'));
+			Ext.get(this.ident+'-preview-box').update(this.message.text);
+		    }
+		}, scope: this}
             }
-        }, scope: this}
-            }
-    }, {
-        tag: 'div'
-        ,id: this.ident+'-preview'
-        ,html: '<div id="'+this.ident+'-preview-box" class="campaigner-preview"></div>'
-    }]
-    ,buttons: [{
+	}, {
+	    tag: 'div'
+	    ,id: this.ident+'-preview'
+	    ,html: '<div id="'+this.ident+'-preview-box" class="campaigner-preview"></div>'
+	}]
+	,buttons: [{
             text: _('close')
             ,scope: this
             ,handler: function() { this.hide(); }
@@ -805,31 +806,31 @@ Campaigner.window.NewsletterPreview = function(config) {
     Campaigner.window.NewsletterPreview.superclass.constructor.call(this,config);
     
     this.addListener('show', function(cmp) {
-    var email;
-    if(this.findById(this.ident+'-persona').getValue().inputValue == 1) {
-        email = this.findById(this.ident+'-email').getValue();
-    }
-    MODx.Ajax.request({
-        url: Campaigner.config.connector_url
-        ,params: {
-        action: 'mgr/newsletter/preview'
-        ,id: this.findById(this.ident+'-id').getValue()
-        ,email: email
-        }
-        ,scope: this
-        ,listeners: {
-        'success': {fn: function(response) {
-            var message = Ext.decode(response.responseText);
-            this.message = response.object;
-            if(this.findById(this.ident +'-text').text == _('campaigner.newsletter.preview.showtext')) {
-            message = this.message.message;
-            } else {
-            message = this.message.text;
-            }
-            Ext.get(this.ident+'-preview-box').update(message);
-            }, scope: this }
-        }
-    });
+	var email;
+	if(this.findById(this.ident+'-persona').getValue().inputValue == 1) {
+	    email = this.findById(this.ident+'-email').getValue();
+	}
+	MODx.Ajax.request({
+	    url: Campaigner.config.connector_url
+	    ,params: {
+		action: 'mgr/newsletter/preview'
+		,id: this.findById(this.ident+'-id').getValue()
+		,email: email
+	    }
+	    ,scope: this
+	    ,listeners: {
+		'success': {fn: function(response) {
+		    var message = Ext.decode(response.responseText);
+		    this.message = response.object;
+		    if(this.findById(this.ident +'-text').text == _('campaigner.newsletter.preview.showtext')) {
+			message = this.message.message;
+		    } else {
+			message = this.message.text;
+		    }
+		    Ext.get(this.ident+'-preview-box').update(message);
+	        }, scope: this }
+	    }
+	});
     }, this);
 };
 Ext.extend(Campaigner.window.NewsletterPreview,MODx.Window);

@@ -29,26 +29,30 @@ $mailer->set(modMail::MAIL_SUBJECT, $document->get('pagetitle'));
 /**
  * Add attachment to mail
  */
-$tv = $modx->getObject('modTemplateVar',array('name'=>'tvAttach'));
-if($tv) {
-    /* get the raw content of the TV */
-    $val = $tv->getValue($document->get('id'));
-    if(!empty($val)) {
-        $vals = explode(',', $val);
-        $vals = array_filter($vals, 'trim');
+$mailer = $modx->campaigner->getAttachments($mailer, $document);
+// $modx->log(MODX_LOG_LEVEL_INFO, 'Attachments were successfully added!');
 
-        $mailer->mailer->ClearAttachments();
+// $tv = $modx->getObject('modTemplateVar',array('name' => 'tvAttach'));
+// if($tv) {
+//     /* get the raw content of the TV */
+//     $val = $tv->getValue($document->get('id'));
+//     if(!empty($val)) {
+//         $vals = explode(',', $val);
+//         $vals = array_filter($vals, 'trim');
 
-        foreach($vals as $val) {
-            //echo $modx->getOption('base_path').$val;
-            $mailer->mailer->AddAttachment($modx->getOption('base_path').$val);
-        }
-    }
-}
+//         $mailer->mailer->ClearAttachments();
+
+//         foreach($vals as $val) {
+//             //echo $modx->getOption('base_path').$val;
+//             $mailer->mailer->AddAttachment($modx->getOption('base_path').$val);
+//         }
+//     }
+// }
 
 /**
  * Do the test sending
  */
+$sent = true;
 if(!empty($_POST['email'])) {
     // send to a single email
     $mailer->setHTML(true);
@@ -74,6 +78,7 @@ if(!empty($_POST['email'])) {
     
     // and send!
     if (!$mailer->send()) {
+        $sent = false;
         $modx->log(modX::LOG_LEVEL_ERROR,'An error occurred while trying to send the test email to '.$subscriber->get('email') .' ### '. $mailer->mailer->ErrorInfo);
     }
     $mailer->ClearAllRecipients();
@@ -103,6 +108,7 @@ if(!empty($_POST['email'])) {
         
         // and send
         if (!$mailer->send()) {
+            $sent = false;
             $modx->log(modX::LOG_LEVEL_ERROR,'An error occurred while trying to send the confirmation email to '.$subscriber->get('email'));
         }
     } else {
@@ -125,6 +131,7 @@ if(!empty($_POST['email'])) {
             
             // and send
             if (!$mailer->send()) {
+                $sent = false;
                 $modx->log(modX::LOG_LEVEL_ERROR,'An error occurred while trying to send the confirmation email to '.$sub->get('email'));
             }
             $mailer->mailer->ClearAllRecipients();
@@ -140,6 +147,26 @@ if(!empty($_POST['email'])) {
 //	$rawValue = $tv->getValue($document->get('id'));
 //	return $rawValue;
 //}
+
+// Store the test message in the queue-list
+if($sent) {
+    // Find the test recipient in our subscribers
+    $recipient = $modx->getObject('Subscriber', array('email' => $_POST['email']));
+    $sub_id = 0;
+    if($recipient)
+        $sub_id = $recipient->get('id');
+
+    $queue = $modx->newObject('Queue');
+    $data = array(
+        'subscriber'    => $sub_id,
+        'newsletter'    => $_POST['id'],
+        'state'         => 1,
+        'sent'          => time(),
+        'priority'      => 0,
+        );
+    $queue->fromArray($data);
+    $queue->save();
+}
 
 $mailer->reset();
 

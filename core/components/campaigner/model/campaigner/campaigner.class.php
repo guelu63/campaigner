@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The campaigner base class
  * @todo Implement MODx logging
@@ -99,26 +98,38 @@ class Campaigner
         // provide a unique email
         if( $this->emailTaken($data['email']) ) {
             $this->errormsg[] = $this->modx->lexicon('campaigner.subscribe.error.emailtaken');
-            return false;
+            $this->reason = 'exists';
+            // return false;
         }
         // provide a valid email
         if(!preg_match("/^(.+)@([^@]+)$/", $data['email'])) {
             $this->errormsg[] = $this->modx->lexicon('campaigner.subscribe.error.noemail');
-            return false;
+            $this->reason = 'invalid';
+            // return false;
         }
         // a group is required
         if(empty($data['groups'])) {
             $this->errormsg[] = $this->modx->lexicon('campaigner.subscribe.error.nogroup');
-            return false;
+            $this->reason = 'nogroup';
+            // return false;
         }
         
+        if(!empty($this->reason))
+            return $this->reason;
+
+        // if(count($this->errormsg) > 0)
+        //     return false;
+
         $groups = $data['groups'];
         unset($data['groups']);
 
+        var_dump($groups);
+        
         // new subscriber
         $subscriber     = $this->modx->newObject('Subscriber');
         $data['key']    = md5(time() . substr($data['email'], rand(1,3), rand(-4, -1)));
         $data['active'] = 0;
+        $data['since']  = time();
         $data['text']   = !empty($data['text']) ? 1 : 0;
         $subscriber->fromArray($data);
         $subscriber->save();
@@ -131,21 +142,33 @@ class Campaigner
                 if( $this->modx->getCount('Group', array('id' => $group, 'public' => 1)) == 1 )
                 {
                     $grpSub = $this->modx->newObject('GroupSubscriber');
-                    $grpSub->set('group', $group);
-                    $grpSub->set('subscriber', $subscriber->get('id'));
+                    $_grpsub = array(
+                        'group' => $group,
+                        'subscriber' => $subscriber->get('id'),
+                        );
+                    // $grpSub->set('group', $group);
+                    // $grpSub->set('subscriber', $subscriber->get('id'));
+                    var_dump($_grpsub);
+                    $grpSub->fromArray($_grpsub);
                     $grpSub->save();
                 }
             }
         }
-
+        // die();
         //sent confirm message
         $mailer     = $this->getMailer();
-        $confirmUrl = $this->modx->makeUrl($this->modx->getOption('campaigner.confirm_page'), '', '?subscriber='.$subscriber->get('email').'&key='.$subscriber->get('key'));
+        $params = array(
+            'subscriber' => $subscriber->get('email'),
+            'key' => $subscriber->get('key'),
+            );
 
         // compose message
         $document = $this->modx->getObject('modDocument', $this->modx->getOption('campaigner.confirm_mail'));
         $message  = $this->composeNewsletter($document);
-        $message  = $this->processNewsletter($message, $subscriber, array('campaigner.confirm' => $confirmUrl));
+        $message  = $this->processNewsletter($message, $subscriber, array(
+            'campaigner.confirm' => $this->modx->makeUrl($this->modx->getOption('campaigner.confirm_page'), '', $params, 'full')
+            )
+        );
         
         // set properties
         $mailer->set(modMail::MAIL_SUBJECT, $document->get('pagetitle'));
@@ -210,24 +233,66 @@ class Campaigner
      * Checks code and removes subscriber
      * 
      * @access public
-     * @param string $subscriber Subscribers email address or identifier correspondig to $type
-     * @param string $key The subscribers key
+     * @param  array $params Given data (e.g. groups, subscriber, key)
      * @param string $type The indentifier to identify a subscriber
      * @return boolean true on removed, false on not found
      */
-    public function unsubscribe($subscriber, $key, $type = 'email')
+    public function unsubscribe($params = array(), $type = 'email')
     {
-    	$subscriber = $this->modx->getObject('Subscriber', array($type => $subscriber));
-    	if($subscriber && $subscriber->get('key') == $key) {
-           $subscriber->remove();
-           return true;
-        }
-        if(!$subscriber) {
+        // Get the subscriber object
+        // $this->modx->setDebug(true);
+        $c = $this->modx->newQuery('Subscriber');
+        $c->where(array($type => $params['subscriber']));
+        // $c->prepare();
+        // echo $c->toSQL();
+        $subscriber = $this->modx->getObject('Subscriber', $c);
+        
+        if(!$subscriber)
             $this->errormsg[] = $this->modx->lexicon('campaigner.unsubscribe.error.nosubscriber');
-        } elseif($subscriber->get('key') !== $key) {
+        
+        if($subscriber->get('key') !== $params['key'])
             $this->errormsg[] = $this->modx->lexicon('campaigner.unsubscribe.error.invalidkey');
+
+        // Get the subscriber's groups which should be disabled
+        $c = $this->modx->newQuery('GroupSubscriber');
+        $c->leftJoin('Group', 'Group', '`Group`.id = `GroupSubscriber`.`group`');
+        $c->select($this->modx->getSelectColumns('GroupSubscriber', 'GroupSubscriber', ''));
+        $c->select($this->modx->getSelectColumns('Group', 'Group', 'g_', array('id', 'name')));
+        $c->where(array('group:IN' => $params['groups'], 'subscriber' => $subscriber->get('id')));
+        // $c->prepare();
+        // echo $c->toSQL();
+        // die();
+        $sub_groups_off = $this->modx->getCollection('GroupSubscriber', $c);
+
+        // Get all groups a subscribers which are enabled
+        $sub_groups_all = $this->getGroups($subscriber->get('email'));
+
+        // If the subscriber will be removed from all groups => remove subscriber
+        $remove = false;
+        if(count($sub_groups_all) === count($sub_groups_off))
+            $remove = true;
+
+        $success = false;
+        // Only remove the checked groups, if not all groups are checked
+        if(!$remove) {
+            foreach($sub_groups_off as $rmv_group) {
+                $groups_off[] = $rmv_group->get('g_name');
+                $rmv_group->remove();
+            }
+            // var_dump($groups_off);
+            $this->errormsg[] = $this->modx->lexicon('campaigner.unsubscribe.fromgroups') . implode(', ', $groups_off);
+            $success = true;
         }
-        return false;
+
+        // Set inactive or remove the subscriber
+        // If 'remove' = true composite relationship will delete group subscriptions, queue items and bounces
+    	if($subscriber && $subscriber->get('key') == $params['key'] && $remove) {
+            if($subscriber->remove()) {
+                $this->errormsg[] = $this->modx->lexicon('campaigner.unsubscribe.success');
+                $success = true;
+            }
+        }
+        return $success;
     }
 
     /**
@@ -533,7 +598,12 @@ class Campaigner
                 );
             $content = $this->modx->cacheManager->get('newsletter/' . $newsletter->get('docid'), $cacheOptions);
 
-            $message = $this->processNewsletter($content, $subscriber, $tags);
+            if ( (boolean) $this->modx->getOption('campaigner.tracking_enabled', '', FALSE) )
+                $this->makeUrl('trackingImage', $newsletter->get('id'), 'image');
+
+            $message = $this->makeTrackingUrls($content, $newsletter);
+            $message = $this->processNewsletter($message, $subscriber, $tags);
+            
 			// $message = $this->processNewsletter($newsletter->get('content'), $subscriber, $tags);
             $textual = $this->textify($message);
 
@@ -652,60 +722,56 @@ class Campaigner
      * @param object $document The document object
      * @return string The composed newsletter
      */
-    public function composeNewsletter($document)
+    public function composeNewsletter($resource)
     {
-        $this->modx->getParser();
+        $this->modx->resource = $resource;
+        $this->modx->resourceIdentifier = $resource->get('id');
+        $this->modx->elementCache = array();
+        $resourceOutput = $this->modx->resource->process();
+        
+        $resourceOutput = $this->parseCampaignerTags($resourceOutput);
 
-        if($this->modx->context->key != $document->context_key) {
-            $this->modx->switchContext($document->context_key);
-        }
+        $this->modx->parser->processElementTags('', $resourceOutput, true, false, '[[', ']]', array(), $maxIterations);
+        $this->modx->parser->processElementTags('', $resourceOutput, true, true, '[[', ']]', array(), $maxIterations);
+        $resourceOutput = $this->unparseCampaignerTags($resourceOutput);
+        return $resourceOutput;
+        // $this->modx->getParser();
 
-        $template = $document->getOne('Template');
-        $document->content = $this->parseCampaignerTags($document->content);
+        // if($this->modx->context->key != $document->context_key) {
+        //     $this->modx->switchContext($document->context_key);
+        // }
 
-        if(!$template) {
-            $message = $document->content;
-        	// run the parser
-            $maxIterations= intval($this->modx->getOption('parser_max_iterations', $options, 10));
-            $this->modx->parser->processElementTags('', $message, true, false, '[[', ']]', array(), $maxIterations);
-            $this->modx->parser->processElementTags('', $message, true, true, '[[', ']]', array(), $maxIterations);
-            return $this->unparseCampaignerTags($message);
-        }
+        // $template = $document->getOne('Template');
+        // $document->content = $this->parseCampaignerTags($document->content);
 
-        // strip campaigner tags from content
-        $template = $this->parseCampaignerTags($template->content);
+        // if(!$template) {
+        //     $message = $document->content;
+        // 	// run the parser
+        //     $maxIterations= intval($this->modx->getOption('parser_max_iterations', $options, 10));
+        //     $this->modx->parser->processElementTags('', $message, true, false, '[[', ']]', array(), $maxIterations);
+        //     $this->modx->parser->processElementTags('', $message, true, true, '[[', ']]', array(), $maxIterations);
+        //     return $this->unparseCampaignerTags($message);
+        // }
 
-        // dirty fix to be able to partse a template
-        $template = str_replace('[[*', '[[+', $template);
-        $this->modx->setPlaceholders($document->toArray());
+        // // strip campaigner tags from content
+        // $template = $this->parseCampaignerTags($template->content);
 
-        // run the parser
-        $maxIterations= intval($this->modx->getOption('parser_max_iterations', $options, 10));
-        //Fuer Newsetter Template NEU und Newsletter Template NEU BL1 und BL2
-        $template = str_replace("[[mapGetArray]]", "[[mapGetArray? &newsletter_id=`".$document->id."`]]", $template);
-        //Fuer Newsletter Template BL2 NEU
-        $template = str_replace("[[mapGetArray? &league=`BL2`]]", "[[mapGetArray? &league=`BL2` &newsletter_id=`".$document->id."`]]", $template);	
-        $this->modx->parser->processElementTags('', $template, true, false, '[[', ']]', array(), $maxIterations);
-        $this->modx->parser->processElementTags('', $template, true, true, '[[', ']]', array(), $maxIterations);
+        // // dirty fix to be able to partse a template
+        // $template = str_replace('[[*', '[[+', $template);
+        // $this->modx->setPlaceholders($document->toArray());
 
-        $template = $this->unparseCampaignerTags($template);
-        return $template;
-    }
+        // // run the parser
+        // $maxIterations= intval($this->modx->getOption('parser_max_iterations', $options, 10));
+        // //Fuer Newsetter Template NEU und Newsletter Template NEU BL1 und BL2
+        
+        // // $template = str_replace("[[mapGetArray]]", "[[mapGetArray? &newsletter_id=`".$document->id."`]]", $template);
+        // //Fuer Newsletter Template BL2 NEU
+        // // $template = str_replace("[[mapGetArray? &league=`BL2`]]", "[[mapGetArray? &league=`BL2` &newsletter_id=`".$document->id."`]]", $template);	
+        // $this->modx->parser->processElementTags('', $template, true, false, '[[', ']]', array(), $maxIterations);
+        // $this->modx->parser->processElementTags('', $template, true, true, '[[', ']]', array(), $maxIterations);
+        // $template = $this->unparseCampaignerTags($template);
 
-    /**
-     * Add attachments to a newsletter
-     *
-     * @access: public
-     * @param: object $document
-     */
-    public function getAttachments($document)
-    {
-        /* Get the TV */
-        $tv = $this->modx->getObject('modTemplateVar',array('name'=>'tvAttach'));
-
-        /* get the raw content of the TV */
-        $rawValue = $tv->getValue($document->get('id'));
-        return $rawValue;
+        // return $template;
     }
 
     /**
@@ -718,17 +784,53 @@ class Campaigner
      * @return string The fully personalized newsletter text
      */
     public function processNewsletter($newsletter, $subscriber, $tags = array())
-    {		
+    {
+        $newsletter = str_replace(array('%5B%5B%2B','%5B%5B&#43;', '%5B%5B', '%5D%5D'), array('[[+', '[[+', '[[', ']]'), $newsletter);
+        
         $allTags = array_merge($tags, $this->getSubscriberTags($subscriber));
+        // var_dump($allTags);
         $this->modx->unsetPlaceholders(array_keys($allTags));
         $this->modx->setPlaceholders($allTags);
-
+        
         $this->modx->parser->processElementTags('', $newsletter, true, false, '[[', ']]', array(), $maxIterations);
         $this->modx->parser->processElementTags('', $newsletter, true, true, '[[', ']]', array(), $maxIterations);
 
         //$newsletter = $this->parsePathes($newsletter);
-
         return $newsletter;
+    }
+
+    /**
+     * Add attachments to a newsletter
+     *
+     * @access: public
+     * @param: object $resource MODx resource
+     * @return array Array of filepath(s) to add as attachments
+     */
+    public function getAttachments($mailer, $resource)
+    {
+        /* Get the TV */
+        $tv = $this->modx->getObject('modTemplateVar',array('name' => $this->modx->getOption('campaigner.attachment_tv')));
+        $element = $this->modx->getOption('campaigner.attachment_tv_element');
+        $ms = $this->modx->getObject('modMediaSource', $this->modx->getOption('campaigner.attachment_mediasource'));
+        $ms_props = $ms->getPropertyList();
+
+        if(!$tv)
+            return $mailer;
+
+        /* get the raw content of the TV */
+        $vals = json_decode($tv->getValue($resource->get('id')));
+
+        // die();
+        if(is_string($vals) && !is_array($vals))
+            $vals = array_filter(explode(',', $val), 'trim');
+
+        $mailer->mailer->ClearAttachments();
+        foreach($vals as $val) {
+            $success = false;
+            if($mailer->mailer->AddAttachment($this->modx->getOption('base_path').$ms_props['basePath'].$val->$element))
+                $success = true;
+        }
+        return $mailer;
     }
 
     /**
@@ -760,18 +862,28 @@ class Campaigner
                 'campaigner.lastname'    => null,
                 'campaigner.address'	 => null,
                 'campaigner.unsubscribe' => null,
-                'campaigner.istext'      => null
+                'campaigner.istext'      => null,
+                'campaigner.key'         => null,
+                'campaigner.tracking_image' => null,
                 );
         }
         $address = 'Hallo ';
         $address .= $subscriber->get('firstname') && $subscriber->get('lastname') ? ucwords($subscriber->get('firstname')) . ' ' . ucwords($subscriber->get('lastname')) : $subscriber->get('email');
+        
+        $params = array(
+            'subscriber' => $subscriber->get('email'),
+            'key' => $subscriber->get('key'),
+            );
+        
         return array(
             'campaigner.email'       => $subscriber->get('email'),
             'campaigner.firstname'   => $subscriber->get('firstname'),
             'campaigner.lastname'    => $subscriber->get('lastname'),
             'campaigner.address'     => $address,
-            'campaigner.unsubscribe' => $this->modx->makeUrl($this->modx->getOption('campaigner.unsubscribe_page'), '', '?subscriber='. $subscriber->get('email') .'&key='. $subscriber->get('key')),
-            'campaigner.istext'      => $subscriber->get('text') ? 1 : null
+            'campaigner.unsubscribe' => $this->modx->makeUrl($this->modx->getOption('campaigner.unsubscribe_page'), '', $params, 'full'),
+            'campaigner.istext'      => $subscriber->get('text') ? 1 : null,
+            'campaigner.key'         => $subscriber->get('key'),
+            'campaigner.tracking_image' => $this->modx->getOption('site_url').'assets/components/campaigner/?t='.base_convert($this->created_urls['trackingImage'],10,36).'|[[+campaigner.key]]&amp;',
             );
     }
     
@@ -967,6 +1079,302 @@ class Campaigner
 		// kill the rest of the html stuff
         $message = strip_tags($message);
         return $message;
+    }
+
+    /**
+     * Generate tracking urls
+     * @param  string $html       Newsletter content
+     * @param  object $newsletter Newsletter object
+     * @return string             Prepared HTML
+     */
+    public function makeTrackingUrls ($html, $newsletter) {
+        // 1. get all existing tracking URLs for current newsletter:
+        $this->getTrackingUrls($newsletter->get('id'));
+        
+        // 2. Convert all links to /tiny/Link id(base 64)/Person ID(base 64?) -> email_links
+        $link_list = explode("<a ",$html);
+        $tracking_email = NULL;
+        
+        foreach ($link_list as $line ) {
+            // get the first occurance of href
+            $position = strpos($line, 'href="');
+            if ( $position === false ) {
+                // no link:
+                $tracking_email .= $line;
+                continue;
+            }
+            $before = substr($line, 0, $position );
+            $line = substr($line, ($position+6) );// remove the href=" and everything before it
+            $end_quote_position = strpos($line, '"');// get the postion of the next " 
+            $after = substr($line, ($end_quote_position+1) );
+            $href = substr($line, 0, $end_quote_position );
+            
+            // strpos($href, 'http') !== false
+            if ( strpos($href, 'mailto:') === false  && strpos($href, '[[') === false ) {
+            
+            } else {
+                // mailto link:
+                $tracking_email .= '<a '.$line;
+                continue;
+            }
+            // now reconstruct the link_str:
+            $tracking_email .= '<a '.$before.' href="'.$this->makeUrl($href, $newsletter->get('id')).'"'.$after;
+        }
+        if ( empty($tracking_email) ) {
+            $tracking_email = $html;
+        }
+        return $tracking_email;
+    }
+    
+    /**
+     * [makeUrl description]
+     * @param  [type] $url          [description]
+     * @param  [type] $newsletterID [description]
+     * @param  string $type         [description]
+     * @return [type]               [description]
+     */
+    public function makeUrl ($url,$newsletterID, $type='click') {
+        if ( $type == 'image' ) {
+            $this->getTrackingUrls($newsletterID);
+        }
+        if ( empty($this->created_urls[$url]) ){
+            $link = $this->modx->newObject('NewsletterLink');
+            $link->set('url', $url);
+            $link->set('newsletter', $newsletterID);
+            $link->set('type', $type);
+            $link->save();
+
+            $this->created_urls[$url] = $link->get('id');
+            if ( $this->debug ){
+                $this->modx->log(modX::LOG_LEVEL_ERROR,'CampaignerNewsletter->makeUrl() - LinkID: '.$link->get('id').' URL: '.$url );
+            }
+        }
+        if ( $type == 'image' ) {
+            $url = $this->modx->getOption('site_url').$this->modx->getOption('assets_url').'components/groupeletters/?t='.base_convert($this->created_urls[$url],10,36).'|[[+campaigner.key]]&amp;';
+        } else {
+            $url = $this->modx->makeUrl($this->modx->getOption('campaigner.tracking_page', '', 1),'', array('t' => base_convert($this->created_urls[$url],10,36).'|[[+campaigner.key]]'), 'http');
+        }
+        // $url = str_replace(array('%5B%5B%2B','%5B%5B&#43;', '%5B%5B', '%5D%5D'), array('[[+', '[[+', '[[', ']]'), $url);
+        return str_replace('https://', 'http://', $url);
+    }
+    
+    /**
+     * [getTrackingUrls description]
+     * @param  [type] $newsletterID [description]
+     * @return [type]               [description]
+     */
+    protected function getTrackingUrls($newsletterID) {
+        $savedList = $this->modx->getCollection('NewsletterLink', array('newsletter' => $newsletterID ) );
+        $this->created_urls = array();
+        foreach ( $savedList as $aLink ) {
+            $tmp = $aLink->toArray();
+            $this->created_urls[$tmp['url']] = $tmp['id'];
+        }
+    }
+
+    /**
+     * [logAction description]
+     * @param  string $type [description]
+     * @return [type]       [description]
+     */
+    public function logAction($type='click') {
+        $t = $key = $link_id = 0;
+        
+        // Nothing set => Return
+        if ( !isset($_REQUEST['t']) && $type == 'click' )
+            return;
+        
+        if ( isset($_REQUEST['t']) ) {
+            list($t, $key ) = explode('|',$_REQUEST['t'], 2 );
+            $link_id = base_convert($t, 36, 10);
+        }
+
+        if ( $this->debug )
+            $this->modx->log(modX::LOG_LEVEL_ERROR,'Newsletter->logAction() - LinkID: '.$link_id.' type: '.$type );
+
+        if ( is_numeric($link_id) ) {
+            // get the link:
+            $conditions = array('id' => $link_id, 'type' => $type );
+            $link = $this->modx->getObject('NewsletterLink', $conditions );
+            
+            if ( is_object($link) ) {
+                $placeholders = array();
+                // get the subscriber:
+                $subscriber = $this->modx->getObject('Subscriber', array('key' => $key) );
+
+                if ( is_object($subscriber) ){
+                    // log the click:
+                    $click = $this->modx->getObject('SubscriberHits', array('link' => $link_id, 'subscriber' => $subscriber->get('id')));
+                    if ( is_object($click) ) {
+                        // it all ready has been recorded:
+                        $click->set('view_total', $click->get('view_total')+1);
+                    } else {
+                        $click = $this->modx->newObject('SubscriberHits');
+                        $data = array(
+                                'newsletter' => $link->get('newsletter'),
+                                'subscriber' => $subscriber->get('id'),
+                                'link' => $link_id,
+                                'hit_type' => $type,
+                                'hit_date' => date('Y-m-d H:i:s'),
+                                'view_total' => 1,
+                            );
+                        $click->fromArray($data);
+                    }
+                    $click->save();
+                    $placeholders = $subscriber->toArray();
+                }
+                
+                // set cookies?
+                if ( $type == 'click' ) {
+                    // set all info and process the string:
+                    $chunk = $this->modx->newObject('modChunk');
+                    $chunk->setContent($link->get('url'));
+                    $url = $chunk->process($placeholders);
+
+                    // add image(open) stat if not already:
+                    $conditions = array('newsletter' => $link->get('newsletter'), 'url' => 'trackingImage', 'type' => 'image' );
+                    $image = $this->modx->getObject('NewsletterLink', $conditions );
+                    
+                    if ( is_object($image) && is_object($subscriber) ){
+                        $opened = $this->modx->getObject('SubscriberHits', array('link' => $image->get('id'), 'subscriber' => $subscriber->get('id')));
+                        if ( is_object($opened) ) {
+                            // it all ready has been recorded so no need to do anything
+                        } else {
+                            $opened = $this->modx->newObject('SubscriberHits');
+                            $data = array(
+                                    'newsletter' => $link->get('newsletter'),
+                                    'subscriber' => $subscriber->get('id'),
+                                    'link' => $image->get('id'),
+                                    'hit_type' => 'image',
+                                    'hit_date' => date('Y-m-d H:i:s'),
+                                    'view_total' => 1,
+                                );
+                            $opened->fromArray($data);
+                            $opened->save();
+                        }
+                    }
+                    // add campaign/newsletter title for analytics:
+                    // 
+                    // getCollectionGraph('Box', '{"BoxColors":{"Color":{}}}', array('Box.width' => 40));
+                    // 
+                    
+                    $c = $this->modx->newQuery('modResource');
+                    $c->leftJoin('Newsletter', 'Newsletter', '`modResource`.`id` = `Newsletter`.`docid`');
+                    $c->leftJoin('Autonewsletter', 'Autonewsletter', '`modResource`.`id` = `Autonewsletter`.`docid`');
+                    $c->select(array(
+                        'pagetitle'  => $this->modx->getSelectColumns('modResource', 'modResource', '', array('id', 'pagetitle'))
+                        ));
+                    $c->where(array('Newsletter.id' => $link->get('newsletter')));
+                    $c->where(array('Autonewsletter.id' => $link->get('newsletter')), xPDOQuery::SQL_OR);
+                    $newsletter = $this->modx->getObject('modResource', $c);
+
+                    if ( strpos($url, '?') === FALSE ) {
+                        $url .= '?';
+                    } else {
+                        $url .= '&';
+                    }
+                    if(is_object($newsletter))
+                        $url .= 'campaign='.urlencode(str_replace(' ', '-', $newsletter->get('pagetitle')));
+                    echo 'URL ' . $url;
+                    // $this->modx->sendRedirect($url);
+                }
+            }
+        }
+
+        if ( $type == 'image') {
+            // show the image:
+            $display_name = 'clear';
+            if ( isset($_GET['image']) ) {
+                $filename = $display_name = $_GET['image'];
+                $filename = str_replace(array('../', './', '%2F','.php', '.inc', chr(0)), '', $filename);
+                $filename = MODX_ASSETS_PATH.'components'.DIRECTORY_SEPARATOR.'campaigner'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$filename;
+                if ( !file_exists($filename) ) {
+                    $filename = 'clear.gif';
+                }
+            } else {
+                $filename = MODX_ASSETS_PATH.'components'.DIRECTORY_SEPARATOR.'campaigner'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'sent.png';
+            }
+            
+            $filesize = filesize($filename);
+            
+            # get the type of file
+            $file_ext = substr($filename, strripos($filename, '.')+1 );
+            
+            $mime = '';
+            switch ($file_ext) {
+                case 'jpeg':
+                case 'jpg':
+                    $mime = 'image/jpeg';
+                    break;
+                case 'png':
+                    $mime = 'image/png';
+                    break;
+                case 'tif':
+                case 'tiff':
+                    $mime = 'image/tiff';
+                    break;
+                case 'gif':
+                default:
+                    $mime = 'image/gif';
+                    break;
+            }
+            
+            // /** 
+            // header_remove("Pragma");
+            // header_remove("Cache-Control");
+            // header_remove("Expires");
+            // header_remove("Set-Cookie");
+            // */
+            // header("Content-type: " . $mime );//.$mime_type );
+            // header("Content-length: ".$filesize);
+            //header("Content-Transfer-Encoding: binary");
+            //header('Accept-Ranges: bytes');
+            
+            /* Read It */
+            // $handle = fopen($filename, "rb");
+            // $contents = fread($handle, $filesize);
+            // fclose($handle);
+            
+            //$this->modx->log(modX::LOG_LEVEL_ERROR,'EletterNewsletter->logAction() headers: '. print_r(headers_list(),TRUE) );
+            /* Print It */
+            echo $contents;
+            // $this->modx->log(modX::LOG_LEVEL_ERROR,'EletterNewsletter->logAction() filename: '.$filename );
+            //exit;
+
+        }
+    }
+
+    /**
+     * [getGroups description]
+     * @param  [type] $email [description]
+     * @return [type]        [description]
+     */
+    public function getGroups($email = false) {
+
+        if(!$email)
+            return $this->modx->getCollection('Group', array('public' => 1));
+
+        $c = $this->modx->newQuery('Subscriber');
+        $c->where(array(
+            'email' => $email
+            ));
+
+        // they have to be in the group
+        $c->innerJoin('GroupSubscriber', 'GroupSubscriber', '`GroupSubscriber`.`subscriber` = `Subscriber`.`id`');
+        $c->leftJoin('Group', 'Group', '`Group`.id = `GroupSubscriber`.`group`');
+        
+        $c->select($this->modx->getSelectColumns('Subscriber', 'Subscriber', '', array('id')));
+        $c->select($this->modx->getSelectColumns('Group', 'Group', 'g_'));
+        $c->select($this->modx->getSelectColumns('GroupSubscriber', 'GroupSubscriber', 'gs_'));
+        // $c->select(array(
+        //     'group_id' => '`GroupSubscriber`.`group`',
+        //     'group_name' => '`Group`.`name`',
+        //     )
+        // );
+        // $c->prepare();
+        // echo $c->toSql();
+        //$this->modx->log($this->modx->LOG_LEVEL_ERROR, "SQL NEWSLETTER QUERY --> " . $c->toSql());
+        return $this->modx->getCollection('Subscriber', $c);
     }
 
     /**

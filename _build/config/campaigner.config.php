@@ -56,6 +56,7 @@ $components = array(
      * their namespace to the lowercase package name of your extra */
 
     'newSystemSettings' => array(
+        // Mailing
         'campaigner.mail_charset' => array( // key
             'key' => 'campaigner.mail_charset',
             'name' => 'Campaigner Mail Charset',
@@ -63,7 +64,7 @@ $components = array(
             'namespace' => 'campaigner',
             'xtype' => 'textfield',
             'value' => 'UTF-8',
-            'area' => 'email',
+            'area' => 'mailing',
         ),
         'campaigner.mail_encoding' => array( // key
             'key' => 'campaigner.mail_encoding',
@@ -72,8 +73,27 @@ $components = array(
             'namespace' => 'campaigner',
             'xtype' => 'textfield',
             'value' => '8bit',
-            'area' => 'email',
+            'area' => 'mailing',
         ),
+        'campaigner.tracking_page' => array( // key
+            'key' => 'campaigner.tracking_page',
+            'name' => 'Campaigner Tracking Page',
+            'description' => 'Campaigner Tracking Page',
+            'namespace' => 'campaigner',
+            'xtype' => 'textfield',
+            'value' => '',
+            'area' => 'mailing',
+        ),
+        'campaigner.tracking_enabled' => array( // key
+            'key' => 'campaigner.tracking_enabled',
+            'name' => 'Campaigner Enable Tracking',
+            'description' => 'Campaigner Enable Tracking',
+            'namespace' => 'campaigner',
+            'xtype' => 'combo-boolean',
+            'value' => true,
+            'area' => 'mailing',
+        ),
+        // System
         'campaigner.mail_smtp_auth' => array( // key
             'key' => 'campaigner.mail_smtp_auth',
             'name' => 'Campaigner SMTP Authentication',
@@ -202,6 +222,15 @@ $components = array(
             'value' => 'rt@domain.com',
             'area' => 'system',
         ),
+        'campaigner.test_mail' => array( // key
+            'key' => 'campaigner.test_mail',
+            'name' => 'Campaigner Test Mail Address',
+            'description' => 'Campaigner Test Mail Address',
+            'namespace' => 'campaigner',
+            'xtype' => 'textfield',
+            'value' => '',
+            'area' => 'system',
+        ),
         'campgaigner.has_autonewsletter' => array( // key
             'key' => 'campgaigner.has_autonewsletter',
             'name' => 'Campaigner has Autonewsletters',
@@ -225,6 +254,15 @@ $components = array(
             'key' => 'campaigner.confirm_mail',
             'name' => 'Campaigner Confirm Mail Resource',
             'description' => 'Campaigner Confirm Mail Resource',
+            'namespace' => 'campaigner',
+            'xtype' => 'textfield',
+            'value' => '',
+            'area' => 'site',
+        ),
+        'campaigner.confirm_page' => array( // key
+            'key' => 'campaigner.confirm_page',
+            'name' => 'Campaigner Confirm Page Resource',
+            'description' => 'Campaigner Confirm Page Resource',
             'namespace' => 'campaigner',
             'xtype' => 'textfield',
             'value' => '',
@@ -256,6 +294,16 @@ $components = array(
             'xtype' => 'textfield',
             'value' => '',
             'area' => 'site',
+        ),
+        // File
+        'campaigner.attachment_tv' => array( // key
+            'key' => 'campaigner.attachment_tv',
+            'name' => 'Campaigner Attachment TV',
+            'description' => 'Campaigner Attachment TV',
+            'namespace' => 'campaigner',
+            'xtype' => 'textfield',
+            'value' => '',
+            'area' => 'file',
         ),
     ),
 
@@ -569,7 +617,8 @@ $components = array(
      * Suffix 'resolver.php' will be added automatically */
     'resolvers' => array(
         'default',
-        'addUsers'
+        'addUsers',
+        'tables',
     ),
 
     /* (optional) Validators can abort the install after checking

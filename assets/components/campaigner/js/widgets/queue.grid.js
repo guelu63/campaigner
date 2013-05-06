@@ -14,41 +14,41 @@ Campaigner.grid.Queue = function(config) {
             header: _('campaigner.queue.newsletter')
             ,dataIndex: 'newsletter'
             ,sortable: true
-            ,width: 40
-	    ,renderer: this._renderNewsletter
+            ,width: 30
+            ,renderer: this._renderNewsletter
         },{
             header: _('campaigner.queue.receiver')
             ,dataIndex: 'subscriber'
             ,sortable: true
             ,width: 40
-	    ,renderer: this._renderSubscriber
+            ,renderer: this._renderSubscriber
         },{
             header: _('campaigner.queue.state')
             ,dataIndex: 'state'
             ,sortable: true
             ,width: 10
-	    ,renderer: this._renderState
+            ,renderer: this._renderState
         },{
             header: _('campaigner.queue.priority')
             ,dataIndex: 'priority'
             ,sortable: true
-            ,width: 5
+            ,width: 10
         },{
             header: _('campaigner.queue.sent')
             ,dataIndex: 'sent'
             ,sortable: true
             ,width: 20
-        }],  
-         /* Top toolbar */  
-         tbar : [{
+        }],
+        /* Top toolbar */
+        tbar : [{
             xtype: 'button'
             ,id: 'campaigner-filter-processed'
             ,text: _('campaigner.queue.show_processed')
             ,listeners: {
                 'click': {fn: this.toggleProcessed, scope: this}
             }
-	 } , '|' , {
-	    xtype: 'textfield'
+        },'|',{
+            xtype: 'textfield'
             ,name: 'search'
             ,id: 'campaigner-filter-search'
             ,emptyText: _('search')+'...'
@@ -65,42 +65,58 @@ Campaigner.grid.Queue = function(config) {
                     });
                 },scope:this}
             }
+        },
+        '->',
+        {
+            xtype: 'button'
+            ,id: 'campaigner-process-queue'
+            ,text: _('campaigner.queue.process_queue')
+            ,listeners: {
+                'click': {fn: this.processQueue, scope: this}
+            }
+        },
+        {
+            xtype: 'button'
+            ,id: 'campaigner-remove-tests'
+            ,text: _('campaigner.queue.remove_tests')
+            ,listeners: {
+                'click': {fn: this.removeTests, scope: this}
+            }
         }]
     });
-    Campaigner.grid.Queue.superclass.constructor.call(this,config)
+    Campaigner.grid.Queue.superclass.constructor.call(this,config);
 };
 
 Ext.extend(Campaigner.grid.Queue,MODx.grid.Grid,{
     _renderNewsletter: function(value, p, rec) {
-	return rec.data.subject;
+        return rec.data.subject;
     }
     ,_renderSubscriber: function(value, p, rec) {
-	return '<span class="subscriber">' + rec.data.email + '</span> (' + value + ')';
+        return '<span class="subscriber">' + rec.data.email + '</span> (' + value + ')';
     }
     ,_renderState: function(value, p, rec) {
-	if(value == 1) {
-	    return '<img src="'+ Campaigner.config.base_url +'images/sent.png" alt="' + _('campaigner.queue.sent') + '" />';
-	}
-	return '<img src="'+ Campaigner.config.base_url +'images/waiting.png" alt="' + _('campaigner.queue.waiting') + '" />';
+        if(value == 1)
+            return '<img src="'+ Campaigner.config.base_url +'images/sent.png" alt="' + _('campaigner.queue.sent') + '" />';
+        return '<img src="'+ Campaigner.config.base_url +'images/waiting.png" alt="' + _('campaigner.queue.waiting') + '" />';
     }
     ,toggleProcessed: function(btn, e) {
         var s = this.getStore();
         if (btn.text ==  _('campaigner.queue.show_processed')) {
             s.setBaseParam('showProcessed',1);
-	    btn.setText(_('campaigner.queue.hide_processed'))
+            btn.setText(_('campaigner.queue.hide_processed'));
         } else {
             s.setBaseParam('showProcessed',0);
-	    btn.setText(_('campaigner.queue.show_processed'))
+            btn.setText(_('campaigner.queue.show_processed'));
         }
         this.getBottomToolbar().changePage(1);
         this.refresh();
     }
     ,removeQueue: function(e) {
 	var msg;
-	if(this.menu.record.state == 0) {
-	    msg = _('campaigner.queue.remove.unsend');
+	if(this.menu.record.state === 0) {
+        msg = _('campaigner.queue.remove.unsend');
 	} else {
-	    msg = _('campaigner.queue.remove.confirm');
+        msg = _('campaigner.queue.remove.confirm');
 	}
         MODx.msg.confirm({
             title: _('campaigner.queue.remove.title')
@@ -115,11 +131,36 @@ Ext.extend(Campaigner.grid.Queue,MODx.grid.Grid,{
             }
         });
     }
+    ,processQueue: function() {
+        MODx.msg.confirm({
+            title: _('campaigner.queue.process_queue')
+            ,text: _('campaigner.queue.process_queue_text')
+            ,url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/queue/process'
+            }
+            ,listeners: {
+                'success': {fn:this.refresh,scope:this}
+            }
+        });
+    }
+    ,removeTests: function() {
+        MODx.msg.confirm({
+            title: _('campaigner.queue.remove_tests')
+            ,text: _('campaigner.queue.remove_tests_text')
+            ,url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/queue/remove_tests'
+            }
+            ,listeners: {
+                'success': {fn:this.refresh,scope:this}
+            }
+        });
+    }
     ,getMenu: function() {
         var m = [];
         if (this.getSelectionModel().getCount() == 1) {
             var rs = this.getSelectionModel().getSelections();
-            
             m.push({
                 text: _('campaigner.queue.remove')
                 ,handler: this.removeQueue

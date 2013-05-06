@@ -13,7 +13,7 @@ Campaigner.grid.Subscriber = function(config) {
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url
         ,baseParams: { action: 'mgr/subscriber/getList' }
-        ,fields: ['id', 'active', 'email', 'firstname', 'lastname', 'company', 'type', 'groups', 'key', 'since']
+        ,fields: ['id', 'active', 'email', 'title', 'firstname', 'lastname', 'company', 'type', 'groups', 'key', 'since']
         ,paging: true
         ,autosave: false
         ,remoteSort: true
@@ -23,6 +23,11 @@ Campaigner.grid.Subscriber = function(config) {
             ,dataIndex: 'email'
             ,sortable: true
             ,width: 40
+        },{
+            header: _('campaigner.subscriber.title')
+            ,dataIndex: 'title'
+            ,sortable: true
+            ,width: 20
         },{
             header: _('campaigner.subscriber.firstname')
             ,dataIndex: 'firstname'
@@ -60,8 +65,8 @@ Campaigner.grid.Subscriber = function(config) {
             ,sortable: true
             ,width: 10
             ,renderer: this._renderGroups
-        }],  
-        /* Top toolbar */  
+        }],
+        /* Top toolbar */
         tbar : [{
            xtype: 'button'
            ,id: 'campaigner-subscriber-add'
@@ -190,7 +195,7 @@ Campaigner.grid.Subscriber = function(config) {
     }
 }]
 });
-Campaigner.grid.Subscriber.superclass.constructor.call(this,config)
+Campaigner.grid.Subscriber.superclass.constructor.call(this,config);
 };
 
 Ext.extend(Campaigner.grid.Subscriber,MODx.grid.Grid,{
@@ -216,18 +221,19 @@ Ext.extend(Campaigner.grid.Subscriber,MODx.grid.Grid,{
    return '<img src="'+ Campaigner.config.base_url +'images/mgr/no.png" class="small" alt="" />';
 }
 ,exportCsv: function() {
-
-    // MODx.Ajax.request({
-    //    url: this.config.url
-    //     ,params: {
-    //        action: 'export'
-    //         ,id: id
-    //     }
-    //     ,listeners: {
-    //         'success': {fn:function(r) {
-    //            location.href = this.config.url+'?action=export&download='+r.message+'&id='+id+'&HTTP_MODAUTH='+MODx.siteId;
-    //         },scope:this}
-    //     }
+    var params = '';
+    if(this.getStore().baseParams.text) {
+        params += '&text=' + this.getStore().baseParams.text;
+    }
+    if(this.getStore().baseParams.group) {
+        params += '&group=' + this.getStore().baseParams.group;
+    }
+    if(typeof  this.getStore().baseParams.active != "undefined") {
+        params += '&active=' + this.getStore().baseParams.active;
+    }
+    if(typeof this.getStore().baseParams.search != "undefined") {
+        params += '&search=' + this.getStore().baseParams.search;
+    }
 
     MODx.Ajax.request({
         url: Campaigner.config.connector_url
@@ -238,27 +244,28 @@ Ext.extend(Campaigner.grid.Subscriber,MODx.grid.Grid,{
         // ,method: 'remote'
         ,listeners: {
             'success': {fn:function(r) {
-                location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportcsv&export=1&HTTP_MODAUTH=' + MODx.siteId;
+                location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportcsv&export=1&HTTP_MODAUTH=' + MODx.siteId + params;
                 // this.refresh();
             },scope:this}
         }
     });
-    // var params = '';
-    // if(this.getStore().baseParams.text) {
-    //     params += '&text=' + this.getStore().baseParams.text;
-    // }
-    // if(this.getStore().baseParams.group) {
-    //     params += '&group=' + this.getStore().baseParams.group;
-    // }
-    // if(typeof  this.getStore().baseParams.active != "undefined") {
-    //     params += '&active=' + this.getStore().baseParams.active;
-    // }
-    // if(typeof this.getStore().baseParams.search != "undefined") {
-    //     params += '&search=' + this.getStore().baseParams.search;
-    // }
     // window.location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportcsv&HTTP_MODAUTH=' + Campaigner.site_id + params;
 }
 ,exportXml: function() {
+    // Collect the params from grid view
+    var params = '';
+    if(this.getStore().baseParams.text) {
+       params += '&text=' + this.getStore().baseParams.text;
+    }
+    if(this.getStore().baseParams.group) {
+       params += '&group=' + this.getStore().baseParams.group;
+    }
+    if(typeof this.getStore().baseParams.active != "undefined") {
+       params += '&active=' + this.getStore().baseParams.active;
+    }
+    if(typeof this.getStore().baseParams.search != "undefined") {
+       params += '&search=' + this.getStore().baseParams.search;
+    }
 
     MODx.Ajax.request({
         url: Campaigner.config.connector_url
@@ -269,26 +276,12 @@ Ext.extend(Campaigner.grid.Subscriber,MODx.grid.Grid,{
         // ,method: 'remote'
         ,listeners: {
             'success': {fn:function(r) {
-                location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportxml&export=1&HTTP_MODAUTH=' + MODx.siteId;
+                location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportxml&export=1&HTTP_MODAUTH=' + MODx.siteId + params;
                 // this.refresh();
             },scope:this}
         }
     });
-
-    // var params = '';
-    // if(this.getStore().baseParams.text) {
- //       params += '&text=' + this.getStore().baseParams.text;
- //   }
- //   if(this.getStore().baseParams.group) {
- //       params += '&group=' + this.getStore().baseParams.group;
- //   }
- //   if(typeof this.getStore().baseParams.active != "undefined") {
- //       params += '&active=' + this.getStore().baseParams.active;
- //   }
- //   if(typeof this.getStore().baseParams.search != "undefined") {
- //       params += '&search=' + this.getStore().baseParams.search;
- //   }
- //   window.location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportxml&HTTP_MODAUTH=' + Campaigner.site_id + params;
+    // window.location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportxml&HTTP_MODAUTH=' + Campaigner.site_id + params;
 }
 ,filterActive: function(tf,newValue,oldValue) {
     var nv = newValue;
@@ -334,7 +327,7 @@ return true;
     return true;
 }
 ,addSubscriber: function(e) {
-    var w = MODx.load({
+	var w = MODx.load({
        xtype: 'campaigner-window-subscriber'
        ,listeners: {
         'success': {fn:this.refresh,scope:this}
@@ -343,20 +336,20 @@ return true;
     w.show(e.target);
 }
 ,editSubscriber: function(e) {
-    this.updateWindow = MODx.load({
+	this.updateWindow = MODx.load({
        xtype: 'campaigner-window-subscriber'
        ,record: this.menu.record
        ,listeners: {
         'success': {fn:this.refresh,scope:this}
     }
 });
-    var vals = this.menu.record;
-    vals.text = vals.type == 'text' ? 1 : 0;
+	var vals = this.menu.record;
+	vals.text = vals.type == 'text' ? 1 : 0;
     this.updateWindow.setValues(vals);
     this.updateWindow.show(e.target);
 }
 ,activateSubscriber: function() {
-    MODx.Ajax.request({
+	MODx.Ajax.request({
         url: Campaigner.config.connector_url
         ,params: {
             action: 'mgr/subscriber/activate'
@@ -370,7 +363,7 @@ return true;
     });
 }
 ,deactivateSubscriber: function() {
-    MODx.Ajax.request({
+	MODx.Ajax.request({
         url: Campaigner.config.connector_url
         ,params: {
             action: 'mgr/subscriber/deactivate'
@@ -384,7 +377,7 @@ return true;
     });
 }
 ,removeSubscriber: function() {
-    MODx.msg.confirm({
+	MODx.msg.confirm({
         title: _('campaigner.subscriber.remove.title')
         ,text: _('campaigner.subscriber.remove.confirm')
         ,url: Campaigner.config.connector_url
@@ -441,41 +434,54 @@ Campaigner.window.Subscriber = function(config) {
        ,baseParams: { action: 'mgr/group/getlist' }
        ,reader: new Ext.data.JsonReader({
            root: 'results',
-           fields: [ {name: 'id'},{name: 'name'}, {name: 'color'}] 
+           fields: [ {name: 'id'},{name: 'name'}, {name: 'color'}]
        })
    });
     Ext.applyIf(config,{
-        title: _('campaigner.subscriber')
+        title: config.hasOwnProperty('record') ? _('campaigner.subscriber.edit') : _('campaigner.subscriber.add')
         ,id: this.ident
         ,height: 400
         ,width: 475
         ,url: Campaigner.config.connector_url
         ,action: 'mgr/subscriber/save'
+        ,labelAlign: 'left'
+        ,labelPad: 10
         ,fields: [{
             xtype: 'textfield'
             ,readOnly: true
+            ,hidden: true
             ,name: 'id'
             ,id: this.ident +'-id'
+        },{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.subscriber.title')
+            ,name: 'title'
+            ,id: 'campaigner-'+this.ident+'-title'
+            ,boxMinWidth: 200
         },{
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.subscriber.firstname')
             ,name: 'firstname'
             ,id: 'campaigner-'+this.ident+'-firstname'
+            ,boxMinWidth: 200
         },{
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.subscriber.lastname')
             ,name: 'lastname'
             ,id: 'campaigner-'+this.ident+'-lastname'
+            ,boxMinWidth: 200
         },{
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.subscriber.email')
             ,name: 'email'
             ,id: 'campaigner-'+this.ident+'-email'
+            ,boxMinWidth: 200
         },{
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.subscriber.company')
             ,name: 'company'
             ,id: 'campaigner-'+this.ident+'-company'
+            ,boxMinWidth: 200
         },{
             xtype: 'checkbox'
             ,fieldLabel: _('campaigner.subscriber.active')
@@ -484,6 +490,7 @@ Campaigner.window.Subscriber = function(config) {
             ,labelSeparator: ''
             ,hideLabel: true
             ,boxLabel: _('campaigner.subscriber.active')
+            ,boxMinWidth: 200
         },{
             xtype: 'checkbox'
             ,fieldLabel: _('campaigner.subscriber.astext')
@@ -492,6 +499,7 @@ Campaigner.window.Subscriber = function(config) {
             ,labelSeparator: ''
             ,hideLabel: true
             ,boxLabel: _('campaigner.subscriber.astext')
+            ,boxMinWidth: 200
         }, {
            tag: 'div'
            ,cls: 'subscriber-window-groups-header'
@@ -500,10 +508,9 @@ Campaigner.window.Subscriber = function(config) {
    });
 Campaigner.window.Subscriber.superclass.constructor.call(this,config);
 
-
 this.addListener('show', function(cmp) {
-    var id = null;
-    if(cmp.record) id = cmp.record.id;
+	var id = null;
+	if(cmp.record) id = cmp.record.id;
   MODx.Ajax.request({
       url: Campaigner.config.connector_url
       ,params: {

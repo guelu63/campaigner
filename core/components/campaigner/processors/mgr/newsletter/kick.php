@@ -1,8 +1,14 @@
 <?php
 /**
- * Immediately sends out newsletters
- * @package campaigner
+ * Sends newsletters immediately
+ *
+ * Creates the newsletter dependent queue and immediately sends out
+ * the first batch of them.
+ *
+ * @todo Report after successful sending as console: Sent / Time / ...
  */
+// return $modx->error->success('',$newsletter);
+
 if(!empty($_POST['id'])) {
     $newsletter = $modx->getObject('Newsletter', array('id' => $_POST['id']));
 }
@@ -14,6 +20,7 @@ $today = mktime(0,0,0,strftime('%m'),strftime('%d'),strftime('%Y'));
 $start = $today - $newsletter->get('frequency');
 $time = strftime('%H:%M:%S', $now-120);
 
+// Set state to 1 => Approve
 $data = array(
     'state' => '1',
     'sent_date' => NULL,
@@ -21,19 +28,18 @@ $data = array(
 
 $newsletter->fromArray($data);
 
-if ($newsletter->save() == false) {
+if ($newsletter->save() == false)
     return $modx->error->failure($modx->lexicon('campaigner.error.save'));
-}
 
-// $modx->campaigner->sheduleAutoNewsletter();
+// Create queue and process immediately
 $modx->campaigner->createQueue();
-$modx->campaigner->processQueue();
+// $modx->campaigner->processQueue();
 
+// Set sent_date to now
 $newsletter->fromArray(array('state' => '1', 'sent_date' => time()));
 
-if ($newsletter->save() == false) {
+if ($newsletter->save() == false)
     return $modx->error->failure($modx->lexicon('campaigner.error.save'));
-}
 
 /**
  * Feed the manager log

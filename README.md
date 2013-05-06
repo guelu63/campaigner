@@ -12,12 +12,20 @@ HAVE
 * Will translate your snippet calls
 * Flexibility through MODx system settings
 * Allows to create newsletters which will be sent automatically
+* Simple export for subscribers (XML, CSV)
+* Statistics
+  * Track clicks per subscriber and link
+  * Track opening
 
 TODO
 ----
 * Analysis of messaging
-* Linktracking
 * Refactoring of old code partitions
 * Frontend modules
+
+INSTALLATION
+----
+
+Download transport package, copy to [modx_path]/core/packages, go to 'Package Management' and search for local packages.
 
 *Campaigner was developed by Subsolutions*

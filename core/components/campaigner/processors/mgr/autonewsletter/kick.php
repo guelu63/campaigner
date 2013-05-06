@@ -25,7 +25,7 @@ if ($newsletter->save() == false) {
 }
 
 $modx->campaigner->sheduleAutoNewsletter();
-//$modx->campaigner->createQueue();
+$modx->campaigner->createQueue();
 
 $newsletter->fromArray(array('state' => '0', 'last' => time()));
 

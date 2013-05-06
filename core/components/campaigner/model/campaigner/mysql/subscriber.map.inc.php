@@ -6,6 +6,7 @@ $xpdo_meta_map['Subscriber']= array (
   array (
     'active' => NULL,
     'email' => NULL,
+    'title' => NULL,
     'firstname' => NULL,
     'lastname' => NULL,
     'title' => NULL,
@@ -30,6 +31,13 @@ $xpdo_meta_map['Subscriber']= array (
       'precision' => '255',
       'phptype' => 'string',
       'null' => false,
+    ),
+    'title' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '255',
+      'phptype' => 'string',
+      'null' => true,
     ),
     'firstname' => 
     array (

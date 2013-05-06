@@ -27,6 +27,19 @@ Campaigner.panel.Main = function(config) {
                     preventRender: true
                 }]
             }, {
+                title: _('campaigner.autonewsletter'),
+                defaults: { autoHeight: true },
+                id: 'campaigner-tab-autonewsletter',
+                items: [{
+                    html: '<p>'+_('campaigner.autonewsletter.info')+'</p>',
+                    border: false,
+                    bodyStyle: 'padding: 10px'
+                },{
+                    xtype: 'campaigner-grid-autonewsletter',
+                    id: 'campaigner-grid-autonewsletter',
+                    preventRender: true
+                }]
+            }, {
                 title: _('campaigner.groups'),
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-groups',
@@ -102,7 +115,7 @@ Campaigner.panel.Main = function(config) {
                     }]
                     }]
                     }]
-            },  {
+            },{
                 title: _('campaigner.queue'),
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-queue',
@@ -113,6 +126,19 @@ Campaigner.panel.Main = function(config) {
                 },{
                     xtype: 'campaigner-grid-queue',
                     id: 'campaigner-grid-queue',
+                    preventRender: true
+                }]
+            },{
+                title: _('campaigner.statistics'),
+                defaults: { autoHeight: true },
+                id: 'campaigner-tab-statistics',
+                items: [{
+                    html: '<p>'+_('campaigner.statistics.info')+'</p>',
+                    border: false,
+                    bodyStyle: 'padding: 10px'
+                },{
+                    xtype: 'campaigner-grid-statistics',
+                    id: 'campaigner-grid-statistics',
                     preventRender: true
                 }]
             }]

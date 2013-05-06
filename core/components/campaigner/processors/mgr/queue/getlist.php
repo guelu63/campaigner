@@ -36,9 +36,9 @@ if(!empty($search)) {
 }
 
 $count = $modx->getCount('Queue',$c);
-
+$c->leftJoin('Autonewsletter', 'Autonewsletter', '`Autonewsletter`.`id` = `Queue`.`newsletter`');
 $c->leftJoin('Newsletter', 'Newsletter', '`Newsletter`.`id` = `Queue`.`newsletter`');
-$c->leftJoin('modDocument', 'Document', '`Document`.`id` = `Newsletter`.`docid`');
+$c->leftJoin('modDocument', 'Document', '`Document`.`id` = `Newsletter`.`docid` OR `Document`.`id` = `Autonewsletter`.`docid`');
 $c->leftJoin('Subscriber', 'Subscriber', '`Subscriber`.`id` = `Queue`.`subscriber`');
 
 $c->select('`Newsletter`.`docid`, `Newsletter`.`total`, `Newsletter`.`state`, `Newsletter`.`bounced`, `Document`.`pagetitle` AS subject, `Document`.`publishedon` AS date, `Queue`.*, `Subscriber`.`firstname`, `Subscriber`.`lastname`, `Subscriber`.`email`, `Subscriber`.`text`');
@@ -48,8 +48,10 @@ $queue = $modx->getCollection('Queue',$c);
 /* iterate through subscribers */
 $list = array();
 foreach ($queue as $item) {
-        $queueItem = $item->toArray();
-        $queueItem['sent'] = ($queueItem['sent']) ? date('d.m.Y H:i:s', $queueItem['sent']) : '';
-        $list[] = $queueItem;
+    $queueItem = $item->toArray();
+    if($queueItem['priority'] === 0)
+    	$queueItem['priority'] = 'TEST (0)';
+    $queueItem['sent'] = ($queueItem['sent']) ? date('d.m.Y H:i:s', $queueItem['sent']) : '';
+    $list[] = $queueItem;
 }
 return $this->outputArray($list,$count);

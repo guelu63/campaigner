@@ -15,9 +15,20 @@ $_lang['campaigner.all']   = 'Alle';
 $_lang['campaigner.or']    = 'Oder';
 $_lang['campaigner.days']  = 'Tage';
 $_lang['campaigner.weeks'] = 'Wochen';
+$_lang['campaigner.weekday'] = 'Wochentag';
 $_lang['campaigner.usedefault'] = 'Standard verwenden';
+$_lang['campaigner.print'] = 'Drucken';
+$_lang['campaigner.okay'] = 'OK';
 
 $_lang['campaigner.error.save'] = 'Fehler beim speichern.';
+
+$_lang['campaigner.day.1'] = 'Montag';
+$_lang['campaigner.day.2'] = 'Dienstag';
+$_lang['campaigner.day.3'] = 'Mittwoch';
+$_lang['campaigner.day.4'] = 'Donnerstag';
+$_lang['campaigner.day.5'] = 'Freitag';
+$_lang['campaigner.day.6'] = 'Samstag';
+$_lang['campaigner.day.7'] = 'Sonntag';
 
 //newsletter
 $_lang['campaigner.newsletters'] = 'Newsletter';
@@ -55,6 +66,7 @@ $_lang['campaigner.newsletter.sendtest'] = 'Test senden';
 $_lang['campaigner.newsletter.sendtest.email'] = 'Test-Email';
 $_lang['campaigner.newsletter.sendtest.selectgroup'] = 'W&auml;hlen sie eine Gruppe um den Test an diese zu senden. Nur private Gruppen mit weniger als 10 Mitgliedern werden angezeigt.';
 $_lang['campaigner.newsletter.sendtest.personalize'] = 'Newsletter personalisieren';
+$_lang['campaigner.newsletter.sendtest.add_attachments'] = 'Attachments anh&auml;ngen';
 
 $_lang['campaigner.newsletter.preview.persona'] = 'personalisieren?';
 $_lang['campaigner.newsletter.preview.nopersona'] = 'Nein';
@@ -72,6 +84,10 @@ $_lang['campaigner.newsletter.error.notfound'] = 'Newsletter wurde nicht gefunde
 $_lang['campaigner.newsletter.error.noreceiver'] = 'Kein Empf&auml;nger f&uuml;r den Testnewsletter angegeben.';
 
 // autonewsletter
+$_lang['campaigner.newsletter.date_time'] = 'Start (Datum & Zeit)';
+$_lang['campaigner.newsletter.repeat'] = 'Wiederholungs-Zyklus';
+$_lang['campaigner.newsletter.sender_email'] = 'Absender (Name & E-Mail)';
+
 $_lang['campaigner.autonewsletter.frequency'] = 'Frequenz';
 $_lang['campaigner.autonewsletter.time'] = 'Zeit';
 $_lang['campaigner.autonewsletter.last'] = 'Zuletzt';
@@ -79,7 +95,8 @@ $_lang['campaigner.autonewsletter.start'] = 'Start';
 $_lang['campaigner.newsletter.kicknow'] = 'jetzt ausl&ouml;sen';
 
 $_lang['campaigner.autonewsletter.remove.title'] = 'Auto-Newsletter entfernen?';
-$_lang['campaigner.autonewsletter.remove.confirm'] = 'Are you sure you want to remove this newsletter and all it\'s data? It is also removed from your modx documents.';
+// $_lang['campaigner.autonewsletter.remove.confirm'] = 'Are you sure you want to remove this newsletter and all it\'s data? It is also removed from your modx documents.';
+$_lang['campaigner.autonewsletter.remove.confirm'] = 'Wenn sie best&auml;tigen wird dieser Newsletter entfernt und alle damit verbundenen Ressourcen ebenfalls.<br/>Sind sie sicher?';
 $_lang['campaigner.autonewsletter.description'] = 'Beschreibung';
 $_lang['campaigner.subscribe.confirm.subject'] = 'Newsletter best&auml;tigen';
 
@@ -116,6 +133,10 @@ $_lang['campaigner.subscribers'] = 'Abonnenten';
 $_lang['campaigner.subscriber'] = 'Abonnent';
 $_lang['campaigner.subscribers.info'] = 'Verwalten sie Abonnenten und deren Gruppen.';
 
+$_lang['campaigner.subscriber.add'] = 'erstellen';
+$_lang['campaigner.subscriber.edit'] = 'bearbeiten';
+
+$_lang['campaigner.subscriber.title'] = 'Anrede';
 $_lang['campaigner.subscriber.firstname'] = 'Vorname';
 $_lang['campaigner.subscriber.lastname'] = 'Nachname';
 $_lang['campaigner.subscriber.active'] = 'aktiv';
@@ -123,6 +144,7 @@ $_lang['campaigner.subscriber.inactive'] = 'inaktiv';
 $_lang['campaigner.subscriber.activate'] = 'aktivieren';
 $_lang['campaigner.subscriber.deactivate'] = 'deaktivieren';
 $_lang['campaigner.subscriber.email'] = 'Email';
+$_lang['campaigner.subscriber.company'] = 'Firma';
 $_lang['campaigner.subscriber.type'] = 'Email-Art';
 $_lang['campaigner.subscriber.groups'] = 'Gruppen';
 $_lang['campaigner.subscriber.add'] = 'Neuer Abonnent';
@@ -150,9 +172,11 @@ $_lang['campaigner.subscribe.error.noemail'] = 'Es muss eine g&uuml;ltige Email-
 $_lang['campaigner.subscribe.error.nogroup'] = 'Bitte w&auml;hlen sie eine Gruppe.';
 $_lang['campaigner.subscribe.success'] = 'Newsletter erfolgreich abonniert.';
 
+// Unsubscribe process
 $_lang['campaigner.unsubscribe.error.nosubscriber'] = 'Abonnent wurde nicht gefunden.';
 $_lang['campaigner.unsubscribe.error.invalidkey'] = 'Sicherheitschl&uuml;ssel war ung&uuml;ltig.';
 $_lang['campaigner.unsubscribe.success'] = 'Erfolgreich vom Newsletter abgemeldet.';
+$_lang['campaigner.unsubscribe.fromgroups'] = 'Sie wurden von folgenden Gruppen erfolgreich abgemeldet:';
 
 $_lang['campaigner.confirm.error.nosubscriber'] = 'Abonnent wurde nicht gefunden.';
 $_lang['campaigner.confirm.error.active'] = 'Abonnent ist schon best&auml;tigt.';
@@ -174,12 +198,14 @@ $_lang['campaigner.queue.show_processed'] = 'Verarbeitete anzeigen';
 $_lang['campaigner.queue.hide_processed'] = 'Verarbeitete verstecken';
 $_lang['campaigner.queue.remove'] = 'Element entfernen';
 $_lang['campaigner.queue.removed'] = 'Element wurde entfernt';
-
 $_lang['campaigner.queue.error.notfound'] = 'Queue item was not found';
-
+$_lang['campaigner.queue.remove_tests'] = 'Tests entfernen';
+$_lang['campaigner.queue.remove_tests_text'] = 'Wollen Sie wirklich alle Tests aus der Warteschlange entfernen?';
 $_lang['campaigner.queue.remove.title'] = 'Element wirklich entfernen?';
 $_lang['campaigner.queue.remove.confirm'] = 'Wollen sie dieses Element wirklich entferenen?';
 $_lang['campaigner.queue.remove.unsend'] = 'Wollen sie dieses Element wirklich entfernen? Der Newsletter wurde noch nicht an den Empf&auml;nger versandt. Wenn sie dieses Element jetzt l&ouml;schen wird das auch nicht geschehen.';
+$_lang['campaigner.queue.process_queue'] = 'Warteschlange abarbeiten';
+$_lang['campaigner.queue.process_queue_text'] = 'Wenn Sie best&auml;tigen werden alle Elemente in der Warteschlange abgearbeitet, sprich versendet.';
 
 $_lang['campaigner.autonewsletter'] = 'Auto-Newsletter';
 $_lang['campaigner.autonewsletter.info'] = 'Auto-Newsletter werden automatisch an vorbestimmten Zeiten versendet';
@@ -256,6 +282,26 @@ $_lang['campaigner.bounce.soft.resendConfirm'] = '';
 $_lang['campaigner.hard.reactivate.description'] = '';
 $_lang['campaigner.hard.reactivate.groupDescription'] = 'Gruppenbeschreibung';
 $_lang['campaigner.bounce.soft.detail.info'] = 'Details';
+
+// Statistics
+$_lang['campaigner.statistics'] = 'Statistiken';
+$_lang['campaigner.statistics.info'] = 'Detailierte Informationen zu den versendeten Newslettern<br/><br/>UNDER CONSTRUCTION';
+$_lang['campaigner.statistics.hits'] = 'Klicks';
+$_lang['campaigner.statistics.bounced'] = 'Bounces';
+$_lang['campaigner.statistics.sent'] = 'Versendet';
+$_lang['campaigner.statistics.show_details'] = 'Zeige Details';
+$_lang['campaigner.statistics_details'] = 'Statistik-Details';
+$_lang['campaigner.statistics.link'] = 'Link';
+$_lang['campaigner.statistics.hit_date'] = 'Datum';
+$_lang['campaigner.statistics.bounces'] = 'Bounces';
+$_lang['campaigner.statistics.unsubcribers'] = 'Abgemeldet';
+
+$_lang['campaigner.statistics.open'] = 'Ge&ouml;ffnet';
+$_lang['campaigner.statistics.opened'] = 'Ge&ouml;ffnet';
+$_lang['campaigner.statistics.open_info'] = 'Von welchen Empf&auml;ngern wurde der Newsletter ge&ouml;ffnet';
+$_lang['campaigner.statistics.hits_info'] = 'Daten &uuml;ber die Klicks eines Newsletter aufgeschl&uuml;sselt nach Link';
+$_lang['campaigner.statistics.bounces_info'] = '';
+$_lang['campaigner.statistics.unsubcribers_info'] = 'Abmeldungen, die durch diesen Newsletter aufgerufen wurden / durchgef&uuml;hrt wurden';
 // $_lang[''] = '';
 // $_lang[''] = '';
 // $_lang[''] = '';

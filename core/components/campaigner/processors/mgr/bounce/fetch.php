@@ -1,8 +1,21 @@
 <?php
+/**
+ * Fetches bounce messages
+ *
+ * Messages which are returned to value of system setting 'RETURN PATH'
+ * will be fetched and diagnosed. If meeting bounce message items will
+ * be created. Furthermore there will be a console window popping up with
+ * some information regarding the created items
+ *
+ * @var string
+ * @todo  Look into Bounce parsing
+ */
 
+// Watch out for this header
 $CUSTOM_HEADER = 'X-Campaigner-Mail-ID';
 $start_index = isset($_GET['start_index']) ? $_GET['start_index'] : 1;
 
+// Include bounce class
 require_once($modx->getOption('core_path') . 'components/campaigner/cron/bounce_driver.class.php');
 $bouncehandler = new Bouncehandler();
 
@@ -39,6 +52,7 @@ for($i=$start_index; $i<=imap_num_msg($inbox); $i++) {
 	$header_info = imap_headerinfo($inbox,$i);
 	$body = imap_body($inbox,$i);
 
+	// Check for bounce message
 	$tmp_array = $bouncehandler->parse_email($header.$body);
 	$tmp_array2 = $tmp_array[0];
 	$tmp_array2['subject'] = $header_info->subject;
