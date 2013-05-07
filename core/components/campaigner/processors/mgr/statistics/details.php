@@ -1,14 +1,22 @@
 <?php
-
-$id = $_POST['id'];
-$search = $modx->getOption('search',$_REQUEST,0);
+// var_dump($_POST);
+// var_dump($_REQUEST);
+$stats_id = $_POST['statistics_id'];
+$search = $modx->getOption('search',$_REQUEST, 0);
+$open = $modx->getOption('open', $_REQUEST, 0);
 
 $c = $modx->newQuery('SubscriberHits');
 
 $c->leftJoin('NewsletterLink', 'NewsletterLink', 'NewsletterLink.id = SubscriberHits.link');
 $c->leftJoin('Subscriber', 'Subscriber', 'SubscriberHits.subscriber = Subscriber.id');
 
-$c->where(array('newsletter' => 1));
+$c->where(array('newsletter' => $stats_id));
+
+if($open) {
+	$c->where(array('SubscriberHits.hit_type' => 'image' ));
+} else {
+	$c->where(array('SubscriberHits.hit_type:!=' => 'image' ));
+}
 if($search)
 	$c->where(array('Subscriber.email:LIKE' => '%'.$search.'%' ));
 

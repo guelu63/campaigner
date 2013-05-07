@@ -31,7 +31,7 @@ $xpdo_meta_map['Newsletter']= array (
       'precision' => '1',
       'attributes' => 'unsigned',
       'phptype' => 'integer',
-      'null' => false,
+      'null' => true,
     ),
     'sent_date' => 
     array (
@@ -47,7 +47,7 @@ $xpdo_meta_map['Newsletter']= array (
       'precision' => '8',
       'attributes' => 'unsigned',
       'phptype' => 'integer',
-      'null' => false,
+      'null' => true,
     ),
     'sent' => 
     array (
@@ -55,7 +55,7 @@ $xpdo_meta_map['Newsletter']= array (
       'precision' => '8',
       'attributes' => 'unsigned',
       'phptype' => 'integer',
-      'null' => false,
+      'null' => true,
     ),
     'bounced' => 
     array (
@@ -63,7 +63,7 @@ $xpdo_meta_map['Newsletter']= array (
       'precision' => '8',
       'attributes' => 'unsigned',
       'phptype' => 'integer',
-      'null' => false,
+      'null' => true,
     ),
     'sender' => 
     array (

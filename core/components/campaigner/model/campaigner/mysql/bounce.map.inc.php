@@ -32,7 +32,7 @@ $xpdo_meta_map['Bounce']= array (
       'dbtype' => 'varchar',
       'precision' => '255',
       'phptype' => 'string',
-      'null' => false,
+      'null' => true,
     ),
     'date' => 
     array (

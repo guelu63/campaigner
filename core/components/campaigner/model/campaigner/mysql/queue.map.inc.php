@@ -39,8 +39,8 @@ $xpdo_meta_map['Queue']= array (
     ),
     'sent' => 
     array (
-      'dbtype' => 'tinyint',
-      'precision' => '1',
+      'dbtype' => 'int',
+      'precision' => '11',
       'attributes' => 'unsigned',
       'phptype' => 'integer',
       'null' => true,

@@ -13,6 +13,7 @@ HAVE
 * Flexibility through MODx system settings
 * Allows to create newsletters which will be sent automatically
 * Simple export for subscribers (XML, CSV)
+* Bounce-Handling
 * Statistics
   * Track clicks per subscriber and link
   * Track opening

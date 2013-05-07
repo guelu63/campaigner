@@ -112,6 +112,7 @@
 		<field key="subscriber" dbtype="mediumint" precision="8" attributes="unsigned" phptype="integer" null="false" />
 		<field key="newsletter" dbtype="smallint" precision="5" attributes="unsigned" phptype="integer" null="false" />
 		<field key="state" dbtype="tinyint" precision="1" attributes="unsigned" phptype="integer" null="false" />
+		<field key="sent" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" />
 		<field key="key" dbtype="varchar" precision="255" phptype="string" null="true" />
 		<field key="priority" dbtype="tinyint" precision="1" attributes="unsigned" phptype="integer" null="true" />
 		

@@ -20,7 +20,7 @@ Campaigner.grid.Soft = function(config) {
         ,autosave: false
         ,remoteSort: true
         ,primaryKey: 'id'
-	    ,sm: this.sm
+        ,sm: this.sm
         ,columns: [this.sm,{
             header: _('campaigner.subscriber.id')
             ,dataIndex: 'subscriber'
@@ -37,7 +37,7 @@ Campaigner.grid.Soft = function(config) {
             header: _('campaigner.subscriber.active')
             ,dataIndex: 'active'
             //,width: 10
-	    ,renderer: this._renderActive
+            ,renderer: this._renderActive
         },{
             header: _('campaigner.bounce.count')
             ,dataIndex: 'count'
@@ -48,17 +48,17 @@ Campaigner.grid.Soft = function(config) {
             //,width: 10
         }],
         tbar : [{
-	        xtype: 'button'
+            xtype: 'button'
                 ,text: _('campaigner.bounce.soft.deleteMarkedSubscribers')
                 ,handler: this.deleteSubscriber
             },{
                 xtype : "button"
                 ,text : _( "campaigner.bounce.soft.deactivateMarkedSubscribers" )
-                ,handler: this.deactivateSubscriber            
+                ,handler: this.deactivateSubscriber
             },{
                 xtype : "button"
                 ,text : _( "campaigner.bounce.soft.activateMarkedSubscribers" )
-                ,handler: this.activateSubscriber            
+                ,handler: this.activateSubscriber
             },{
                 xtype: 'button'
                 ,text: _('campaigner.bounce.fetch')
@@ -66,11 +66,10 @@ Campaigner.grid.Soft = function(config) {
             }
         ]
     });
-    Campaigner.grid.Soft.superclass.constructor.call(this,config)
+    Campaigner.grid.Soft.superclass.constructor.call(this,config);
 };
 Ext.extend(Campaigner.grid.Soft,MODx.grid.Grid,{
     fetchBounces: function() {
-
         if (this.console == null || this.console == undefined) {
             this.console = MODx.load({
                xtype: 'modx-console'
@@ -100,12 +99,12 @@ Ext.extend(Campaigner.grid.Soft,MODx.grid.Grid,{
                     this.console.fireEvent('complete');
                 }, scope:this}
             }
-        })
+        });
     }
     ,showDetails: function(e) {
 	softDetailWindow = MODx.load({
-	    xtype: 'campaigner-window-softDetail'
-	    ,record: this.menu.record
+        xtype: 'campaigner-window-softDetail'
+        ,record: this.menu.record
             ,listeners: {
                 'success': {fn:this.refresh,scope:this}
             }
@@ -114,70 +113,64 @@ Ext.extend(Campaigner.grid.Soft,MODx.grid.Grid,{
         softDetailWindow.show(e.target);
     }
     ,_renderActive: function(value, p, rec) {
-	if(value == 1) {
-	    return '<img src="'+ Campaigner.config.base_url +'images/mgr/yes.png" class="small" alt="" />';
-	}
-	return '<img src="'+ Campaigner.config.base_url +'images/mgr/no.png" class="small" alt="" />';
+        if(value == 1) {
+            return '<img src="'+ Campaigner.config.base_url +'images/mgr/yes.png" class="small" alt="" />';
+        }
+        return '<img src="'+ Campaigner.config.base_url +'images/mgr/no.png" class="small" alt="" />';
     }
     ,deleteSubscriber: function() {
-	var cs = this.getSelectedAsList();
-        
-        if (cs === false) { return false };
-        
-	MODx.msg.confirm({
-            title: _('campaigner.bounce.soft.removeTitle')
-            ,text: _('campaigner.bounce.soft.removeConfirm')
-            ,url: Campaigner.config.connector_url
-            ,params: {
-                action: 'mgr/bounce/deleteSubscriber'
-		,markedSubscribers: cs
-            }
-            ,listeners: {
-                'success': {fn:this.refresh,scope:this}
-            }
-        });
-	return true;
+        var cs = this.getSelectedAsList();
+        if (cs === false) {return false;}
+        MODx.msg.confirm({
+                title: _('campaigner.bounce.soft.removeTitle')
+                ,text: _('campaigner.bounce.soft.removeConfirm')
+                ,url: Campaigner.config.connector_url
+                ,params: {
+                    action: 'mgr/bounce/deleteSubscriber'
+                    ,markedSubscribers: cs
+                }
+                ,listeners: {
+                    'success': {fn:this.refresh,scope:this}
+                }
+            });
+        return true;
     }
     ,deactivateSubscriber: function() {
-	var cs = this.getSelectedAsList();
-        
-        if (cs === false) { return false };
-        
-	MODx.msg.confirm({
+        var cs = this.getSelectedAsList();
+        if (cs === false) {return false;}
+        MODx.msg.confirm({
             title: _('campaigner.bounce.soft.deactivateTitle')
             ,text: _('campaigner.bounce.soft.deactivateConfirm')
             ,url: Campaigner.config.connector_url
             ,params: {
                 action: 'mgr/bounce/deactivateSubscriber'
-		,markedSubscribers: cs
+                ,markedSubscribers: cs
             }
             ,listeners: {
                 'success': {fn:this.refresh,scope:this}
             }
         });
-	return true;
+        return true;
     }
     ,activateSubscriber: function() {
-	var cs = this.getSelectedAsList();
-        
-        if (cs === false) { return false };
-        
-	MODx.msg.confirm({
+        var cs = this.getSelectedAsList();
+        if (cs === false) {return false;}
+        MODx.msg.confirm({
             title: _('campaigner.bounce.soft.activateTitle')
             ,text: _('campaigner.bounce.soft.activateConfirm')
             ,url: Campaigner.config.connector_url
             ,params: {
                 action: 'mgr/bounce/activateSubscriber'
-		,markedSubscribers: cs
+                ,markedSubscribers: cs
             }
             ,listeners: {
                 'success': {fn:this.refresh,scope:this}
             }
         });
-	return true;
+        return true;
     }
     ,getMenu: function() {
-	var m = [];
+        var m = [];
 	if (this.getSelectionModel().getCount() == 1) {
             var rs = this.getSelectionModel().getSelections();
 	    m.push({

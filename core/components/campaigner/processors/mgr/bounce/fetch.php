@@ -11,6 +11,19 @@
  * @todo  Look into Bounce parsing
  */
 
+// // USE MODx external
+// require_once dirname(__FILE__) . '../../../../../../../config.core.php';
+// require_once MODX_CORE_PATH.'config/'.MODX_CONFIG_KEY.'.inc.php';
+
+// include_once (MODX_CORE_PATH . "model/modx/modx.class.php");
+
+// $modx= new modX();
+// $modx->initialize('web');
+
+// // get the model
+// $campaigner = $modx->getService('campaigner', 'Campaigner', $modx->getOption('core_path'). 'components/campaigner/model/campaigner/');
+// if (!($campaigner instanceof Campaigner)) return;
+
 // Watch out for this header
 $CUSTOM_HEADER = 'X-Campaigner-Mail-ID';
 $start_index = isset($_GET['start_index']) ? $_GET['start_index'] : 1;
@@ -57,7 +70,13 @@ for($i=$start_index; $i<=imap_num_msg($inbox); $i++) {
 	$tmp_array2 = $tmp_array[0];
 	$tmp_array2['subject'] = $header_info->subject;
 	$tmp_array2['sent_date'] = $header_info->udate;
-	$tmp_array2['queue_key'] = getCampaignerID($body, $CUSTOM_HEADER);
+
+	// Grab the queue key set as a X-HEADER variable
+	$queue_key = getCampaignerID($body, $CUSTOM_HEADER);
+	// If false => go to next message
+	if(!$queue_key)
+		continue;
+	$tmp_array2['queue_key'] = $queue_key;
 
 	//Wenn die BounceHandler Klasse beim RFC Code versagt:
 	if(empty($tmp_array2['status'])) {
@@ -76,7 +95,9 @@ for($i=$start_index; $i<=imap_num_msg($inbox); $i++) {
 	array_push($bounce_messages, $tmp_array);
 }
 
-	// $modx->log(MODX_LOG_LEVEL_INFO,'COMPLETED');
+// var_dump($bounce_messages);
+// return $modx->error->success('');
+// $modx->log(MODX_LOG_LEVEL_INFO,'COMPLETED');
 // return $modx->error->success('');
 
 foreach($bounce_messages as $sub_array_over) {
@@ -88,12 +109,12 @@ foreach($bounce_messages as $sub_array_over) {
 	$was_bounce = false;
 	
 	// Fetch queue object
-	$queue_item = $modx->getObject('Queue', array(
-		'key' => trim('eccbc87e4b5ce2fe28308fd9f2a7baf3'))
-	);
 	// $queue_item = $modx->getObject('Queue', array(
-	// 	'key' => trim($sub_array['queue_key']))
+	// 	'key' => trim('eccbc87e4b5ce2fe28308fd9f2a7baf3'))
 	// );
+	$queue_item = $modx->getObject('Queue', array(
+		'key' => trim($sub_array['queue_key']))
+	);
 
 	if($queue_item) {
 		// Get subscriber
@@ -103,6 +124,7 @@ foreach($bounce_messages as $sub_array_over) {
 				'id' => trim($queue_item->get('subscriber'))
 			)
 		);
+
 		//Schauen ob dieser Queue-Eintrag ein Resend war
 		//Resend-Check Objekt holen
 		$resend_check = $modx->getObject(
@@ -116,7 +138,7 @@ foreach($bounce_messages as $sub_array_over) {
 		unset($resend_check);
 		// echo "<li>Queue-Element nicht gefunden!</li>";
 	}
-	
+
 	switch($sub_array['action']){
 		case 'failed': // Hard-Bounce
 			$sub_array['type'] = 'h';
@@ -145,7 +167,7 @@ foreach($bounce_messages as $sub_array_over) {
 					'recieved' => $sub_array['sent_date']
 		    	)
 		    );
-		    // if($nb->save())
+		    if($nb->save())
 		    	$message[$sub_array['message_nr']]['success'] = true;
 			
 			//Wenn das ein Resend war
@@ -160,8 +182,21 @@ foreach($bounce_messages as $sub_array_over) {
 			$sub_array['type'] = 's';
 			
 			// Subscriber exists => create a bounce
-			if($subscriber)
-				insertBounce($sub_array, $queue_item);
+			if($subscriber) {
+				$nb = $modx->newObject('Bounces');
+		    	$nb->fromArray(
+		    		array(
+				        'newsletter' => $queue_item->get('newsletter'),
+				        'subscriber' => $queue_item->get('subscriber'),
+				        'reason' => $sub_array['error_msg'],
+				        'type' => $sub_array['type'],
+				        'code' => $sub_array['status'],
+						'recieved' => $sub_array['sent_date']
+		    		)
+		    	);
+		    	if($nb->save())
+		    		$message[$sub_array['message_nr']]['success'] = true;
+		    }
 			
 			// Was a resend => save as resend
 			if($resend_check) {
@@ -206,6 +241,8 @@ return $modx->error->success('');
 imap_close($inbox);
 
 function getCampaignerID($body, $custom_header) {
+	if(strpos($body, $custom_header) === FALSE)
+		return false;
     //Zuerst finden, wo der Header im Body steht
     $custom_header_start = strpos($body,$custom_header);
     //Dann herausfinden wo der Key selbst steht. Normalerweise hat das ganze die Form >Header-Name: Key<

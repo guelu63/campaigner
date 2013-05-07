@@ -45,9 +45,9 @@ $c->leftJoin('SubscriberHits', 'SubscriberHits', '`Newsletter`.`id` = `Subscribe
 $c->select(array(
     'newsletter'	=> $modx->getSelectColumns('Newsletter', 'Newsletter', '', array('id', 'docid', 'state', 'sent_date', 'total', 'sent', 'bounced')),
     'pagetitle'		=> 'Document.pagetitle',
-    'hits'			=> 'SUM(SubscriberHits.view_total)',
+    'hits'			=> 'SUM(CASE WHEN SubscriberHits.hit_type != \'image\' THEN view_total ELSE 0 END)',
     'opened'		=> 'SUM(CASE WHEN SubscriberHits.hit_type = \'image\' THEN view_total ELSE 0 END)',
-    'subscriber'	=> 'COUNT(SubscriberHits.subscriber)',
+    'subscriber'	=> 'COUNT(DISTINCT(SubscriberHits.subscriber))',
     )
 );
 $c->groupby('SubscriberHits.newsletter');

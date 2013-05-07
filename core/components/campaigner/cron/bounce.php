@@ -107,7 +107,7 @@ if($inbox) {
 			if($queue_item) {
 				//Subscriber Objekt holen
 				$subscriber = $modx->getObject('Subscriber', array(
-				'id' => trim($queue_item->get('subscriber')))
+					'id' => trim($queue_item->get('subscriber')))
 				);
 				//Schauen ob dieser Queue-Eintrag ein Resend war
 				//Resend-Check Objekt holen

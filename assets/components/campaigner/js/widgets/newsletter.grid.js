@@ -4,8 +4,19 @@ Campaigner.grid.Newsletter = function(config) {
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url
         ,baseParams: { action: 'mgr/newsletter/getList' }
-        ,fields: ['id', 'docid', 'state', 'sent_date', 'total', 'sent', 'bounced', 'sender', 'sender_email', 'subject', 'date', 'groups', 'priority']
+        ,fields: ['id', 'docid', 'state', 'sent_date', 'auto', 'nl_count', 'total', 'sent', 'bounced', 'sender', 'sender_email', 'subject', 'date', 'groups', 'priority']
         ,paging: true
+        ,grouping: true
+        ,groupBy: 'auto'
+        ,view: new Ext.grid.GroupingView({
+            forceFit:true,
+            showGroupName:true,
+            groupTextTpl: '{[values.rs[0].data["auto"] ? "Auto-Newsletter: " : ""]}{[ values.rs[0].data["subject"] ]}'
+        })
+        // ,groupRenderer: function(value, p, rec) {
+        //     // console.log(rec);
+        //     return rec.data.subject + ' (' + rec.data.auto + ')';
+        // }
         ,autosave: false
         ,remoteSort: true
         ,primaryKey: 'id'
@@ -15,6 +26,12 @@ Campaigner.grid.Newsletter = function(config) {
             ,sortable: true
             ,width: 40
             ,renderer: this._renderNewsletter
+        },{
+            header: _('campaigner.newsletter.auto')
+            ,dataIndex: 'auto'
+            ,hidden: true
+            // ,sortable: true
+            // ,width: 20
         },{
             header: _('campaigner.newsletter.sender')
             ,dataIndex: 'sender'
@@ -266,8 +283,11 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
         this.getBottomToolbar().changePage(1);
         this.refresh();
     }
+    ,_renderGrouping: function(value, p, rec) {
+        return rec.data.autotitle + ' (' + rec.data.auto + ')';
+    }
     ,_renderNewsletter: function(value, p, rec) {
-	return '<a href="?a=30&id='+ rec.data.docid +'">'+ value +'</a>';
+        return '<a href="?a=30&id='+ rec.data.docid +'">'+ value +'</a>';
     }
     ,_renderSender: function(value, p, rec) {
         if(!value && !rec.data.sender_email) {

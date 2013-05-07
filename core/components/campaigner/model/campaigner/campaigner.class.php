@@ -349,7 +349,8 @@ class Campaigner
                 'bounced'      => 0,
                 'sender'       => $newsletter->get('sender'),
                 'sender_email' => $newsletter->get('sender_email'),
-                'auto'	       => 1,
+                'auto'         => $newsletter->get('id'),
+                //'auto'	       => 1,
                 'priority'     => 5
                 ));
             $newNl->save();
@@ -508,82 +509,65 @@ class Campaigner
      * @access public
      */
     public function processQueue()
-    {
-      $batch = $this->modx->getOption('campaigner.batchsize');
-      $this->modx->getParser();
-
-		//$fileHandler=fopen("/var/www/modx/buli/v1.1/core/components/campaigner/send_log.txt",a);
-		//fwrite($fileHandler,"Start ProcessQueue [".date('d.m.Y H:i:s',time())."]:\n");
-		//fwrite($fileHandler,"Batch Size [".$batch."]:\n");
+    { 
+        $this->modx->getParser();
 
         // get queue items for the current batch
-      $c = $this->modx->newQuery('Queue');
-      $c->limit($batch);
+        $c = $this->modx->newQuery('Queue');
+        $c->limit($this->modx->getOption('campaigner.batchsize'));
 
-		//Nimm alle Elemente aus der Queue die noch zu senden sind (0) oder ein Resend sind (8)
-      $c->where('`Queue`.`state`=0 OR `Queue`.`state`=8');
+        //Nimm alle Elemente aus der Queue die noch zu senden sind (0) oder ein Resend sind (8)
+        $c->where('`Queue`.`state`=0 OR `Queue`.`state`=8');
 
-		//$c->where('`Queue`.`state` = 0');
-      $c->leftJoin('Subscriber');
-      $c->select('`Queue`.*, `Queue`.`key` AS queue_key, `Subscriber`.`firstname`, `Subscriber`.`lastname`, `Subscriber`.`email`, `Subscriber`.`text`, `Subscriber`.`key`');
-      $c->sortby('`Queue`.`priority`');
-		//$c->prepare();
-		//$this->modx->log($this->modx->LOG_LEVEL_ERROR, "SQL PROCESS QUEUE QUERY --> " . $c->toSql());
+        //$c->where('`Queue`.`state` = 0');
+        $c->leftJoin('Subscriber');
+        $c->select('`Queue`.*, `Queue`.`key` AS queue_key, `Subscriber`.`firstname`, `Subscriber`.`lastname`, `Subscriber`.`email`, `Subscriber`.`text`, `Subscriber`.`key`');
+        $c->sortby('`Queue`.`priority`');
+        //$c->prepare();
+        //$this->modx->log($this->modx->LOG_LEVEL_ERROR, "SQL PROCESS QUEUE QUERY --> " . $c->toSql());
 
-      $queue = $this->modx->getCollection('Queue', $c);
+        $queue = $this->modx->getCollection('Queue', $c);
 
-      $ids = array();
-      foreach($queue as $item) {
+        $ids = array();
+        foreach($queue as $item) {
           echo $item->get('id') . ' - ' . $item->get('email') . $item->get('state') . "\n";
           $ids[] = $item->get('id');
-      }
-
-      $this->modx->query('UPDATE `camp_queue` SET `state` = 3 WHERE `id` IN('. implode(',', $ids) .')');	
-		//fwrite($fileHandler,'camp queue got updated for the current batch' . "\n");
-
-      $sumTime = 0;
-      $cnt = 0;
-
-        // and process each one of them
-      $newsletter = null;
-      foreach($queue as $item) {
-        //Testing - only sends to the 2 first recipients
-        // if($cnt > 1) break;
-			// Start time
-        $mtime = microtime(); 
-        $mtime = explode(" ",$mtime); 
-        $mtime = $mtime[1] + $mtime[0]; 
-        $starttime = $mtime;
-
-        $start_sec = (float)$mtime;
-
-			// don't fetch allready loaded newsletters
-        if(!$newsletter || $newsletter->get('id') !== $item->get('newsletter')) {
-            $c = $this->modx->newQuery('Newsletter');
-            $c->innerJoin('modDocument', 'modDocument', '`modDocument`.`id` = `Newsletter`.`docid`');
-            $c->where('`Newsletter`.`id` = '. $item->get('newsletter'));
-            $c->select('`Newsletter`.*, `modDocument`.`content`, `modDocument`.`pagetitle`, `modDocument`.`publishedon`');
-				//$c->prepare(); var_dump($c->toSql()); die;
-            $newsletter = $this->modx->getObject('Newsletter', $c);
-            $mailer = $this->getMailer(array(
-               'sender' => $newsletter->get('sender'),
-               'sender_email' => $newsletter->get('sender_email')
-               ));
-            $mailer->set(modMail::MAIL_SUBJECT, $newsletter->get('pagetitle'));
-            $tags = $this->getNewsletterTags($newsletter);
         }
 
-			//Folgende Variante holt sich den Subscriber mit getObject und legt keinen neuen mit newObject an
-			//Was im Endeffekt die bessere Loesung ist ist nicht klar
-			/*$output = "<";
-			foreach($item->toArray() as $key=>$value) {
-			$output.="[".$key."=>".$value."]\n";
-			}
-			fwrite($fileHandler,"[".date('d.m.Y H:i:s',time())."] ".$output);
-			$item_array = $item->toArray();
-			$subscriber = $this->modx->getObject('Subscriber', array(
-			'id' => $item_array['subscriber'])
-);*/
+        $this->modx->query('UPDATE `camp_queue` SET `state` = 3 WHERE `id` IN('. implode(',', $ids) .')');	
+
+        $sumTime = 0;
+        $cnt = 0;
+
+        // and process each one of them
+        $newsletter = null;
+        foreach($queue as $item) {
+            //Testing - only sends to the 2 first recipients
+            // if($cnt > 1) break;
+            	// Start time
+            $mtime = microtime(); 
+            $mtime = explode(" ",$mtime); 
+            $mtime = $mtime[1] + $mtime[0]; 
+            $starttime = $mtime;
+
+            $start_sec = (float)$mtime;
+
+    			// don't fetch allready loaded newsletters
+            if(!$newsletter || $newsletter->get('id') !== $item->get('newsletter')) {
+                $c = $this->modx->newQuery('Newsletter');
+                $c->innerJoin('modDocument', 'modDocument', '`modDocument`.`id` = `Newsletter`.`docid`');
+                $c->where('`Newsletter`.`id` = '. $item->get('newsletter'));
+                $c->select('`Newsletter`.*, `modDocument`.`content`, `modDocument`.`pagetitle`, `modDocument`.`publishedon`');
+    				//$c->prepare(); var_dump($c->toSql()); die;
+                $newsletter = $this->modx->getObject('Newsletter', $c);
+                $mailer = $this->getMailer(array(
+                   'sender' => $newsletter->get('sender'),
+                   'sender_email' => $newsletter->get('sender_email')
+                   ));
+                $mailer->set(modMail::MAIL_SUBJECT, $newsletter->get('pagetitle'));
+                $tags = $this->getNewsletterTags($newsletter);
+            }
+
 			// compose message
             $subscriber = $this->modx->newObject('Subscriber', $item->toArray());
 
@@ -630,7 +614,6 @@ class Campaigner
 			}
 			
 			$item_array = $item->toArray();
-			//fwrite($fileHandler,"SEND KEY FOR QUEUE ELEMENT ".$item->get('id')." [".$item->get('queue_key')."]:\n");
 			$mailer->mailer->AddCustomHeader('X-Campaigner-Mail-ID:'. $item->get('queue_key'));
 			
 			/**
@@ -654,10 +637,9 @@ class Campaigner
 				//If the mail was not sent, set state to 0.
 				//$item->set('state', 0);
 				$this->modx->log(modX::LOG_LEVEL_ERROR,'An error occurred while trying to send the an email to '.$subscriber->get('email') .' ### '. $mailer->mailer->ErrorInfo);
-				//fwrite($fileHandler,"[P: ".$item->get('priority')."][".date('d.m.Y H:i:s',time())."] **FAIL** send Email to [".$subscriber->get('email')."] done [".$totaltime." s]:\nGRUND: ". $mailer->mailer->ErrorInfo);
 			} else {
 				//End time
-				$mtime = microtime(); 
+				$mtime = microtime();
 				$mtime = explode(" ",$mtime); 
 				$mtime = $mtime[1] + $mtime[0]; 
 				$endtime = $mtime; 
@@ -675,14 +657,8 @@ class Campaigner
 					}
 				} else {
 					$item->set('state', 1);
-				}		
-
-				//fwrite($fileHandler,'state of ' . $subscriber->get('email') . ' was set to 1 (sent)' . "\n");    
+				}
 				$item->set('sent', time());
-				//fwrite($fileHandler,'time was set to ' . time() . "\n");
-
-				//$this->modx->log($this->modx->LOG_LEVEL_ERROR,'The E-Mail sent to '.$subscriber->get('email').' took ' . $totaltime . ' secs');
-				//fwrite($fileHandler,"[P: ".$item->get('priority')."][".date('d.m.Y H:i:s',time())."] send Email to [".$subscriber->get('email')."] done [".$totaltime." s]:\n");
 			}
 			
 			// partial reset
@@ -696,11 +672,11 @@ class Campaigner
         }
 
         if($cnt > 0) {
-			/**
-			* Feed the manager log
-			*/
-           $l = $this->modx->newObject('modManagerLog');
-           $data = array(
+            /**
+            * Feed the manager log
+            */
+            $l = $this->modx->newObject('modManagerLog');
+            $data = array(
               'user'      => 41,
               'occurred'  => date('Y-m-d H:i:s'),
               'action'    => 'sent_newsletter_items (' . $cnt . ')',
@@ -708,10 +684,10 @@ class Campaigner
               'item'      => $newsletter->get('id')
               );
 
-           $l->fromArray($data);
-           $l->save();
-       }
-	   //fclose($fileHandler);
+            $l->fromArray($data);
+            $l->save();
+        }
+        //fclose($fileHandler);
        return;
     }
 

@@ -4,7 +4,7 @@ Campaigner.grid.Statistics = function(config) {
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url,
         baseParams: { action: 'mgr/statistics/getList', showProcessed: 0 },
-        fields: ['id', 'pagetitle', 'subscriber', 'newsletter', 'state', 'date', 'hits', 'sent', 'bounced', 'total', 'priority', 'opened'],
+        fields: ['id', 'pagetitle', 'subscriber', 'newsletter', 'state', 'date', 'hits', 'sent', 'sent_date', 'bounced', 'total', 'priority', 'opened'],
         paging: true,
         autosave: false,
         remoteSort: true,
@@ -17,31 +17,37 @@ Campaigner.grid.Statistics = function(config) {
             ,width: 25
             ,renderer: this._renderNewsletter
         },{
+            header: _('campaigner.newsletter.sent_date')
+            ,dataIndex: 'sent_date'
+            ,sortable: true
+            ,width: 15
+            // ,renderer: this._renderSubscriber
+        },{
             header: _('campaigner.newsletter.total')
             ,dataIndex: 'total'
             ,sortable: true
-            ,width: 10
+            ,width: 8
             ,renderer: this._renderSubscriber
         },{
-            header: _('campaigner.statistics.bounced')
-            ,dataIndex: 'state'
+            header: _('campaigner.statistics.opened')
+            ,dataIndex: 'opened'
             ,sortable: true
-            ,width: 10
-            ,renderer: this._renderState
+            ,width: 8
         },{
             header: _('campaigner.statistics.hits')
             ,dataIndex: 'hits'
             ,sortable: true
-            ,width: 10
+            ,width: 8
             ,renderer: this._renderHits
+        },{
+            header: _('campaigner.statistics.bounced')
+            ,dataIndex: 'state'
+            ,sortable: true
+            ,width: 5
+            ,renderer: this._renderState
         },{
             header: _('campaigner.statistics.sent')
             ,dataIndex: 'sent'
-            ,sortable: true
-            ,width: 10
-        },{
-            header: _('campaigner.statistics.opened')
-            ,dataIndex: 'opened'
             ,sortable: true
             ,width: 10
         }]
@@ -107,7 +113,8 @@ Ext.extend(Campaigner.grid.Statistics,MODx.grid.Grid,{
             this.addContextMenuItem(m);
         }
     }
-    ,showDetails: function(e) {
+
+    ,showDetails: function(btn,e) {
         if (!this.updateStatisticsWindow) {
             this.updateStatisticsWindow = MODx.load({
                 xtype: 'campaigner-window-statistics-details'
@@ -117,9 +124,30 @@ Ext.extend(Campaigner.grid.Statistics,MODx.grid.Grid,{
                 }
             });
         }
+
         this.updateStatisticsWindow.setValues(this.menu.record);
         this.updateStatisticsWindow.show(e.target);
+        var grid_open = Ext.getCmp('campaigner-grid-statistics-details-open');
+        grid_open.store.load({params:{statistics_id: this.menu.record.id || 0}});
+        var grid_hits = Ext.getCmp('campaigner-grid-statistics-details-hits');
+        grid_hits.store.load({params:{statistics_id: this.menu.record.id || 0}});
+        // var grid_open = Ext.getCmp('campaigner-grid-statistics-details-open');
+        // grid_open.store.load({params:{statistics_id: this.menu.record.id || 0}});
     }
+
+    // ,showDetails: function(e) {
+    //     if (!this.updateStatisticsWindow) {
+    //         this.updateStatisticsWindow = MODx.load({
+    //             xtype: 'campaigner-window-statistics-details'
+    //             ,record: this.menu.record
+    //             ,listeners: {
+    //                 'success': {fn:this.refresh,scope:this}
+    //             }
+    //         });
+    //     }
+    //     this.updateStatisticsWindow.setValues(this.menu.record);
+    //     this.updateStatisticsWindow.show(e.target);
+    // }
 
 // ,removeQueue: function(e) {
 // 	var msg;
@@ -160,6 +188,10 @@ Campaigner.window.Statistics = function(config) {
             bodyStyle: 'padding: 10px',
             defaults: { border: false ,autoHeight: true },
             border: false,
+            fields: [{
+                xtype: 'hidden'
+                ,name: 'id'
+            }],
             items: [
             {
                 title: _('campaigner.statistics.open'),
@@ -169,12 +201,12 @@ Campaigner.window.Statistics = function(config) {
                     html: '<p>'+_('campaigner.statistics.open_info')+'</p>',
                     border: false,
                     bodyStyle: 'padding: 10px'
-                // },{
-                //     xtype: 'campaigner-grid-statistics-details-open'
-                //     // ,fieldLabel: _('campaigner.statistics_details')
-                //     ,id: 'campaigner-grid-statistics-details-open'
-                //     ,preventRender: true
-                // }
+                },{
+                    xtype: 'campaigner-grid-statistics-details-open'
+                    // ,fieldLabel: _('campaigner.statistics_details')
+                    ,id: 'campaigner-grid-statistics-details-open'
+                    ,scope: this
+                    ,preventRender: true
                 }]
             },{
                 title: _('campaigner.statistics.hits'),
@@ -188,6 +220,7 @@ Campaigner.window.Statistics = function(config) {
                     xtype: 'campaigner-grid-statistics-details-hits'
                     // ,fieldLabel: _('campaigner.statistics_details')
                     ,id: 'campaigner-grid-statistics-details-hits'
+                    ,scope: this
                     ,preventRender: true
                 }]
             },{
@@ -195,7 +228,7 @@ Campaigner.window.Statistics = function(config) {
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-statistics-details-bounces',
                 items: [{
-                    html: '<p>'+_('campaigner.statistics.bounces_info')+'</p>',
+                    html: '<p>'+_('campaigner.statistics.bounces_info')+'<br/>UNDER CONSTRUCTION</p>',
                     border: false,
                     bodyStyle: 'padding: 10px'
                 }]
@@ -204,7 +237,7 @@ Campaigner.window.Statistics = function(config) {
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-statistics-details-unsubscribers',
                 items: [{
-                    html: '<p>'+_('campaigner.statistics.unsubcribers_info')+'</p>',
+                    html: '<p>'+_('campaigner.statistics.unsubcribers_info')+'<br/>UNDER CONSTRUCTION</p>',
                     border: false,
                     bodyStyle: 'padding: 10px'
                 }]
@@ -222,6 +255,82 @@ Campaigner.window.Statistics = function(config) {
 
 Ext.extend(Campaigner.window.Statistics,MODx.Window);
 Ext.reg('campaigner-window-statistics-details',Campaigner.window.Statistics);
+
+Campaigner.grid.StatisticsDetailsOpen = function(config) {
+    config = config || {};
+    console.log(config);
+    this.sm = new Ext.grid.CheckboxSelectionModel();
+    Ext.applyIf(config,{
+        id: 'campaigner-grid-statistics-details-open'
+        ,url: Campaigner.config.connectorUrl
+        ,baseParams: {
+            action: 'mgr/statistics/details',
+            open: 1
+        }
+        ,viewConfig: {
+            forceFit: true,
+            enableRowBody: true,
+            autoScroll: true
+        }
+        ,primaryKey: 'id'
+        ,sm: this.sm
+        ,fields: ['id','link','email', 'hit_date', 'view_total']
+        ,paging: true
+        ,remoteSort: true
+        ,columns: [{
+            header: _('campaigner.statistics.link')
+            ,dataIndex: 'link'
+            ,sortable: true
+            ,width: 25
+        },{
+            header: _('campaigner.subscriber')
+            ,dataIndex: 'email'
+            ,sortable: true
+            ,width: 25
+        },{
+            header: _('campaigner.statistics.hit_date')
+            ,dataIndex: 'hit_date'
+            ,sortable: true
+            ,width: 15
+        },{
+            header: _('campaigner.statistics.hits')
+            ,dataIndex: 'view_total'
+            ,sortable: true
+            ,width: 10
+        }],
+        tbar : [{
+            xtype: 'textfield'
+            ,name: 'search-details'
+            ,id: 'campaigner-filter-search'
+            ,emptyText: _('search')+'...'
+            ,listeners: {
+                'change': {fn: this.filterDetails, scope: this}
+                ,'render': {fn: function(cmp) {
+                    new Ext.KeyMap(cmp.getEl(), {
+                        key: Ext.EventObject.ENTER
+                        ,fn: function() {
+                            this.fireEvent('change',this.getValue());
+                            this.blur();
+                            return true;}
+                        ,scope: cmp
+                    });
+                },scope:this}
+            }
+        }]
+    });
+    Campaigner.grid.StatisticsDetailsOpen.superclass.constructor.call(this,config);
+};
+Ext.extend(Campaigner.grid.StatisticsDetailsOpen,MODx.grid.Grid, {
+    filterDetails: function(tf,newValue,oldValue) {
+        var nv = newValue;
+        this.getStore().baseParams.search = nv;
+        this.getBottomToolbar().changePage(1);
+        this.refresh();
+        return true;
+    }
+});
+
+Ext.reg('campaigner-grid-statistics-details-open',Campaigner.grid.StatisticsDetailsOpen);
 
 Campaigner.grid.StatisticsDetailsHits = function(config) {
     config = config || {};
