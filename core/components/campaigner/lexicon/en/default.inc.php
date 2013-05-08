@@ -7,6 +7,8 @@
  */
 
 //general
+$_lang['campaigner.grid.no_data'] = 'Keine Daten gefunden';
+
 $_lang['campaigner'] = 'Newsletter';
 $_lang['campaigner.fulltitle'] = 'Newsletter Management';
 $_lang['campaigner.desc'] = 'Verwaltung ihrer Newsletter';
@@ -15,6 +17,7 @@ $_lang['campaigner.all']   = 'Alle';
 $_lang['campaigner.or']    = 'Oder';
 $_lang['campaigner.days']  = 'Tage';
 $_lang['campaigner.weeks'] = 'Wochen';
+$_lang['campaigner.months'] = 'Monate';
 $_lang['campaigner.weekday'] = 'Wochentag';
 $_lang['campaigner.usedefault'] = 'Standard verwenden';
 $_lang['campaigner.print'] = 'Drucken';
@@ -33,6 +36,7 @@ $_lang['campaigner.day.7'] = 'Sunday';
 //newsletter
 $_lang['campaigner.newsletters'] = 'Newsletter';
 $_lang['campaigner.newsletter'] = 'Newsletter';
+$_lang['campaigner.newsletter.id'] = '#';
 $_lang['campaigner.newsletter.info'] = 'Eine komplette Liste der Newsletter die bereits gesendet wurden oder zum senden angesetzt sind.';
 $_lang['campaigner.newsletter.subject'] = 'Titel';
 $_lang['campaigner.newsletter.date'] = 'Datum';
@@ -43,6 +47,7 @@ $_lang['campaigner.newsletter.sent'] = 'Gesendet';
 $_lang['campaigner.newsletter.scheduled'] = 'Angesetzt';
 $_lang['campaigner.newsletter.add'] = 'Neuer Newswletter';
 $_lang['campaigner.newsletter.groups'] = 'Gruppen';
+$_lang['campaigner.newsletter.groups_add'] = 'Gruppen hinzuf&uuml;gen';
 $_lang['campaigner.newsletter.remove'] = 'Newsletter l&ouml;schen';
 $_lang['campaigner.newsletter.saved'] = 'Newsletter gespeichert (angesetzt)';
 $_lang['campaigner.newsletter.state'] = 'Status';
@@ -197,9 +202,13 @@ $_lang['campaigner.queue.waiting'] = 'wartend';
 $_lang['campaigner.queue.show_processed'] = 'Verarbeitete anzeigen';
 $_lang['campaigner.queue.hide_processed'] = 'Verarbeitete verstecken';
 $_lang['campaigner.queue.remove'] = 'Element entfernen';
+$_lang['campaigner.queue.batch_actions'] = 'Stapel-Aktionen';
+$_lang['campaigner.queue.remove_marked'] = 'Markierte entfernen';
+$_lang['campaigner.queue.send_marked'] = 'Markierte senden';
 $_lang['campaigner.queue.removed'] = 'Element wurde entfernt';
 $_lang['campaigner.queue.error.notfound'] = 'Queue item was not found';
 $_lang['campaigner.queue.remove_tests'] = 'Tests entfernen';
+$_lang['campaigner.queue.remove_info'] = 'Wollen Sie wirklich alle markierten Elemente aus der Warteschlange entfernen?';
 $_lang['campaigner.queue.remove_tests_text'] = 'Wollen Sie wirklich alle Tests aus der Warteschlange entfernen?';
 $_lang['campaigner.queue.remove.title'] = 'Element wirklich entfernen?';
 $_lang['campaigner.queue.remove.confirm'] = 'Wollen sie dieses Element wirklich entferenen?';
@@ -239,6 +248,8 @@ $_lang['campaigner.bounce.soft'] = 'Soft';
 $_lang['campaigner.bounce.soft.info'] = 'In dieser Liste sieht man alle Abonnenten, bei denen zumindest ein Softbounce erfasst wurde. Der Grund des Bounces kann in der Spalte "Grund" nachgelesen werden. Wenn bei einem Abonnenten eine hohe Anzahl an Softbounces erreicht wurde, kann man diesen per Rechtsklick löschen, oder mehrere markieren und mit dem Button "Markierte Abonnenten löschen" diese Prozedur auf mehrere Abonnenten anwenden.';
 $_lang['campaigner.bounce.resend'] = 'Resend';
 $_lang['campaigner.bounce.resend.info'] = 'Hier werden alle Aufträge zum erneuten Senden einer Nachricht an einen Abonennten angezeigt. Durch den Status kann man feststellen ob ein erneutes Senden erfolgreich war oder nicht. Das Erneute Senden einer Nachricht ist nur im Falle eines Softbounces möglich (Reiter Soft).';
+$_lang['campaigner.bounce.batch_actions'] = 'Stapel-Aktionen';
+
 
 $_lang['campaigner.bounce.name'] = 'Name';
 $_lang['campaigner.bounce.count'] = 'Anzahl';
@@ -252,6 +263,7 @@ $_lang['campaigner.bounce.newsletter'] = 'Newsletter';
 $_lang['campaigner.bounce.recipient'] = 'Emfp&auml;nger';
 $_lang['campaigner.bounce.time'] = 'Zeit';
 $_lang['campaigner.bounce.state'] = 'Status';
+$_lang['campaigner.bounce.type'] = 'Art';
 
 $_lang['campaigner.bounce.soft.activateMarkedSubscribers'] = 'Markierte aktivieren';
 $_lang['campaigner.bounce.fetch'] = 'Bounces abholen';

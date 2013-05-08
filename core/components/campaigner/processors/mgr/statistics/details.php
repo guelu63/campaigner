@@ -1,6 +1,4 @@
 <?php
-// var_dump($_POST);
-// var_dump($_REQUEST);
 $stats_id = $_POST['statistics_id'];
 $search = $modx->getOption('search',$_REQUEST, 0);
 $open = $modx->getOption('open', $_REQUEST, 0);
@@ -34,7 +32,6 @@ $items = $modx->getCollection('SubscriberHits', $c);
 $list = array();
 foreach ($items as $item) {
     $item = $item->toArray();
-    // $item['sent_date'] = ($item['sent_date']) ? date('d.m.Y H:i:s', $item['sent_date']) : '';
     $list[] = $item;
 }
 return $this->outputArray($list,$count);

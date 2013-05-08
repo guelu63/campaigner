@@ -39,7 +39,7 @@ Campaigner.panel.Main = function(config) {
                     id: 'campaigner-grid-autonewsletter',
                     preventRender: true
                 }]
-            }, {
+            },{
                 title: _('campaigner.groups'),
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-groups',
@@ -52,7 +52,7 @@ Campaigner.panel.Main = function(config) {
                     id: 'campaigner-grid-group',
                     preventRender: true
                 }]
-            }, {
+            },{
                 title: _('campaigner.subscribers'),
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-subscriber',
@@ -65,11 +65,15 @@ Campaigner.panel.Main = function(config) {
                     id: 'campaigner-grid-subscriber',
                     preventRender: true
                 }]
-            },  {
+            },{
                 title: _('campaigner.bounce'),
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-bounce',
                 items: [{
+                    xtype: 'button'
+                    ,text: _('campaigner.bounce.fetch')
+                    ,handler: this.fetchBounces
+                },{
                     xtype: 'modx-tabs',
                     bodyStyle: 'padding: 10px',
                     defaults: { border: false ,autoHeight: true },
@@ -88,33 +92,33 @@ Campaigner.panel.Main = function(config) {
                             preventRender: true
                         }]
                     },{
-                    title: _('campaigner.bounce.soft'),
-                    defaults: { autoHeight: true },
-                    id: 'campaigner-tab-bounce-soft',
-                    items: [{
-                        html: '<p>'+_('campaigner.bounce.soft.info')+'</p>',
-                        border: false,
-                        bodyStyle: 'padding: 10px'
+                        title: _('campaigner.bounce.soft'),
+                        defaults: { autoHeight: true },
+                        id: 'campaigner-tab-bounce-soft',
+                        items: [{
+                            html: '<p>'+_('campaigner.bounce.soft.info')+'</p>',
+                            border: false,
+                            bodyStyle: 'padding: 10px'
                         },{
-                        xtype: 'campaigner-grid-bounce-soft',
-                        id: 'campaigner-grid-bounce-soft',
-                        preventRender: true
-                    }]
+                            xtype: 'campaigner-grid-bounce-soft',
+                            id: 'campaigner-grid-bounce-soft',
+                            preventRender: true
+                        }]
                     },{
-                    title: _('campaigner.bounce.resend'),
-                    defaults: { autoHeight: true },
-                    id: 'campaigner-tab-bounce-resend',
-                    items: [{
-                        html: '<p>'+_('campaigner.bounce.resend.info')+'</p>',
-                        border: false,
-                        bodyStyle: 'padding: 10px'
+                        title: _('campaigner.bounce.resend'),
+                        defaults: { autoHeight: true },
+                        id: 'campaigner-tab-bounce-resend',
+                        items: [{
+                            html: '<p>'+_('campaigner.bounce.resend.info')+'</p>',
+                            border: false,
+                            bodyStyle: 'padding: 10px'
                         },{
-                        xtype: 'campaigner-grid-bounce-resend',
-                        id: 'campaigner-grid-bounce-resend',
-                        preventRender: true
+                            xtype: 'campaigner-grid-bounce-resend',
+                            id: 'campaigner-grid-bounce-resend',
+                            preventRender: true
+                        }]
                     }]
-                    }]
-                    }]
+                }]
             },{
                 title: _('campaigner.queue'),
                 defaults: { autoHeight: true },
@@ -146,5 +150,38 @@ Campaigner.panel.Main = function(config) {
     });
     Campaigner.panel.Main.superclass.constructor.call(this,config);
 };
-Ext.extend(Campaigner.panel.Main,MODx.Panel);
+Ext.extend(Campaigner.panel.Main,MODx.Panel, {
+    fetchBounces: function() {
+        if (this.console === null || this.console === undefined) {
+            this.console = MODx.load({
+               xtype: 'modx-console'
+               ,register: register
+               ,topic: topic
+               ,show_filename: 0
+               ,listeners: {
+                 'shutdown': {fn:function() {
+                     // Ext.getCmp('modx-layout').refreshTrees();
+                 },scope:this}
+               }
+            });
+        } else {
+            this.console.setRegister(register, topic);
+        }
+        this.console.show(Ext.getBody());
+
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/bounce/fetch',
+                register: register,
+                topic: topic
+            }
+            ,listeners: {
+                'success': {fn:function() {
+                    this.console.fireEvent('complete');
+                }, scope:this}
+            }
+        });
+    }
+});
 Ext.reg('campaigner-panel-main',Campaigner.panel.Main);

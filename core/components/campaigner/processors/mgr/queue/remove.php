@@ -1,18 +1,20 @@
 <?php
-$id = (int) $_REQUEST['id'];
+$ids = explode(',', $_REQUEST['marked']);
 
-$queue = $modx->getObject('Queue', $id);
+$queue = $modx->getCollection('Queue', array('id:IN' => $ids));
 
 if ($queue == null) {
     return $modx->error->failure($modx->lexicon('campaigner.queue.error.notfound'));
 }
 
-if($queue->state == 0) {
-    $sql = 'UPDATE `camp_newsletter` SET `total` = `total` - 1 WHERE `id` = '. $queue->get('newsletter');
-    $modx->query($sql);
+foreach($queue as $item) {
+	// Reduce newsletter total when unsend
+	if($item->get('state') === 0) {
+		$nl = $modx->getObject('Newsletter', $item->get('newsletter'));
+		$nl->set('total', $nl->get('total') - 1);
+		$nl->save();
+	}
+	$item->remove();
 }
-
-// Remove group
-$queue->remove();
 
 return $modx->error->success('campaigner.queue.removed');

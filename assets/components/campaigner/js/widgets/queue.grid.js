@@ -10,7 +10,9 @@ Campaigner.grid.Queue = function(config) {
         ,remoteSort: true
         ,primaryKey: 'id'
         ,sm: this.sm
-        ,columns: [{
+        ,columns: [
+            this.sm,
+        {
             header: _('campaigner.queue.newsletter')
             ,dataIndex: 'newsletter'
             ,sortable: true
@@ -41,6 +43,24 @@ Campaigner.grid.Queue = function(config) {
         }],
         /* Top toolbar */
         tbar : [{
+
+            xtype: 'splitbutton'
+            ,text: _('campaigner.queue.batch_actions')
+            // ,handler: this.cleanerMedia.createDelegate(this, [{cleaner: 1}])
+            // ,tooltip: {text:'This is a an example QuickTip for a toolbar item', title:'Tip Title'}
+            // Menus can be built/referenced by using nested menu config objects
+            ,menu : {
+                items: [{
+                    text: _('campaigner.queue.remove_marked')
+                    ,handler: this.removeQueue
+                    ,scope : this
+                }, {
+                    text: _('campaigner.queue.send_marked')
+                    ,handler: this.processQueue
+                    ,scope : this
+                }]
+            }
+        }, {
             xtype: 'button'
             ,id: 'campaigner-filter-processed'
             ,text: _('campaigner.queue.show_processed')
@@ -112,19 +132,21 @@ Ext.extend(Campaigner.grid.Queue,MODx.grid.Grid,{
         this.refresh();
     }
     ,removeQueue: function(e) {
-	var msg;
-	if(this.menu.record.state === 0) {
-        msg = _('campaigner.queue.remove.unsend');
-	} else {
-        msg = _('campaigner.queue.remove.confirm');
-	}
+        var cs = this.getSelectedAsList();
+        if (cs === false) {return false;}
+        // var msg;
+        // if(this.menu.record.state === 0) {
+        //     msg = _('campaigner.queue.remove.unsend');
+        // } else {
+        //     msg = _('campaigner.queue.remove.confirm');
+        // }
         MODx.msg.confirm({
             title: _('campaigner.queue.remove.title')
-            ,text: msg
+            ,text: _('campaigner.queue.remove_info')
             ,url: Campaigner.config.connector_url
             ,params: {
                 action: 'mgr/queue/remove'
-                ,id: this.menu.record.id
+                ,marked: cs
             }
             ,listeners: {
                 'success': {fn:this.refresh,scope:this}
@@ -132,12 +154,15 @@ Ext.extend(Campaigner.grid.Queue,MODx.grid.Grid,{
         });
     }
     ,processQueue: function() {
+        var cs = this.getSelectedAsList();
+        if (cs === false) {return false;}
         MODx.msg.confirm({
             title: _('campaigner.queue.process_queue')
             ,text: _('campaigner.queue.process_queue_text')
             ,url: Campaigner.config.connector_url
             ,params: {
                 action: 'mgr/queue/process'
+                ,marked: cs
             }
             ,listeners: {
                 'success': {fn:this.refresh,scope:this}

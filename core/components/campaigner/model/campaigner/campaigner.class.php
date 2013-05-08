@@ -505,15 +505,21 @@ class Campaigner
 
     /**
      * Process email queue and send messages.
-     * 
+     *
+     * @param array $ids IDs to process
      * @access public
      */
-    public function processQueue()
-    { 
+    public function processQueue($ids = array())
+    {
         $this->modx->getParser();
 
         // get queue items for the current batch
         $c = $this->modx->newQuery('Queue');
+
+        // Check if only specific items need to be send
+        if(count($ids) > 0 && is_array($ids))
+            $c->where(array('id:IN' => $ids));
+
         $c->limit($this->modx->getOption('campaigner.batchsize'));
 
         //Nimm alle Elemente aus der Queue die noch zu senden sind (0) oder ein Resend sind (8)
@@ -523,7 +529,7 @@ class Campaigner
         $c->leftJoin('Subscriber');
         $c->select('`Queue`.*, `Queue`.`key` AS queue_key, `Subscriber`.`firstname`, `Subscriber`.`lastname`, `Subscriber`.`email`, `Subscriber`.`text`, `Subscriber`.`key`');
         $c->sortby('`Queue`.`priority`');
-        //$c->prepare();
+        $c->prepare();
         //$this->modx->log($this->modx->LOG_LEVEL_ERROR, "SQL PROCESS QUEUE QUERY --> " . $c->toSql());
 
         $queue = $this->modx->getCollection('Queue', $c);
@@ -1155,7 +1161,7 @@ class Campaigner
      */
     public function logAction($type='click') {
         $t = $key = $link_id = 0;
-        
+
         // Nothing set => Return
         if ( !isset($_REQUEST['t']) && $type == 'click' )
             return;
@@ -1252,6 +1258,7 @@ class Campaigner
                     if(is_object($newsletter))
                         $url .= 'campaign='.urlencode(str_replace(' ', '-', $newsletter->get('pagetitle')));
                     echo 'URL ' . $url;
+
                     // $this->modx->sendRedirect($url);
                 }
             }

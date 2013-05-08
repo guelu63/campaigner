@@ -138,7 +138,7 @@ foreach($bounce_messages as $sub_array_over) {
 		unset($resend_check);
 		// echo "<li>Queue-Element nicht gefunden!</li>";
 	}
-
+	$sub_array['action'] = 'transient';
 	switch($sub_array['action']){
 		case 'failed': // Hard-Bounce
 			$sub_array['type'] = 'h';

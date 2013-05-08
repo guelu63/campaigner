@@ -7,7 +7,6 @@
  * @subpackage processors.groups.list
  */
 
-
 /* setup default properties */
 $isLimit    = !empty($_REQUEST['limit']);
 $start      = $modx->getOption('start',$_REQUEST,0);

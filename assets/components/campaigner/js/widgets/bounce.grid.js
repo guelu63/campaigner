@@ -48,60 +48,63 @@ Campaigner.grid.Soft = function(config) {
             //,width: 10
         }],
         tbar : [{
-            xtype: 'button'
-                ,text: _('campaigner.bounce.soft.deleteMarkedSubscribers')
-                ,handler: this.deleteSubscriber
-            },{
-                xtype : "button"
-                ,text : _( "campaigner.bounce.soft.deactivateMarkedSubscribers" )
-                ,handler: this.deactivateSubscriber
-            },{
-                xtype : "button"
-                ,text : _( "campaigner.bounce.soft.activateMarkedSubscribers" )
-                ,handler: this.activateSubscriber
-            },{
-                xtype: 'button'
-                ,text: _('campaigner.bounce.fetch')
-                ,handler: this.fetchBounces
+            xtype: 'splitbutton'
+            ,text: _('campaigner.bounce.batch_actions')
+            ,menu: {
+                items: [{
+                    text: _('campaigner.bounce.soft.deleteMarkedSubscribers')
+                    ,handler: this.deleteSubscriber
+                }, {
+                    text : _( "campaigner.bounce.soft.deactivateMarkedSubscribers" )
+                    ,handler: this.deactivateSubscriber
+                }, {
+                    text : _( "campaigner.bounce.soft.activateMarkedSubscribers" )
+                    ,handler: this.activateSubscriber
+                }]
             }
-        ]
+            // ,{
+            //     xtype: 'button'
+            //     ,text: _('campaigner.bounce.fetch')
+            //     ,handler: this.fetchBounces
+            // }
+        }]
     });
     Campaigner.grid.Soft.superclass.constructor.call(this,config);
 };
 Ext.extend(Campaigner.grid.Soft,MODx.grid.Grid,{
-    fetchBounces: function() {
-        if (this.console == null || this.console == undefined) {
-            this.console = MODx.load({
-               xtype: 'modx-console'
-               ,register: register
-               ,topic: topic
-               ,show_filename: 0
-               ,listeners: {
-                 'shutdown': {fn:function() {
-                     // Ext.getCmp('modx-layout').refreshTrees();
-                 },scope:this}
-               }
-            });
-        } else {
-            this.console.setRegister(register, topic);
-        }
-        this.console.show(Ext.getBody());
+    // fetchBounces: function() {
+    //     if (this.console == null || this.console == undefined) {
+    //         this.console = MODx.load({
+    //            xtype: 'modx-console'
+    //            ,register: register
+    //            ,topic: topic
+    //            ,show_filename: 0
+    //            ,listeners: {
+    //              'shutdown': {fn:function() {
+    //                  // Ext.getCmp('modx-layout').refreshTrees();
+    //              },scope:this}
+    //            }
+    //         });
+    //     } else {
+    //         this.console.setRegister(register, topic);
+    //     }
+    //     this.console.show(Ext.getBody());
 
-        MODx.Ajax.request({
-            url: Campaigner.config.connector_url
-            ,params: {
-                action: 'mgr/bounce/fetch',
-                register: register,
-                topic: topic
-            }
-            ,listeners: {
-                'success': {fn:function() {
-                    this.console.fireEvent('complete');
-                }, scope:this}
-            }
-        });
-    }
-    ,showDetails: function(e) {
+    //     MODx.Ajax.request({
+    //         url: Campaigner.config.connector_url
+    //         ,params: {
+    //             action: 'mgr/bounce/fetch',
+    //             register: register,
+    //             topic: topic
+    //         }
+    //         ,listeners: {
+    //             'success': {fn:function() {
+    //                 this.console.fireEvent('complete');
+    //             }, scope:this}
+    //         }
+    //     });
+    // }
+    showDetails: function(e) {
 	softDetailWindow = MODx.load({
         xtype: 'campaigner-window-softDetail'
         ,record: this.menu.record
@@ -219,7 +222,7 @@ Campaigner.grid.Hard = function(config) {
         ,paging: true
         ,autosave: false
         ,remoteSort: false
-	,sm: this.sm
+        ,sm: this.sm
         ,primaryKey: 'id'
         ,columns: [this.sm,{
             header: _('campaigner.subscriber.id')
@@ -237,7 +240,7 @@ Campaigner.grid.Hard = function(config) {
             header: _('campaigner.subscriber.groups')
             ,dataIndex: 'groups'
             //,width: 10
-	    ,renderer: this._renderGroups
+            ,renderer: this._renderGroups
         },{
             header: _('campaigner.bounce.code')
             ,dataIndex: 'code'
@@ -254,54 +257,52 @@ Campaigner.grid.Hard = function(config) {
 			,sortable: true
             //,width: 10
         }],
-	tbar : [{
-	    xtype: 'button'
+        tbar : [{
+            xtype: 'button'
             ,text: _('campaigner.bounce.soft.deleteMarkedSubscribers')
             ,handler: this.deleteSubscriber
-	 }]
+        }]
     });
-    Campaigner.grid.Hard.superclass.constructor.call(this,config)
+    Campaigner.grid.Hard.superclass.constructor.call(this,config);
 };
 
 Ext.extend(Campaigner.grid.Hard,MODx.grid.Grid,{
     getMenu: function() {
 	var m = [];
 	m.push({
-	    text: _('campaigner.bounce.hard.reactivate')
-	    ,handler: this.reactivate
+        text: _('campaigner.bounce.hard.reactivate')
+        ,handler: this.reactivate
 	});
 	m.push('-');
 	m.push({
-	    text: _('campaigner.bounce.soft.deleteSubscriber')
-	    ,handler: this.deleteSubscriber
+        text: _('campaigner.bounce.soft.deleteSubscriber')
+        ,handler: this.deleteSubscriber
 	});
 	if (m.length > 0) {
             this.addContextMenuItem(m);
         }
     }
     ,deleteSubscriber: function() {
-	var cs = this.getSelectedAsList();
-        
-        if (cs === false) { return false };
-        
-	MODx.msg.confirm({
+        var cs = this.getSelectedAsList();
+        if (cs === false) {return false;}
+        MODx.msg.confirm({
             title: _('campaigner.bounce.soft.removeTitle')
             ,text: _('campaigner.bounce.soft.removeConfirm')
             ,url: Campaigner.config.connector_url
             ,params: {
                 action: 'mgr/bounce/deleteSubscriber'
-		,markedSubscribers: cs
+                ,markedSubscribers: cs
             }
             ,listeners: {
                 'success': {fn:this.refresh,scope:this}
             }
         });
-	return true;
+        return true;
     }
     ,reactivate: function(e) {
 	this.updateWindow = MODx.load({
-	    xtype: 'campaigner-window-reactivate'
-	    ,record: this.menu.record
+        xtype: 'campaigner-window-reactivate'
+        ,record: this.menu.record
             ,listeners: {
                 'success': {fn:this.refresh,scope:this}
             }
@@ -310,19 +311,18 @@ Ext.extend(Campaigner.grid.Hard,MODx.grid.Grid,{
         this.updateWindow.show(e.target);
     }
     ,_renderGroups: function(value, p, rec) {
-	var out = '';
-	var tip = '';
-	
-	if(value) {
-	    for(var i = 0; i < value.length; i++) {
-	        if(value[i][2]) {
-		    out += '<div class="group" style=" background: '+ value[i][2] +'"></div>';
-		    tip += value[i][1] + ' ';
-	        }
-	    }
-	    p.attr = 'ext:qtip="'+ tip +'" ext:qtitle="'+ _('campaigner.groups') +'"';
-	}
-	return out;
+        var out = '';
+        var tip = '';
+        if(value) {
+            for(var i = 0; i < value.length; i++) {
+                if(value[i][2]) {
+                    out += '<div class="group" style=" background: '+ value[i][2] +'"></div>';
+                    tip += value[i][1] + ' ';
+                }
+            }
+            p.attr = 'ext:qtip="'+ tip +'" ext:qtitle="'+ _('campaigner.groups') +'"';
+        }
+        return out;
     }
 });
 Ext.reg('campaigner-grid-bounce-hard',Campaigner.grid.Hard);
@@ -338,12 +338,12 @@ Campaigner.grid.Resend = function(config) {
         ,autosave: false
         ,remoteSort: true
         ,primaryKey: 'id'
-	,sm: this.sm
+        ,sm: this.sm
         ,columns: [this.sm,{
             header: _('campaigner.bounce.newsletter')
             ,dataIndex: 'newsletterTitle'
             //,width: 300
-	    ,renderer: this._renderNewsletter
+            ,renderer: this._renderNewsletter
         },{
             header: _('campaigner.bounce.recipient')
             ,dataIndex: 'name'
@@ -359,15 +359,15 @@ Campaigner.grid.Resend = function(config) {
         },{
             header: _('campaigner.bounce.state')
             //,width: 250
-	    ,dataIndex: 'state_msg'
+            ,dataIndex: 'state_msg'
         }],
-	tbar : [{
-	    xtype: 'button'
+        tbar : [{
+            xtype: 'button'
             ,text: _('campaigner.bounce.resend.deleteMarkedJobs')
             ,handler: this.deleteJob
-	 }]
+        }]
     });
-    Campaigner.grid.Resend.superclass.constructor.call(this,config)
+    Campaigner.grid.Resend.superclass.constructor.call(this,config);
 };
 
 Ext.extend(Campaigner.grid.Resend,MODx.grid.Grid,{
@@ -375,66 +375,61 @@ Ext.extend(Campaigner.grid.Resend,MODx.grid.Grid,{
 	return '<a href="?a=30&id='+ rec.data.docid +'">'+ value +'</a>';
     }
     ,getMenu: function() {
-	var m = [];
-	if (this.getSelectionModel().getCount() == 1) {
+        var m = [];
+        if (this.getSelectionModel().getCount() == 1) {
             var rs = this.getSelectionModel();
-	    
-	    if(rs.getSelected().get('state') == "0") {
-		m.push({
-		    text: _('campaigner.bounce.resend.cancelJob')
-		    ,handler: this.deleteJob
-		});
-	    }
-	    else {
-		m.push({
-		    text: _('campaigner.bounce.resend.deleteJob')
-		    ,handler: this.deleteJob
-		});
-	    }
-	}
-	if (m.length > 0) {
+            if(rs.getSelected().get('state') == "0") {
+                m.push({
+                    text: _('campaigner.bounce.resend.cancelJob')
+                    ,handler: this.deleteJob
+                });
+            } else {
+                m.push({
+                    text: _('campaigner.bounce.resend.deleteJob')
+                    ,handler: this.deleteJob
+                });
+            }
+        }
+        if (m.length > 0) {
             this.addContextMenuItem(m);
         }
     }
     ,deleteJob: function() {
-	var cs = this.getSelectedAsList();
-        
+        var cs = this.getSelectedAsList();
         if (cs === false) { 
-	    Ext.Msg.alert("Notification", "FALSE");
-	    return false
-	};
-	
-	if (this.getSelectionModel().getCount() == 1) {
-	    Ext.Msg.alert("Notification", "EIN ELEMENT: "+this.getSelectionModel().getSelected().get('state'));
-            if(this.getSelectionModel().getSelected().get('state') == 0) {
-		MODx.msg.confirm({
-		    title: _('campaigner.bounce.resend.cancelTitle')
-		    ,text: _('campaigner.bounce.resend.cancelConfirm')
-		    ,url: Campaigner.config.connector_url
-		    ,params: {
-			action: 'mgr/bounce/deleteJob'
-			,markedJobs: cs
-		    }
-		    ,listeners: {
-			'success': {fn:this.refresh,scope:this}
-		    }
-		});  
-	    }
-	    else {
-		MODx.msg.confirm({
-		    title: _('campaigner.bounce.resend.removeTitle')
-		    ,text: _('campaigner.bounce.resend.removeConfirm')
-		    ,url: Campaigner.config.connector_url
-		    ,params: {
-			action: 'mgr/bounce/deleteJob'
-			,markedJobs: cs
-		    }
-		    ,listeners: {
-			'success': {fn:this.refresh,scope:this}
-		    }
-		});
-	    }
-	}
+            Ext.Msg.alert("Notification", "FALSE");
+            return false;
+        }
+        if (this.getSelectionModel().getCount() == 1) {
+            Ext.Msg.alert("Notification", "EIN ELEMENT: "+this.getSelectionModel().getSelected().get('state'));
+            if(this.getSelectionModel().getSelected().get('state') === 0) {
+                MODx.msg.confirm({
+                   title: _('campaigner.bounce.resend.cancelTitle')
+                   ,text: _('campaigner.bounce.resend.cancelConfirm')
+                   ,url: Campaigner.config.connector_url
+                   ,params: {
+                      action: 'mgr/bounce/deleteJob'
+                      ,markedJobs: cs
+                  }
+                  ,listeners: {
+                      'success': {fn:this.refresh,scope:this}
+                  }
+                });
+            } else {
+                MODx.msg.confirm({
+                    title: _('campaigner.bounce.resend.removeTitle')
+                   ,text: _('campaigner.bounce.resend.removeConfirm')
+                   ,url: Campaigner.config.connector_url
+                   ,params: {
+                      action: 'mgr/bounce/deleteJob'
+                      ,markedJobs: cs
+                  }
+                  ,listeners: {
+                      'success': {fn:this.refresh,scope:this}
+                  }
+              });
+           }
+        }
 	else {
 	    Ext.Msg.alert("Notification", "MEHRERE ELEMENTE");
 	    MODx.msg.confirm({

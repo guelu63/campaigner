@@ -1,5 +1,6 @@
 <?php
-$modx->campaigner->processQueue();
+$ids = explode(',', $_REQUEST['marked']);
+$modx->campaigner->processQueue($ids);
 // /**
 //  * Feed the manager log
 //  */

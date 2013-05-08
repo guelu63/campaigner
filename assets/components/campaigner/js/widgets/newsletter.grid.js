@@ -85,7 +85,7 @@ Campaigner.grid.Newsletter = function(config) {
             ,renderer: this._renderCount
         }],
         /* Top toolbar */
-        tbar : ['->', {
+        tbar : [{
             xtype: 'combo'
             ,name: 'sent'
             ,id: 'campaigner-filter-sent'
@@ -141,7 +141,7 @@ Campaigner.grid.Newsletter = function(config) {
                     });
                 },scope:this}
             }
-        },{
+        },'->',{
             xtype: 'button'
             ,id: 'campaigner-filter-mediainfo'
             ,text: 'nur Mediainfo'
@@ -529,7 +529,7 @@ Campaigner.window.Newsletter = function(config) {
         ,fields: [{
             tag: 'div'
             ,html: _('campaigner.newsletter.create.info')
-	    ,cls: 'campaigner-window-info'
+            ,cls: 'campaigner-window-info'
         },{
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.subject')
@@ -572,7 +572,7 @@ Campaigner.window.NewsletterProperties = function(config) {
             ,name: 'campaigner'
             ,id: 'campaigner-'+this.ident+'-priority'
             ,width: 200
-	    ,emptyText: '5'
+            ,emptyText: '5'
             ,fields: [
                 'id',
                 'display'
@@ -581,22 +581,21 @@ Campaigner.window.NewsletterProperties = function(config) {
                 [1, 'Sehr wichtig'],
                 [2, 'Schon wichtig'],
                 [3, 'Wichtig'],
-		[4, 'Geht so'],
-		[5, 'Unwichtig']
+                [4, 'Geht so'],
+                [5, 'Unwichtig']
             ]
             ,valueField: 'id'
             ,displayField: 'display'
             ,triggerAction: 'all'
-	    ,forceSelection: true
+            ,forceSelection: true
             ,lastQuery: ''
             ,triggerAction: 'all'
             ,hiddenName: 'priority'
-        },
-	{
+        },{
             xtype: 'combo'
             ,name: 'state'
             ,id: 'campaigner-'+this.ident+'-state'
-	    ,store: [
+            ,store: [
                 [1, _('campaigner.newsletter.approved')],
                 [0, _('campaigner.newsletter.unapproved')]
             ]

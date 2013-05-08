@@ -70,6 +70,11 @@ Campaigner.panel.Main = function(config) {
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-bounce',
                 items: [{
+                    xtype: 'button'
+                    ,style: 'margin: 10px'
+                    ,text: _('campaigner.bounce.fetch')
+                    ,handler: this.fetchBounces
+                },{
                     xtype: 'modx-tabs',
                     bodyStyle: 'padding: 10px',
                     defaults: { border: false ,autoHeight: true },
@@ -146,5 +151,38 @@ Campaigner.panel.Main = function(config) {
     });
     Campaigner.panel.Main.superclass.constructor.call(this,config);
 };
-Ext.extend(Campaigner.panel.Main,MODx.Panel);
+Ext.extend(Campaigner.panel.Main,MODx.Panel, {
+    fetchBounces: function() {
+        if (this.console === null || this.console === undefined) {
+            this.console = MODx.load({
+               xtype: 'modx-console'
+               ,register: register
+               ,topic: topic
+               ,show_filename: 0
+               ,listeners: {
+                 'shutdown': {fn:function() {
+                     // Ext.getCmp('modx-layout').refreshTrees();
+                 },scope:this}
+               }
+            });
+        } else {
+            this.console.setRegister(register, topic);
+        }
+        this.console.show(Ext.getBody());
+
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/bounce/fetch',
+                register: register,
+                topic: topic
+            }
+            ,listeners: {
+                'success': {fn:function() {
+                    this.console.fireEvent('complete');
+                }, scope:this}
+            }
+        });
+    }
+});
 Ext.reg('campaigner-panel-main',Campaigner.panel.Main);

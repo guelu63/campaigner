@@ -318,7 +318,10 @@ Campaigner.window.AutonewsletterProperties = function(config) {
             ,submitValue: false
         },{
             xtype: 'container'
-            ,layout: 'hbox'
+            ,layout: {
+                type: 'hbox',
+                align: 'stretch'
+            }
             ,fieldLabel: _('campaigner.newsletter.date_time')
             ,defaults: {flex: 1, layout: 'form', border: false, margins: '0 5 0 0'}
             ,style: 'border-bottom: 1px solid #ccc; margin-bottom: 15px; padding-bottom: 15px'
@@ -339,7 +342,10 @@ Campaigner.window.AutonewsletterProperties = function(config) {
             ]
         },{
             xtype: 'container'
-            ,layout: 'hbox'
+            ,layout: {
+                type: 'hbox',
+                align: 'stretch'
+            }
             ,fieldLabel: _('campaigner.newsletter.repeat')
             ,defaults: {flex: 1, layout: 'form', border: false, margins: '0 5 0 0'}
             ,style: 'border-bottom: 1px solid #ccc; margin-bottom: 15px; padding-bottom: 15px'
@@ -355,7 +361,8 @@ Campaigner.window.AutonewsletterProperties = function(config) {
                 ,id: 'campaigner-'+this.ident+'-interval'
                 ,store: [
                 [1, _('campaigner.days')],
-                [7, _('campaigner.weeks')]
+                [7, _('campaigner.weeks')],
+                [30, _('campaigner.months')]
                 ]
                 ,editable: false
                 ,triggerAction: 'all'
@@ -385,7 +392,10 @@ Campaigner.window.AutonewsletterProperties = function(config) {
             ]
         },{
             xtype: 'container'
-            ,layout: 'hbox'
+            ,layout: {
+                type: 'hbox',
+                align: 'stretch'
+            }
             ,fieldLabel: _('campaigner.newsletter.sender_email')
             ,defaults: {flex: 1, layout: 'form', border: false, margins: '0 5 0 0'}
             ,style: 'border-bottom: 1px solid #ccc; margin-bottom: 15px; padding-bottom: 15px'
@@ -395,13 +405,13 @@ Campaigner.window.AutonewsletterProperties = function(config) {
                 ,fieldLabel: _('campaigner.newsletter.sender')
                 ,name: 'sender'
                 ,id: 'campaigner-'+this.ident+'-sender'
-                ,flex: 0.3
+                ,flex: 1
             },{
                 xtype: 'textfield'
                 ,fieldLabel: _('campaigner.newsletter.senderemail')
                 ,name: 'sender_email'
                 ,id: 'campaigner-'+this.ident+'-sender-email'
-                ,flex: 0.3
+                ,flex: 1
             }
             ]
         },{
@@ -419,65 +429,99 @@ Ext.extend(Campaigner.window.AutonewsletterProperties,MODx.Window);
 Ext.reg('campaigner-window-autonewsletter-properties',Campaigner.window.AutonewsletterProperties);
 
 
-Campaigner.window.AutonewsletterGroups = function(config) {
-    config = config || {};
-    this.ident = config.ident || 'campaigner-'+Ext.id();
-    Ext.applyIf(config,{
-        title: _('campaigner.newsletter.groups')
-        ,id: this.ident
-        ,height: 400
-        ,width: 475
-        ,url: Campaigner.config.connector_url
-        ,action: 'mgr/autonewsletter/groups'
-        ,fields: [{
-            xtype: 'hidden'
-            ,name: 'id'
-            ,id: 'campaigner-'+this.ident+'-id'
-        }]
-    });
-    Campaigner.window.AutonewsletterGroups.superclass.constructor.call(this,config);
+Ext.onReady(function() {
 
-    this.addListener('show', function(cmp) {
-      MODx.Ajax.request({
-          url: Campaigner.config.connector_url
-          ,params: {
-             action: 'mgr/group/getSubscriberList'
-         }
-         ,scope: this
-         ,listeners: {
-             'success': {fn: function(response) {
-                 var groups = Ext.decode(response.responseText);
-                 var checked = false;
-                 groups = response.object;
-
-                 if(groups.length > 0) {
-                    Ext.each(groups, function(item, key) {
-                        checked = false;
-                        if(cmp.record.groups) {
-                            Ext.each(cmp.record.groups, function(i, k) {
-                                if(item.id == i[0]) checked = true;
-                            });
-                        }
-                        this.items.items[0].add({
-                            xtype: 'checkbox'
-                            ,name: 'groups[]'
-                            ,fieldLabel: item.name
-                            ,inputValue: item.id
-                            ,checked: checked
-                            ,labelSeparator: ''
-                            ,hideLabel: true
-                            ,boxLabel: '<span style="color: ' + item.color + ';">' + item.name + '</span>'
-                        });
-                    }, this);
+    var checkboxArray = [];
+    var groupsStore = new Ext.data.JsonStore({
+        url: Campaigner.config.connector_url
+        ,root: "object"
+        ,baseParams: {
+            action: "mgr/group/getSubscriberList"
+        }
+        ,fields: ["id", "name", "color"]
+        ,autoLoad: false
+        ,listeners: {
+            load: function(t, records, options) {
+                // this.ident = config.ident || 'campaigner-'+Ext.id();
+                console.log(this);
+                for(var i = 0; i < records.length; i++) {
+                    console.log(records[i].data.name);
+                    console.log(i[0]);
+                    checkboxArray.push({name: "groups[]", inputValue: records[i].data.id, boxLabel: records[i].data.name});
                 }
-                this.doLayout(false, true);
-            }, scope: this }
+            }
         }
     });
-}, this);
-};
-Ext.extend(Campaigner.window.AutonewsletterGroups,MODx.Window);
-Ext.reg('campaigner-window-autonewsletter-groups',Campaigner.window.AutonewsletterGroups);
+    groupsStore.load();
+
+    Campaigner.window.AutonewsletterGroups = function(config) {
+        config = config || {};
+
+        this.ident = config.ident || 'campaigner-'+Ext.id();
+        Ext.applyIf(config,{
+            title: _('campaigner.newsletter.groups')
+            ,id: this.ident
+            ,height: 400
+            ,width: 475
+            ,url: Campaigner.config.connector_url
+            ,action: 'mgr/autonewsletter/groups'
+            ,fields: [{
+                xtype: 'hidden'
+                ,name: 'id'
+                ,id: 'campaigner-'+this.ident+'-id'
+            },{
+                xtype: 'checkboxgroup'
+                ,fieldLabel: _('campaigner.newsletter.groups_add')
+                ,name: 'groups'
+                ,items: checkboxArray
+            }]
+        });
+        Campaigner.window.AutonewsletterGroups.superclass.constructor.call(this,config);
+
+        // this.addListener('show', function(cmp) {
+        //     MODx.Ajax.request({
+        //         url: Campaigner.config.connector_url
+        //         ,params: {
+        //             action: 'mgr/group/getSubscriberList'
+        //         }
+        //         ,scope: this
+        //         ,listeners: {
+        //             'success': {fn: function(response) {
+        //                 var groups = Ext.decode(response.responseText);
+        //                 var checked = false;
+        //                 groups = response.object;
+        //                 var myArray = [];
+        //                 if(groups.length > 0) {
+        //                     Ext.each(groups, function(item, key) {
+        //                         checked = false;
+        //                         if(cmp.record.groups) {
+        //                             Ext.each(cmp.record.groups, function(i, k) {
+        //                                 if(item.id == i[0]) checked = true;
+        //                             });
+        //                         }
+        //                         myArray.push({
+        //                             xtype: 'checkbox'
+        //                             ,name: 'groups[]'
+        //                             ,fieldLabel: item.name
+        //                             ,inputValue: item.id
+        //                             ,checked: checked
+        //                             ,labelSeparator: ''
+        //                             ,hideLabel: true
+        //                             ,boxLabel: '<span style="color: ' + item.color + ';">' + item.name + '</span>'
+        //                         });
+        //                     }, this);
+        //                 }
+        //                 this.doLayout(false, true);
+        //             }, scope: this }
+        //         }
+        //     });
+        // }, this);
+        // 
+    };
+
+    Ext.extend(Campaigner.window.AutonewsletterGroups,MODx.Window);
+    Ext.reg('campaigner-window-autonewsletter-groups',Campaigner.window.AutonewsletterGroups);
+});
 
 Campaigner.window.AutonewsletterTest = function(config) {
     config = config || {};
