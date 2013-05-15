@@ -27,13 +27,14 @@ $c = $modx->newQuery('Newsletter');
 
 $c->leftJoin('modDocument', 'Document', '`Document`.`id` = `Newsletter`.`docid`');
 $c->leftJoin('SubscriberHits', 'SubscriberHits', '`Newsletter`.`id` = `SubscriberHits`.`newsletter`');
-
+$c->leftJoin('Unsubscriber', 'Unsubscriber', '`Newsletter`.`id` = `Unsubscriber`.`newsletter`');
 $c->select(array(
     'newsletter'	=> $modx->getSelectColumns('Newsletter', 'Newsletter', '', array('id', 'docid', 'state', 'sent_date', 'total', 'sent', 'bounced')),
     'pagetitle'		=> 'Document.pagetitle',
     'hits'			=> 'SUM(CASE WHEN SubscriberHits.hit_type != \'image\' THEN view_total ELSE 0 END)',
     'opened'		=> 'SUM(CASE WHEN SubscriberHits.hit_type = \'image\' THEN view_total ELSE 0 END)',
     'subscriber'	=> 'COUNT(DISTINCT(SubscriberHits.subscriber))',
+    'unsubscriber'  => 'COUNT(DISTINCT(Unsubscriber.subscriber))',
     )
 );
 $c->groupby('SubscriberHits.newsletter');

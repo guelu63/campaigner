@@ -93,6 +93,16 @@ $components = array(
             'value' => true,
             'area' => 'mailing',
         ),
+        'campaigner.unsubscribe_reasons' => array( // key
+            'key' => 'campaigner.unsubscribe_reasons',
+            'name' => 'Campaigner Unsubscribe reasons',
+            'description' => 'Campaigner Unsubscribe reasons<br/>MODx input option value like string: \'Display==value||Display2==value2\'',
+            'namespace' => 'campaigner',
+            'xtype' => 'textfield',
+            'value' => 'No interest==interest||Too much content==content_big||Content boring==content_boring',
+            'area' => 'mailing',
+        ),
+
         // System
         'campaigner.mail_smtp_auth' => array( // key
             'key' => 'campaigner.mail_smtp_auth',
@@ -103,6 +113,7 @@ $components = array(
             'value' => false,
             'area' => 'system',
         ),
+
         'campaigner.mail_smtp_helo' => array( // key
             'key' => 'campaigner.mail_smtp_helo',
             'name' => 'Campaigner SMTP HELO',
@@ -305,6 +316,16 @@ $components = array(
             'value' => '',
             'area' => 'file',
         ),
+        // Language
+        'campaigner.salutation' => array( // key
+            'key' => 'campaigner.salutation',
+            'name' => 'Campaigner Salutation',
+            'description' => 'Campaigner Salutation',
+            'namespace' => 'campaigner',
+            'xtype' => 'textfield',
+            'value' => '',
+            'area' => 'language',
+        ),
     ),
 
     /* ************************ NEW SYSTEM EVENTS ************************* */
@@ -494,6 +515,14 @@ $components = array(
                     'OnBeforeEmptyTrash' => array(),
                 ),
             ),
+            'CampaignerTracking' => array( /* campaigner with static, events, and property sets */
+                'category' => 'campaigner',
+                'description' => 'Tracks clicks & opens of subscribers',
+                'static' => false,
+                'events' => array(
+                    'OnLoadWebDocument' => array(),
+                ),
+            ),
         ),
         'chunks' => array(
             'CampaignerForm' => array(
@@ -502,11 +531,20 @@ $components = array(
             'CampaignerMessage' => array(
                 'category' => 'campaigner',
             ),
+            'CampaignerCheckbox' => array(
+                'category' => 'campaigner',
+            ),
+            'CampaignerOption' => array(
+                'category' => 'campaigner',
+            ),
+            'CampaignerFormUnsubscribe' => array(
+                'category' => 'campaigner',
+            ),
         ),
-        // 'templates' => array(
-        //     'Template1' => array(
-        //         'category' => 'campaigner',
-        //     ),
+        'templates' => array(
+            'CampaignerTemplate' => array(
+                'category' => 'campaigner',
+            ),
         //     'Template2' => array(
         //         'category' => 'campaigner',
         //         'description' => 'Description for Template two',

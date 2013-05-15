@@ -1,3 +1,4 @@
+<?php
 /**
  * CampaignerSubscribe snippet for campaigner extra
  *
@@ -32,3 +33,59 @@
  *
  * @package campaigner
  **/
+ 
+$campaigner = $modx->getService('campaigner', 'Campaigner', $modx->getOption('core_path'). 'components/campaigner/model/campaigner/');
+if (!($campaigner instanceof Campaigner)) return 'nono';
+
+//$groups = $modx->getOption('groups', $scriptProperties, null);
+
+// $_POST['email'] = 'jan.heinzle@subsolutions.at';
+
+$post = $modx->request->getParameters(array(), 'POST');
+
+$groups = $post['groups'] ? $post['groups'] : false;
+$chunk  = $modx->getOption('chunk', $scriptProperties, 'CampaignerForm');
+$params = $post;
+
+$submit = false;
+if(count(array_filter($post)) > 0)
+  $submit = true;
+
+if($submit && !isset($post['subscribed']))
+  $params['error'][] = 'Formular falsch!';
+
+if($submit && !isset($post['rights']))
+  $params['error'][] = 'Sie müssen den Nutzungsbestimmungen zustimmen';
+
+if($submit && !$groups)
+  $params['error'][] = 'Wählen Sie mindestens eine Gruppe!';
+
+var_dump($params);
+
+$available_groups = $campaigner->getGroups();
+foreach($available_groups as $group) {
+  $args = array(
+    'name' => 'groups[]',
+    'value' => $group->get('id'),
+    'display' => $group->get('name'),
+    'checked' => $checked,
+    'id' => 'group-' . $group->get('id'),
+    );
+  $params['groups_check'] .= $modx->getChunk('CampaignerCheckbox', $args);
+}
+
+if($submit && count($params['error']) > 0) {
+  $params['error'] = implode('<br/>', $params['error']);
+  return $modx->getChunk($chunk, $params);
+}
+
+if(!$submit && count($params['error']) == 0)
+  return $modx->getChunk($chunk, $params);
+
+if($submit)
+  if(!$campaigner->subscribe($post))
+    $params['error'][] = $campaigner->errormsg[$success];
+
+$params['msg'] = $modx->lexicon('campaigner.subscribe.success');
+$params['error'] = implode('<br/>', $params['error']);
+return $modx->getChunk($chunk, $params);

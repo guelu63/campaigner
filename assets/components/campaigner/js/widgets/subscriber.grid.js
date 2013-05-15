@@ -13,16 +13,23 @@ Campaigner.grid.Subscriber = function(config) {
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url
         ,baseParams: { action: 'mgr/subscriber/getList' }
-        ,fields: ['id', 'active', 'email', 'title', 'firstname', 'lastname', 'company', 'type', 'groups', 'key', 'since']
+        ,fields: ['id', 'active', 'email', 'title', 'firstname', 'lastname', 'company', 'type', 'groups', 'key', 'since', 'address']
         ,paging: true
         ,autosave: false
         ,remoteSort: true
         ,primaryKey: 'id'
-        ,columns: [{
+        ,columns: [
+          this.sm,
+        {
             header: _('campaigner.subscriber.email')
             ,dataIndex: 'email'
             ,sortable: true
             ,width: 40
+        },{
+            header: _('campaigner.subscriber.address')
+            ,dataIndex: 'address'
+            ,sortable: true
+            ,width: 20
         },{
             header: _('campaigner.subscriber.title')
             ,dataIndex: 'title'
@@ -452,6 +459,12 @@ Campaigner.window.Subscriber = function(config) {
             ,hidden: true
             ,name: 'id'
             ,id: this.ident +'-id'
+        },{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.subscriber.address')
+            ,name: 'address'
+            ,id: 'campaigner-'+this.ident+'-address'
+            ,boxMinWidth: 200
         },{
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.subscriber.title')

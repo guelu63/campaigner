@@ -286,11 +286,24 @@ class Campaigner
 
         // Set inactive or remove the subscriber
         // If 'remove' = true composite relationship will delete group subscriptions, queue items and bounces
+        // Add data for statistics
+        $unsub = $this->modx->newObject('Unsubscriber');
+        $data = array(
+            'subscriber' => $params['subscriber'],
+            'newsletter' => $params['letter'],
+            'reason' => $params['reason'],
+            'date' => time(),
+            'via' => $params['via'],
+            );
+        $unsub->fromArray($data);
+        if($unsub->save())
+            $this->errormsg[] = $this->modx->lexicon('campaigner.unsubscribe.statistics');
+
     	if($subscriber && $subscriber->get('key') == $params['key'] && $remove) {
-            if($subscriber->remove()) {
-                $this->errormsg[] = $this->modx->lexicon('campaigner.unsubscribe.success');
-                $success = true;
-            }
+            // if($subscriber->remove()) {
+            //     $this->errormsg[] = $this->modx->lexicon('campaigner.unsubscribe.success');
+            //     $success = true;
+            // }
         }
         return $success;
     }
@@ -527,7 +540,7 @@ class Campaigner
 
         //$c->where('`Queue`.`state` = 0');
         $c->leftJoin('Subscriber');
-        $c->select('`Queue`.*, `Queue`.`key` AS queue_key, `Subscriber`.`firstname`, `Subscriber`.`lastname`, `Subscriber`.`email`, `Subscriber`.`text`, `Subscriber`.`key`');
+        $c->select('`Queue`.*, `Queue`.`key` AS queue_key, `Subscriber`.`firstname`, `Subscriber`.`lastname`, `Subscriber`.`email`, `Subscriber`.`text`, `Subscriber`.`key`, `Subscriber`.`address`, `Subscriber`.`title`');
         $c->sortby('`Queue`.`priority`');
         $c->prepare();
         //$this->modx->log($this->modx->LOG_LEVEL_ERROR, "SQL PROCESS QUEUE QUERY --> " . $c->toSql());
@@ -840,28 +853,33 @@ class Campaigner
         if(is_null($subscriber)) {
             return array(
                 'campaigner.email'       => null,
+                'campaigner.address'     => null,
+                'campaigner.title'       => null,
+                'campaigner.salutation'  => null,
                 'campaigner.firstname'   => null,
                 'campaigner.lastname'    => null,
-                'campaigner.address'	 => null,
                 'campaigner.unsubscribe' => null,
                 'campaigner.istext'      => null,
                 'campaigner.key'         => null,
                 'campaigner.tracking_image' => null,
                 );
         }
-        $address = 'Hallo ';
-        $address .= $subscriber->get('firstname') && $subscriber->get('lastname') ? ucwords($subscriber->get('firstname')) . ' ' . ucwords($subscriber->get('lastname')) : $subscriber->get('email');
+        
+        $salutation = $this->modx->getOption('campaigner.salutation') . ' ' . ($subscriber->get('firstname') && $subscriber->get('lastname') ? $subscriber->get('firstname') . ' ' . $subscriber->get('lastname') : $subscriber->get('email'));
         
         $params = array(
             'subscriber' => $subscriber->get('email'),
             'key' => $subscriber->get('key'),
+            'letter' => $subscriber->get('newsletter'),
             );
         
         return array(
             'campaigner.email'       => $subscriber->get('email'),
+            'campaigner.address'     => $subscriber->get('address'),
+            'campaigner.title'       => $subscriber->get('title'),
+            'campaigner.salutation'  => $salutation,
             'campaigner.firstname'   => $subscriber->get('firstname'),
             'campaigner.lastname'    => $subscriber->get('lastname'),
-            'campaigner.address'     => $address,
             'campaigner.unsubscribe' => $this->modx->makeUrl($this->modx->getOption('campaigner.unsubscribe_page'), '', $params, 'full'),
             'campaigner.istext'      => $subscriber->get('text') ? 1 : null,
             'campaigner.key'         => $subscriber->get('key'),
@@ -883,7 +901,8 @@ class Campaigner
             'campaigner.sender'       => $newsletter->get('sender') ? $newsletter->get('sender') : $this->modx->getOption('campaigner.default_name'),
             'campaigner.sender_email' => $newsletter->get('sender_email') ? $newsletter->get('sender_email') : $this->modx->getOption('campaigner.default_from'),
             'campaigner.date'         => date('d.m.Y H:i', $newsletter->get('publishedon')),
-            'campaigner.send_date'    => date('d.m.Y', $newsletter->get('sent_date'))
+            'campaigner.send_date'    => date('d.m.Y', $newsletter->get('sent_date')),
+            'campaigner.letter'       => $newsletter->get('id'),
             );
     }
 

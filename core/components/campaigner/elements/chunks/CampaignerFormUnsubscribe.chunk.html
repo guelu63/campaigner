@@ -1,0 +1,23 @@
+<div class="newsletterSignupBox unsubscribe">
+  [[+msg:notempty=`<div class="notice positive">[[+msg]]</div>`]]
+  [[+error:notempty=`<div class="notice negative">[[+error]]</div>`]]
+  <form method="post" action="[[~[[*id]]]]" class="letterForm">
+    <input type="hidden" name="subscriber" value="[[+subscriber]]" />
+    <input type="hidden" name="key" value="[[+key]]" />
+    <input type="hidden" name="changed" value="1" />
+    <input type="hidden" name="letter" value="[[+letter]]" />
+    <input type="hidden" name="via" value="browser" />
+    <br/>
+    <div class="clearfix">
+      <h3>Abzumeldende Gruppen</h3>
+      [[+groups_check]]
+      <br/>
+      <label for="reason">Grund:</label>
+      <select name="reason" id="reason">
+        [[+reasons_options]]
+       </select>
+    </div>
+    <br/>
+    <div><input id="signupButton" class="btn" type="submit" name="subscribe" value="bestellen" /></div>
+  </form>
+</div>

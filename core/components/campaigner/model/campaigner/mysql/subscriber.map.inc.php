@@ -14,6 +14,7 @@ $xpdo_meta_map['Subscriber']= array (
     'text' => NULL,
     'key' => NULL,
     'since' => NULL,
+    'address' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -31,13 +32,6 @@ $xpdo_meta_map['Subscriber']= array (
       'precision' => '255',
       'phptype' => 'string',
       'null' => false,
-    ),
-    'title' => 
-    array (
-      'dbtype' => 'varchar',
-      'precision' => '255',
-      'phptype' => 'string',
-      'null' => true,
     ),
     'firstname' => 
     array (
@@ -88,6 +82,13 @@ $xpdo_meta_map['Subscriber']= array (
       'precision' => '11',
       'attributes' => 'unsigned',
       'phptype' => 'integer',
+      'null' => true,
+    ),
+    'address' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '50',
+      'phptype' => 'string',
       'null' => true,
     ),
   ),

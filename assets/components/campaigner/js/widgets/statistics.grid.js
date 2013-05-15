@@ -4,7 +4,7 @@ Campaigner.grid.Statistics = function(config) {
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url,
         baseParams: { action: 'mgr/statistics/getList', showProcessed: 0 },
-        fields: ['id', 'pagetitle', 'subscriber', 'newsletter', 'state', 'date', 'hits', 'sent', 'sent_date', 'bounced', 'total', 'priority', 'opened', 'perc_open'],
+        fields: ['id', 'pagetitle', 'subscriber', 'newsletter', 'state', 'date', 'hits', 'sent', 'sent_date', 'bounced', 'total', 'priority', 'opened', 'perc_open', 'unsubscriber'],
         paging: true,
         autosave: false,
         remoteSort: true,
@@ -26,7 +26,7 @@ Campaigner.grid.Statistics = function(config) {
             header: _('campaigner.newsletter')
             ,dataIndex: 'pagetitle'
             ,sortable: true
-            ,width: 25
+            ,width: 15
             ,renderer: this._renderNewsletter
         },{
             header: _('campaigner.newsletter.sent_date')
@@ -61,6 +61,11 @@ Campaigner.grid.Statistics = function(config) {
         },{
             header: _('campaigner.statistics.sent')
             ,dataIndex: 'sent'
+            ,sortable: true
+            ,width: 10
+        },{
+            header: _('campaigner.statistics.unsubscribers')
+            ,dataIndex: 'unsubscriber'
             ,sortable: true
             ,width: 10
         }]
@@ -152,6 +157,9 @@ Ext.extend(Campaigner.grid.Statistics,MODx.grid.Grid,{
 
         var grid_bounces = Ext.getCmp('campaigner-grid-statistics-details-bounces');
         grid_bounces.store.load({params:{statistics_id: this.menu.record.id || 0}});
+
+        var grid_unsubscribers = Ext.getCmp('campaigner-grid-statistics-details-unsubscribers');
+        grid_unsubscribers.store.load({params:{statistics_id: this.menu.record.id || 0}});
         // var grid_open = Ext.getCmp('campaigner-grid-statistics-details-open');
         // grid_open.store.load({params:{statistics_id: this.menu.record.id || 0}});
     }
@@ -213,7 +221,7 @@ Campaigner.window.Statistics = function(config) {
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-statistics-details-bounces',
                 items: [{
-                    html: '<p>'+_('campaigner.statistics.bounces_info')+'<br/>UNDER CONSTRUCTION</p>',
+                    html: '<p>'+_('campaigner.statistics.bounces_info'),
                     border: false,
                     bodyStyle: 'padding: 10px'
                 },{
@@ -224,13 +232,19 @@ Campaigner.window.Statistics = function(config) {
                     ,preventRender: true
                 }]
             },{
-                title: _('campaigner.statistics.unsubcribers'),
+                title: _('campaigner.statistics.unsubscriptions'),
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-statistics-details-unsubscribers',
                 items: [{
-                    html: '<p>'+_('campaigner.statistics.unsubcribers_info')+'<br/>UNDER CONSTRUCTION</p>',
+                    html: '<p>'+_('campaigner.statistics.unsubcribers_info'),
                     border: false,
                     bodyStyle: 'padding: 10px'
+                },{
+                    xtype: 'campaigner-grid-statistics-details-unsubscribers'
+                    // ,fieldLabel: _('campaigner.statistics_details')
+                    ,id: 'campaigner-grid-statistics-details-unsubscribers'
+                    ,scope: this
+                    ,preventRender: true
                 }]
             }]
         }]
@@ -254,7 +268,6 @@ Ext.reg('campaigner-window-statistics-details',Campaigner.window.Statistics);
 
 Campaigner.grid.StatisticsDetailsOpen = function(config) {
     config = config || {};
-    console.log(config);
     this.sm = new Ext.grid.CheckboxSelectionModel();
     Ext.applyIf(config,{
         id: 'campaigner-grid-statistics-details-open'
@@ -494,3 +507,52 @@ Ext.extend(Campaigner.grid.StatisticsDetailsBounces,MODx.grid.Grid, {
 });
 
 Ext.reg('campaigner-grid-statistics-details-bounces',Campaigner.grid.StatisticsDetailsBounces);
+
+
+Campaigner.grid.StatisticsDetailsUnsubscribers = function(config) {
+    config = config || {};
+    this.sm = new Ext.grid.CheckboxSelectionModel();
+    Ext.applyIf(config,{
+        id: 'campaigner-grid-statistics-details-unsubscribers'
+        ,url: Campaigner.config.connectorUrl
+        ,primaryKey: 'id'
+        ,baseParams: {
+            action: 'mgr/statistics/unsubscriber'
+        }
+        ,viewConfig: {
+            forceFit: true,
+            enableRowBody: true,
+            autoScroll: true,
+            emptyText: _('campaigner.grid.no_data')
+        }
+        ,sm: this.sm
+        ,fields: ['id','subscriber','newsletter', 'date', 'reason', 'via']
+        ,paging: true
+        ,remoteSort: true
+        ,columns: [this.sm,{
+            header: _('campaigner.subscriber')
+            ,dataIndex: 'subscriber'
+            ,sortable: true
+            ,width: 20
+        },{
+            header: _('campaigner.statistics.hit_date')
+            ,dataIndex: 'date'
+            ,sortable: true
+            ,width: 30
+        },{
+            header: _('campaigner.statistics.reason')
+            ,dataIndex: 'reason'
+            ,sortable: true
+            ,width: 10
+        },{
+            header: _('campaigner.statistics.via')
+            ,dataIndex: 'via'
+            ,sortable: true
+            ,width: 10
+        }]
+    });
+    Campaigner.grid.StatisticsDetailsUnsubscribers.superclass.constructor.call(this,config);
+};
+Ext.extend(Campaigner.grid.StatisticsDetailsUnsubscribers,MODx.grid.Grid);
+
+Ext.reg('campaigner-grid-statistics-details-unsubscribers',Campaigner.grid.StatisticsDetailsUnsubscribers);

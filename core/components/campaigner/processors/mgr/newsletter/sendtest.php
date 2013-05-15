@@ -1,11 +1,9 @@
 <?php
 // validate properties
-if (empty($_POST['id'])) {
+if (empty($_POST['id']))
     return $modx->error->failure($modx->lexicon('campaigner.newsletter.error.notfound'));
-}
-if (empty($_POST['email']) && empty($_POST['groups'])) {
+if (empty($_POST['email']) && empty($_POST['groups']))
     return $modx->error->failure($modx->lexicon('campaigner.newsletter.error.noreceiver'));
-}
 
 // get the object
 $newsletter = $modx->getObject('Newsletter', array('id' => $_POST['id']));
@@ -25,25 +23,24 @@ $mailer = $modx->campaigner->getMailer(array(
 ));
 $mailer->set(modMail::MAIL_SUBJECT, $document->get('pagetitle'));
 
-
-/**
- * Add attachment to mail
- */
-$mailer = $modx->campaigner->getAttachments($mailer, $document);
-// $modx->log(MODX_LOG_LEVEL_INFO, 'Attachments were successfully added!');
-
-// $tv = $modx->getObject('modTemplateVar',array('name' => 'tvAttach'));
+// Add attachment to mail
+if($_POST['add_attachments']) {
+    $mailer = $modx->campaigner->getAttachments($mailer, $document);
+    if(!$mailer)
+        $modx->log(MODX_LOG_LEVEL_INFO, 'Attachments ERROR!');
+}
+// die();
+// $tv = $modx->getObject('modTemplateVar',array('name'=>'tvAttach'));
 // if($tv) {
 //     /* get the raw content of the TV */
 //     $val = $tv->getValue($document->get('id'));
 //     if(!empty($val)) {
 //         $vals = explode(',', $val);
 //         $vals = array_filter($vals, 'trim');
-
+    
 //         $mailer->mailer->ClearAttachments();
-
+        
 //         foreach($vals as $val) {
-//             //echo $modx->getOption('base_path').$val;
 //             $mailer->mailer->AddAttachment($modx->getOption('base_path').$val);
 //         }
 //     }
@@ -58,14 +55,17 @@ if(!empty($_POST['email'])) {
     $mailer->setHTML(true);
     
     // check for personalization
-    if($_POST['personalize']) {
+    if($_POST['email'])
         $subscriber = $modx->getObject('Subscriber', array('email' => $_POST['email']));
-    }
     
     // the messages
+    $message = $modx->campaigner->makeTrackingUrls($message, $newsletter);
     $message = $modx->campaigner->processNewsletter($message, $subscriber);
-    $textual = $modx->campaigner->textify($message);
     
+    // echo $message;
+    // die();
+    $textual = $modx->campaigner->textify($message);
+    // die();
     // set properties
     if($subscriber && $subscriber->get('text')) {
         $mailer->setHTML(false);
@@ -81,8 +81,6 @@ if(!empty($_POST['email'])) {
         $sent = false;
         $modx->log(modX::LOG_LEVEL_ERROR,'An error occurred while trying to send the test email to '.$subscriber->get('email') .' ### '. $mailer->mailer->ErrorInfo);
     }
-    $mailer->ClearAllRecipients();
-    $mailer->ClearCustomHeaders();
 } else {
     // send to a group of subscribers
     $c = $modx->newQuery('Subscriber');
@@ -90,6 +88,8 @@ if(!empty($_POST['email'])) {
     $c->where('`Subscriber`.`active` = 1 AND `GroupSubscriber`.`group` IN('. implode(',', $_POST['groups']) .')');
     $c->groupby('`Subscriber`.`id`');
     $subs = $modx->getCollection('Subscriber', $c);
+    
+    $sent = true;
     
     // personalized or not
     if(!$_POST['personalize']) {
@@ -114,6 +114,7 @@ if(!empty($_POST['email'])) {
     } else {
         // personilzed for every subscriber
         foreach($subs as $sub) {
+            $sent = true;
             // the messages
             $tmpMessage = $modx->campaigner->processNewsletter($message, $sub);
             $tmpTextual = $modx->campaigner->textify($tmpMessage);
@@ -138,15 +139,6 @@ if(!empty($_POST['email'])) {
         }
     }
 }
-
-//function getAttachments($document) {
-//	/* Get the TV */
-//	$tv = $modx->getObject('modTemplateVar',array('name'=>'tvAttach'));
-//
-//	/* get the raw content of the TV */
-//	$rawValue = $tv->getValue($document->get('id'));
-//	return $rawValue;
-//}
 
 // Store the test message in the queue-list
 if($sent) {

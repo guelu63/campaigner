@@ -22,6 +22,7 @@ $_lang['campaigner.weekday'] = 'Wochentag';
 $_lang['campaigner.usedefault'] = 'Standard verwenden';
 $_lang['campaigner.print'] = 'Drucken';
 $_lang['campaigner.okay'] = 'OK';
+$_lang['campaigner.close'] = 'Schliessen';
 
 $_lang['campaigner.error.save'] = 'Fehler beim speichern.';
 
@@ -73,9 +74,9 @@ $_lang['campaigner.newsletter.sendtest.selectgroup'] = 'W&auml;hlen sie eine Gru
 $_lang['campaigner.newsletter.sendtest.personalize'] = 'Newsletter personalisieren';
 $_lang['campaigner.newsletter.sendtest.add_attachments'] = 'Add attachments';
 
-$_lang['campaigner.newsletter.preview.persona'] = 'personalisieren?';
+$_lang['campaigner.newsletter.preview.persona'] = 'Personalisieren?';
 $_lang['campaigner.newsletter.preview.nopersona'] = 'Nein';
-$_lang['campaigner.newsletter.preview.personalize'] = 'Ja, für...';
+$_lang['campaigner.newsletter.preview.personalize'] = 'Ja, f&uuml;r...';
 $_lang['campaigner.newsletter.preview.showtext'] = 'Text anzeigen';
 $_lang['campaigner.newsletter.preview.showhtml'] = 'HTML anzeigen';
 
@@ -141,7 +142,8 @@ $_lang['campaigner.subscribers.info'] = 'Verwalten sie Abonnenten und deren Grup
 $_lang['campaigner.subscriber.add'] = 'erstellen';
 $_lang['campaigner.subscriber.edit'] = 'bearbeiten';
 
-$_lang['campaigner.subscriber.title'] = 'Anrede';
+$_lang['campaigner.subscriber.address'] = 'Anrede';
+$_lang['campaigner.subscriber.title'] = 'Titel';
 $_lang['campaigner.subscriber.firstname'] = 'Vorname';
 $_lang['campaigner.subscriber.lastname'] = 'Nachname';
 $_lang['campaigner.subscriber.active'] = 'aktiv';
@@ -202,6 +204,7 @@ $_lang['campaigner.queue.waiting'] = 'wartend';
 $_lang['campaigner.queue.show_processed'] = 'Verarbeitete anzeigen';
 $_lang['campaigner.queue.hide_processed'] = 'Verarbeitete verstecken';
 $_lang['campaigner.queue.remove'] = 'Element entfernen';
+$_lang['campaigner.queue.send'] = 'Element versenden';
 $_lang['campaigner.queue.batch_actions'] = 'Stapel-Aktionen';
 $_lang['campaigner.queue.remove_marked'] = 'Markierte entfernen';
 $_lang['campaigner.queue.send_marked'] = 'Markierte senden';
@@ -307,7 +310,8 @@ $_lang['campaigner.statistics_details'] = 'Statistik-Details';
 $_lang['campaigner.statistics.link'] = 'Link';
 $_lang['campaigner.statistics.hit_date'] = 'Datum';
 $_lang['campaigner.statistics.bounces'] = 'Bounces';
-$_lang['campaigner.statistics.unsubcribers'] = 'Abgemeldet';
+$_lang['campaigner.statistics.unsubscribers'] = 'Abgemeldet';
+$_lang['campaigner.statistics.unsubscriptions'] = 'Abmeldungen';
 
 $_lang['campaigner.statistics.open'] = 'Ge&ouml;ffnet';
 $_lang['campaigner.statistics.opened'] = 'Ge&ouml;ffnet';
@@ -315,8 +319,9 @@ $_lang['campaigner.statistics.open_info'] = 'Von welchen Empf&auml;ngern wurde d
 $_lang['campaigner.statistics.hits_info'] = 'Daten &uuml;ber die Klicks eines Newsletter aufgeschl&uuml;sselt nach Link';
 $_lang['campaigner.statistics.bounces_info'] = '';
 $_lang['campaigner.statistics.unsubcribers_info'] = 'Abmeldungen, die durch diesen Newsletter aufgerufen wurden / durchgef&uuml;hrt wurden';
-// $_lang[''] = '';
-// $_lang[''] = '';
+
+$_lang['campaigner.statistics.reason'] = 'Grund';
+$_lang['campaigner.statistics.via'] = 'Via';
 // $_lang[''] = '';
 // $_lang[''] = '';
 // $_lang[''] = '';

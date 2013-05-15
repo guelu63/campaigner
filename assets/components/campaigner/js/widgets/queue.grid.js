@@ -190,6 +190,10 @@ Ext.extend(Campaigner.grid.Queue,MODx.grid.Grid,{
                 text: _('campaigner.queue.remove')
                 ,handler: this.removeQueue
             });
+            m.push({
+                text: _('campaigner.queue.send')
+                ,handler: this.processQueue
+            });
         }
         if (m.length > 0) {
             this.addContextMenuItem(m);

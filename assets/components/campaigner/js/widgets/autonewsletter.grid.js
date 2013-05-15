@@ -227,6 +227,14 @@ Ext.extend(Campaigner.grid.Autonewsletter,MODx.grid.Grid,{
         w.show(e);
         return;
     }
+    ,previewNewsletter: function(e) {
+        var w = MODx.load({
+            xtype: 'campaigner-window-autonewsletter-preview'
+            });
+        w.setValues(this.menu.record);
+        w.show(e);
+        return;
+    }
     ,testNewsletter: function(e) {
         var w = MODx.load({
            xtype: 'campaigner-window-autonewsletter-test'
@@ -274,6 +282,10 @@ Ext.extend(Campaigner.grid.Autonewsletter,MODx.grid.Grid,{
                 ,handler: this.kickNewsletter
             });
             m.push('-');
+            m.push({
+                text: _('campaigner.newsletter.preview')
+                ,handler: this.previewNewsletter
+            });
             m.push({
                 text: _('campaigner.newsletter.sendtest')
                 ,handler: this.testNewsletter
@@ -611,3 +623,112 @@ Campaigner.window.AutonewsletterTest = function(config) {
 };
 Ext.extend(Campaigner.window.AutonewsletterTest,MODx.Window);
 Ext.reg('campaigner-window-autonewsletter-test',Campaigner.window.AutonewsletterTest);
+
+
+Campaigner.window.AutonewsletterPreview = function(config) {
+    config = config || {};
+    this.ident = config.ident || 'campaigner-'+Ext.id();
+    this.message = '';
+    Ext.applyIf(config,{
+        title: _('campaigner.newsletter.preview')
+        ,id: this.ident
+        ,height: 600
+        ,width: 750
+        ,url: Campaigner.config.connector_url
+        ,action: 'mgr/autonewsletter/sendtest'
+        ,saveBtnText: _('campaigner.newsletter.sendtest')
+        ,cancelBtnText: _('campaigner.close')
+        ,fields: [{
+            xtype: 'hidden'
+            ,name: 'id'
+            ,id: this.ident+'-id'
+        },{
+            xtype: 'radiogroup'
+            ,fieldLabel: _('campaigner.newsletter.preview.persona')
+            ,name: 'persona'
+            ,id: this.ident+'-persona'
+            ,columns: 1
+            ,items: [
+                {boxLabel: _('campaigner.newsletter.preview.nopersona'), name: 'persona', inputValue: '', checked: true},
+                {boxLabel: _('campaigner.newsletter.preview.personalize'), name: 'persona', inputValue: 1},
+            ]
+            ,listeners: {
+                'change': {fn: function() {
+                    this.fireEvent('show');
+                    Ext.get(this.ident+'-email').toggleClass('campaigner-hidden');
+                }, scope: this }
+            }
+        },{
+            xtype: 'textfield'
+            ,fieldLabel: ''
+            ,name: 'email'
+            ,value: MODx['config']['campaigner.test_mail']
+            ,id: this.ident+'-email'
+            ,cls: 'campaigner-hidden'
+            ,listeners: {
+                'change': { fn: function() {
+                    this.fireEvent('show');
+                }, scope: this }
+            }
+        }, {
+            xtype: 'button'
+            ,id: this.ident+'-text'
+            ,text: _('campaigner.newsletter.preview.showtext')
+            ,listeners: {
+                'click': {fn: function(btn) {
+                    if(btn.text == _('campaigner.newsletter.preview.showhtml')) {
+                        btn.setText(_('campaigner.newsletter.preview.showtext'));
+                        Ext.get(this.ident+'-preview-box').update(this.message.message);
+                    } else {
+                        btn.setText(_('campaigner.newsletter.preview.showhtml'));
+                        Ext.get(this.ident+'-preview-box').update(this.message.text);
+                    }
+                }, scope: this}
+            }
+        }, {
+            tag: 'div'
+            ,border: true
+            ,id: this.ident+'-preview'
+            ,style: 'height:500px;overflow:auto;padding:10px 0;border:1px solid #ccc'
+            ,html: '<div id="'+this.ident+'-preview-box"></div>'
+        }]
+        // ,buttons: [{
+        //     text: _('close')
+        //     ,scope: this
+        //     ,handler: function() { this.hide(); }
+        // },{
+        //     text: _()
+        // }]
+    });
+    Campaigner.window.AutonewsletterPreview.superclass.constructor.call(this,config);
+    
+    this.addListener('show', function(cmp) {
+        var email;
+        if(this.findById(this.ident+'-persona').getValue().inputValue == 1) {
+            email = this.findById(this.ident+'-email').getValue();
+        }
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/autonewsletter/preview'
+                ,id: this.findById(this.ident+'-id').getValue()
+                ,email: email
+            }
+            ,scope: this
+            ,listeners: {
+                'success': {fn: function(response) {
+                    var message = Ext.decode(response.responseText);
+                    this.message = response.object;
+                    if(this.findById(this.ident +'-text').text == _('campaigner.newsletter.preview.showtext')) {
+                        message = this.message.message;
+                    } else {
+                        message = this.message.text;
+                    }
+                    Ext.get(this.ident+'-preview-box').update(message);
+                }, scope: this }
+            }
+        });
+    }, this);
+};
+Ext.extend(Campaigner.window.AutonewsletterPreview,MODx.Window);
+Ext.reg('campaigner-window-autonewsletter-preview',Campaigner.window.AutonewsletterPreview);

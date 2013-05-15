@@ -20,7 +20,9 @@ Campaigner.grid.Newsletter = function(config) {
         ,autosave: false
         ,remoteSort: true
         ,primaryKey: 'id'
-        ,columns: [{
+        ,columns: [
+            this.sm,
+        {
             header: _('campaigner.newsletter.subject')
             ,dataIndex: 'subject'
             ,sortable: true
@@ -89,6 +91,7 @@ Campaigner.grid.Newsletter = function(config) {
             xtype: 'combo'
             ,name: 'sent'
             ,id: 'campaigner-filter-sent'
+            ,width: 100
             ,store: [
                 ['-', _('campaigner.all')],
                 [1, _('campaigner.newsletter.sent')],
@@ -117,6 +120,7 @@ Campaigner.grid.Newsletter = function(config) {
             xtype: 'combo'
             ,name: 'state'
             ,id: 'campaigner-filter-state'
+            ,width: 100
             ,store: [
                 ['-', _('campaigner.all')],
                 [1, _('campaigner.newsletter.approved')],
@@ -761,6 +765,8 @@ Campaigner.window.NewsletterPreview = function(config) {
         ,width: 750
         ,url: Campaigner.config.connector_url
         ,action: 'mgr/newsletter/sendtest'
+        ,saveBtnText: _('campaigner.newsletter.sendtest')
+        ,cancelBtnText: _('campaigner.close')
         ,fields: [{
             xtype: 'hidden'
             ,name: 'id'
@@ -770,86 +776,87 @@ Campaigner.window.NewsletterPreview = function(config) {
             ,fieldLabel: _('campaigner.newsletter.preview.persona')
             ,name: 'persona'
             ,id: this.ident+'-persona'
-	    ,columns: 1
-	    ,items: [
+            ,columns: 1
+            ,items: [
                 {boxLabel: _('campaigner.newsletter.preview.nopersona'), name: 'persona', inputValue: '', checked: true},
                 {boxLabel: _('campaigner.newsletter.preview.personalize'), name: 'persona', inputValue: 1},
             ]
-	    ,listeners: {
-		'change': {fn: function() {
-		    this.fireEvent('show');
-		    Ext.get(this.ident+'-email').toggleClass('campaigner-hidden');
-		}, scope: this }
-	    }
+            ,listeners: {
+                'change': {fn: function() {
+                    this.fireEvent('show');
+                    Ext.get(this.ident+'-email').toggleClass('campaigner-hidden');
+                }, scope: this }
+            }
         },{
             xtype: 'textfield'
             ,fieldLabel: ''
             ,name: 'email'
+            ,value: MODx['config']['campaigner.test_mail']
             ,id: this.ident+'-email'
-	    ,cls: 'campaigner-hidden'
-	    ,listeners: {
-		'change': { fn: function() {
-		    this.fireEvent('show');
-	        }, scope: this }
-	    }
+            ,cls: 'campaigner-hidden'
+            ,listeners: {
+                'change': { fn: function() {
+                    this.fireEvent('show');
+                }, scope: this }
+            }
         }, {
-	    tag: 'div'
-	    ,html: '<span>' + _('campaigner.newsletter.preview') + '</span>'
-	    ,cls: 'campaigner-spacer'
-	}, {
-	    xtype: 'button'
-	    ,id: this.ident+'-text'
+            xtype: 'button'
+            ,id: this.ident+'-text'
             ,text: _('campaigner.newsletter.preview.showtext')
             ,listeners: {
                 'click': {fn: function(btn) {
-		    if(btn.text == _('campaigner.newsletter.preview.showhtml')) {
-		        btn.setText(_('campaigner.newsletter.preview.showtext'));
-			Ext.get(this.ident+'-preview-box').update(this.message.message);
-		    } else {
-			btn.setText(_('campaigner.newsletter.preview.showhtml'));
-			Ext.get(this.ident+'-preview-box').update(this.message.text);
-		    }
-		}, scope: this}
+                    if(btn.text == _('campaigner.newsletter.preview.showhtml')) {
+                        btn.setText(_('campaigner.newsletter.preview.showtext'));
+                        Ext.get(this.ident+'-preview-box').update(this.message.message);
+                    } else {
+                        btn.setText(_('campaigner.newsletter.preview.showhtml'));
+                        Ext.get(this.ident+'-preview-box').update(this.message.text);
+                    }
+                }, scope: this}
             }
-	}, {
-	    tag: 'div'
-	    ,id: this.ident+'-preview'
-	    ,html: '<div id="'+this.ident+'-preview-box" class="campaigner-preview"></div>'
-	}]
-	,buttons: [{
-            text: _('close')
-            ,scope: this
-            ,handler: function() { this.hide(); }
+        }, {
+            tag: 'div'
+            ,border: true
+            ,id: this.ident+'-preview'
+            ,style: 'height:500px;overflow:auto;padding:10px 0;border:1px solid #ccc'
+            ,html: '<div id="'+this.ident+'-preview-box"></div>'
         }]
+        // ,buttons: [{
+        //     text: _('close')
+        //     ,scope: this
+        //     ,handler: function() { this.hide(); }
+        // },{
+        //     text: _()
+        // }]
     });
     Campaigner.window.NewsletterPreview.superclass.constructor.call(this,config);
     
     this.addListener('show', function(cmp) {
-	var email;
-	if(this.findById(this.ident+'-persona').getValue().inputValue == 1) {
-	    email = this.findById(this.ident+'-email').getValue();
-	}
-	MODx.Ajax.request({
-	    url: Campaigner.config.connector_url
-	    ,params: {
-		action: 'mgr/newsletter/preview'
-		,id: this.findById(this.ident+'-id').getValue()
-		,email: email
-	    }
-	    ,scope: this
-	    ,listeners: {
-		'success': {fn: function(response) {
-		    var message = Ext.decode(response.responseText);
-		    this.message = response.object;
-		    if(this.findById(this.ident +'-text').text == _('campaigner.newsletter.preview.showtext')) {
-			message = this.message.message;
-		    } else {
-			message = this.message.text;
-		    }
-		    Ext.get(this.ident+'-preview-box').update(message);
-	        }, scope: this }
-	    }
-	});
+        var email;
+        if(this.findById(this.ident+'-persona').getValue().inputValue == 1) {
+            email = this.findById(this.ident+'-email').getValue();
+        }
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/newsletter/preview'
+                ,id: this.findById(this.ident+'-id').getValue()
+                ,email: email
+            }
+            ,scope: this
+            ,listeners: {
+                'success': {fn: function(response) {
+                    var message = Ext.decode(response.responseText);
+                    this.message = response.object;
+                    if(this.findById(this.ident +'-text').text == _('campaigner.newsletter.preview.showtext')) {
+                        message = this.message.message;
+                    } else {
+                        message = this.message.text;
+                    }
+                    Ext.get(this.ident+'-preview-box').update(message);
+                }, scope: this }
+            }
+        });
     }, this);
 };
 Ext.extend(Campaigner.window.NewsletterPreview,MODx.Window);
