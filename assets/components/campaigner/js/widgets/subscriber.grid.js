@@ -2,13 +2,13 @@ Campaigner.grid.Subscriber = function(config) {
     config = config || {};
     this.sm = new Ext.grid.CheckboxSelectionModel();
     this.gpstore = new Ext.data.Store({
-       proxy: new Ext.data.HttpProxy({url: Campaigner.config.connector_url, method:'POST'})
-       ,baseParams: { action: 'mgr/group/getlist' }
-       ,reader: new Ext.data.JsonReader({
-           root: 'results'
-           ,fields: [ {name: 'id'},{name: 'name'}, {name: 'color'}]
-       })
-   });
+        proxy: new Ext.data.HttpProxy({url: Campaigner.config.connector_url, method:'POST'})
+        ,baseParams: { action: 'mgr/group/getlist' }
+        ,reader: new Ext.data.JsonReader({
+            root: 'results'
+            ,fields: [ {name: 'id'},{name: 'name'}, {name: 'color'}]
+        })
+    });
     this.gpstore.load();
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url
@@ -75,134 +75,135 @@ Campaigner.grid.Subscriber = function(config) {
         }],
         /* Top toolbar */
         tbar : [{
-           xtype: 'button'
-           ,id: 'campaigner-subscriber-add'
-           ,text: _('campaigner.subscriber.add')
-           ,listeners: {
-            'click': {fn: this.addSubscriber, scope: this}
-        }
-    }, '|', {
-       xtype: 'button'
-       ,id: 'campaigner-subscriber-exportcsv'
-       ,text: _('campaigner.subscribers.exportcsv')
-       ,listeners: {
-        'click': {fn: this.exportCsv, scope: this}
-    }
-}, '|' , {
-   xtype: 'button'
-   ,id: 'campaigner-subscriber-exportxml'
-   ,text: _('campaigner.subscribers.exportxml')
-   ,listeners: {
-    'click': {fn: this.exportXml, scope: this}
-}
-},
-{
-   xtype: 'tbseparator'
-   ,cls: 'xtb-break'
-},
-{
-    xtype: 'combo'
-    ,name: 'active'
-    ,id: 'campaigner-filter-active'
-    ,store: [
-    ['-', _('campaigner.all')],
-    [1, _('campaigner.subscriber.active')],
-    [0, _('campaigner.subscriber.inactive')]
-    ]
-    ,editable: false
-    ,triggerAction: 'all'
-    ,lastQuery: ''
-    ,hiddenName: 'active'
-    ,submitValue: false
-    ,emptyText: _('campaigner.subscriber.filter.active')
-    ,listeners: {
-        'change': {fn: this.filterActive, scope: this}
-        ,'render': {fn: function(cmp) {
-            new Ext.KeyMap(cmp.getEl(), {
-                key: Ext.EventObject.ENTER
-                ,fn: function() {
-                    this.fireEvent('change',this.getValue());
-                    this.blur();
-                    return true;
-                }
-                ,scope: cmp
-            });
-      },scope:this}
-  }
-}, {
-    xtype: 'combo'
-    ,name: 'type'
-    ,id: 'campaigner-filter-type'
-    ,store: [
-    ['-', _('campaigner.all')],
-    [1, _('campaigner.subscriber.text')],
-    [0, _('campaigner.subscriber.html')]
-    ]
-    ,editable: false
-    ,triggerAction: 'all'
-    ,lastQuery: ''
-    ,hiddenName: 'type'
-    ,submitValue: false
-    ,emptyText: _('campaigner.subscriber.filter.type')
-    ,listeners: {
-        'change': {fn: this.filterType, scope: this}
-        ,'render': {fn: function(cmp) {
-            new Ext.KeyMap(cmp.getEl(), {
-                key: Ext.EventObject.ENTER
-                ,fn: function() {
-                    this.fireEvent('change',this.getValue());
-                    this.blur();
-                    return true;}
-                    ,scope: cmp
-                });
-        },scope:this}
-    }
-}, {
-    xtype: 'modx-combo'
-    ,name: 'group'
-    ,id: 'campaigner-filter-group'
-    ,store: this.gpstore
-    ,editable: false
-    ,triggerAction: 'all'
-    ,lastQuery: ''
-    ,hiddenName: 'group'
-    ,submitValue: false
-    ,emptyText: _('campaigner.subscriber.filter.group')
-    ,tpl: new Ext.XTemplate('<tpl for="."><div class="x-combo-list-item"><span style="color: {color};">{name}</span></div></tpl>')
-    ,listeners: {
-        'change': {fn: this.filterGroup, scope: this}
-        ,'render': {fn: function(cmp) {
-            new Ext.KeyMap(cmp.getEl(), {
-                key: Ext.EventObject.ENTER
-                ,fn: function() {
-                    this.fireEvent('change',this.getValue());
-                    this.blur();
-                    return true;}
-                    ,scope: cmp
-                });
-        },scope:this}
-    }
-}, {
-    xtype: 'textfield'
-    ,name: 'search'
-    ,id: 'campaigner-filter-search'
-    ,emptyText: _('search')+'...'
-    ,listeners: {
-        'change': {fn: this.filterSearch, scope: this}
-        ,'render': {fn: function(cmp) {
-            new Ext.KeyMap(cmp.getEl(), {
-                key: Ext.EventObject.ENTER
-                ,fn: function() {
-                    this.fireEvent('change',this.getValue());
-                    this.blur();
-                    return true;}
-                    ,scope: cmp
-                });
-        },scope:this}
-    }
-}]
-});
-Campaigner.grid.Subscriber.superclass.constructor.call(this,config);
+            xtype: 'button'
+            ,id: 'campaigner-subscriber-add'
+            ,text: _('campaigner.subscriber.add')
+            ,listeners: {
+                'click': {fn: this.addSubscriber, scope: this}
+            }
+        }, '|', {
+            xtype: 'splitbutton'
+            ,text: _('campaigner.subscriber.exports')
+            ,menu: {
+                items: [
+                {
+                    text: _('campaigner.subscribers.exportcsv')
+                    ,listeners: {
+                        'click': {fn: this.exportCsv, scope: this}
+                    }
+                },{
+                    text: _('campaigner.subscribers.exportxml')
+                    ,listeners: {
+                        'click': {fn: this.exportXml, scope: this}
+                    }
+                }]
+            }
+        }, {
+            xtype: 'tbseparator'
+            ,cls: 'xtb-break'
+        }, {
+            xtype: 'combo'
+            ,name: 'active'
+            ,id: 'campaigner-filter-active'
+            ,store: [
+                ['-', _('campaigner.all')],
+                [1, _('campaigner.subscriber.active')],
+                [0, _('campaigner.subscriber.inactive')]
+            ]
+            ,editable: false
+            ,triggerAction: 'all'
+            ,lastQuery: ''
+            ,hiddenName: 'active'
+            ,submitValue: false
+            ,emptyText: _('campaigner.subscriber.filter.active')
+            ,listeners: {
+                'change': {fn: this.filterActive, scope: this}
+                ,'render': {fn: function(cmp) {
+                    new Ext.KeyMap(cmp.getEl(), {
+                        key: Ext.EventObject.ENTER
+                        ,fn: function() {
+                            this.fireEvent('change',this.getValue());
+                            this.blur();
+                            return true;
+                        }
+                        ,scope: cmp
+                    });
+                },scope:this}
+            }
+        }, {
+            xtype: 'combo'
+            ,name: 'type'
+            ,id: 'campaigner-filter-type'
+            ,store: [
+                ['-', _('campaigner.all')],
+                [1, _('campaigner.subscriber.text')],
+                [0, _('campaigner.subscriber.html')]
+            ]
+            ,editable: false
+            ,triggerAction: 'all'
+            ,lastQuery: ''
+            ,hiddenName: 'type'
+            ,submitValue: false
+            ,emptyText: _('campaigner.subscriber.filter.type')
+            ,listeners: {
+                'change': {fn: this.filterType, scope: this}
+                ,'render': {fn: function(cmp) {
+                    new Ext.KeyMap(cmp.getEl(), {
+                        key: Ext.EventObject.ENTER
+                        ,fn: function() {
+                            this.fireEvent('change',this.getValue());
+                            this.blur();
+                            return true;
+                        }, scope: cmp
+                    });
+                },scope:this}
+            }
+        }, {
+            xtype: 'modx-combo'
+            ,name: 'group'
+            ,id: 'campaigner-filter-group'
+            ,store: this.gpstore
+            ,editable: false
+            ,triggerAction: 'all'
+            ,lastQuery: ''
+            ,hiddenName: 'group'
+            ,submitValue: false
+            ,emptyText: _('campaigner.subscriber.filter.group')
+            ,tpl: new Ext.XTemplate('<tpl for="."><div class="x-combo-list-item"><span style="color: {color};">{name}</span></div></tpl>')
+            ,listeners: {
+                'change': {fn: this.filterGroup, scope: this}
+                ,'render': {fn: function(cmp) {
+                    new Ext.KeyMap(cmp.getEl(), {
+                        key: Ext.EventObject.ENTER
+                        ,fn: function() {
+                            this.fireEvent('change',this.getValue());
+                            this.blur();
+                            return true;
+                        }, scope: cmp
+                    });
+                },scope:this}
+            }
+        }, {
+            xtype: 'textfield'
+            ,name: 'search'
+            ,id: 'campaigner-filter-search'
+            ,emptyText: _('search')+'...'
+            ,listeners: {
+                'change': {fn: this.filterSearch, scope: this}
+                ,'render': {fn: function(cmp) {
+                    new Ext.KeyMap(cmp.getEl(), {
+                        key: Ext.EventObject.ENTER
+                        ,fn: function() {
+                            this.fireEvent('change',this.getValue());
+                            this.blur();
+                            return true;
+                        }, scope: cmp
+                    });
+                },scope:this}
+            }
+        }]
+    });
+    Campaigner.grid.Subscriber.superclass.constructor.call(this,config);
 };
 
 Ext.extend(Campaigner.grid.Subscriber,MODx.grid.Grid,{

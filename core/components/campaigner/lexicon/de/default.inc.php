@@ -179,6 +179,10 @@ $_lang['campaigner.subscribe.error.noemail'] = 'Es muss eine g&uuml;ltige Email-
 $_lang['campaigner.subscribe.error.nogroup'] = 'Bitte w&auml;hlen sie eine Gruppe.';
 $_lang['campaigner.subscribe.success'] = 'Newsletter erfolgreich abonniert.';
 
+$_lang['campaigner.subscriber.exports'] = 'Exporte';
+$_lang['campaigner.subscribers.exportcsv'] = 'CSV exportieren';
+$_lang['campaigner.subscribers.exportxml'] = 'XML exportieren';
+
 // Unsubscribe process
 $_lang['campaigner.unsubscribe.error.nosubscriber'] = 'Abonnent wurde nicht gefunden.';
 $_lang['campaigner.unsubscribe.error.invalidkey'] = 'Sicherheitschl&uuml;ssel war ung&uuml;ltig.';
@@ -190,9 +194,8 @@ $_lang['campaigner.confirm.error.active'] = 'Abonnent ist schon best&auml;tigt.'
 $_lang['campaigner.confirm.error.invalidkey'] = 'Ativierungsschlüssel war ungültig.';
 $_lang['campaigner.confirm.success'] = 'Best&auml;tigung erfolgreich! Ab sofort erhalten sie unseren Newsletter.';
 
-$_lang['campaigner.subscribers.exportcsv'] = 'CSV exportieren';
-$_lang['campaigner.subscribers.exportxml'] = 'XML exportieren';
 
+// Queue
 $_lang['campaigner.queue'] = 'Warteschlange';
 $_lang['campaigner.queue.info'] = 'Jede Nachricht die über Campaigner verschickt wird, oder wurde, kommt in die Warteschlange';
 $_lang['campaigner.queue.receiver'] = 'Empf&auml;nger';

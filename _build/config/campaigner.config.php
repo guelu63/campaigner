@@ -545,6 +545,7 @@ $components = array(
             'CampaignerTemplate' => array(
                 'category' => 'campaigner',
             ),
+        ),
         //     'Template2' => array(
         //         'category' => 'campaigner',
         //         'description' => 'Description for Template two',
