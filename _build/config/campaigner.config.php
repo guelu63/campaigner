@@ -627,6 +627,7 @@ $components = array(
         'audio' => true,
         'video' => true,
         'themes' => true,
+        'imports' => true,
     ),
 
 

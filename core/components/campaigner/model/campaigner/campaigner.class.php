@@ -23,9 +23,11 @@ class Campaigner
         require_once $this->modx->getOption('core_path') .'/model/modx/mail/modphpmailer.class.php';
 
         $basePath = $this->modx->getOption('campaigner.core_path',$config,$this->modx->getOption('core_path').'components/campaigner/');
+        $assetsPath = $this->modx->getOption('campaigner.assets_path',$config,$this->modx->getOption('assets_path').'components/campaigner/');
         $assetsUrl = $this->modx->getOption('campaigner.assets_url',$config,$this->modx->getOption('assets_url').'components/campaigner/');
         $this->config = array_merge(array(
             'basePath'       => $basePath,
+            'assetsPath'     => $assetsPath,
             'corePath'       => $basePath,
             'modelPath'      => $basePath.'model/',
             'processorsPath' => $basePath.'processors/',
@@ -127,7 +129,8 @@ class Campaigner
         
         // new subscriber
         $subscriber     = $this->modx->newObject('Subscriber');
-        $data['key']    = md5(time() . substr($data['email'], rand(1,3), rand(-4, -1)));
+        $data['key']    = $this->generate_key(array('email' => $data['email']));
+        // $data['key']    = md5(time() . substr($data['email'], rand(1,3), rand(-4, -1)));
         $data['active'] = 0;
         $data['since']  = time();
         $data['text']   = !empty($data['text']) ? 1 : 0;
@@ -181,6 +184,16 @@ class Campaigner
        }
 
        return true;
+   }
+
+   /**
+    * Generate subscriber key
+    * @param  array  $options Information to use for encryption
+    * @return string          MD5 generated string
+    */
+   public function generate_key($options = array())
+   {
+       return md5(time() . substr($options['email'], rand(1,3), rand(-4, -1)));
    }
 
     /**
@@ -781,12 +794,13 @@ class Campaigner
     public function processNewsletter($newsletter, $subscriber, $tags = array())
     {
         $newsletter = str_replace(array('%5B%5B%2B','%5B%5B&#43;', '%5B%5B', '%5D%5D'), array('[[+', '[[+', '[[', ']]'), $newsletter);
-        
         $allTags = array_merge($tags, $this->getSubscriberTags($subscriber));
         // var_dump($allTags);
+        // var_dump($tags);
         $this->modx->unsetPlaceholders(array_keys($allTags));
         $this->modx->setPlaceholders($allTags);
-        
+        if($tags['process'] === 'false')
+            return $newsletter;
         $this->modx->parser->processElementTags('', $newsletter, true, false, '[[', ']]', array(), $maxIterations);
         $this->modx->parser->processElementTags('', $newsletter, true, true, '[[', ']]', array(), $maxIterations);
 
@@ -1153,7 +1167,7 @@ class Campaigner
         if ( $type == 'image' ) {
             $url = $this->modx->getOption('site_url').$this->modx->getOption('assets_url').'components/groupeletters/?t='.base_convert($this->created_urls[$url],10,36).'|[[+campaigner.key]]&amp;';
         } else {
-            $url = $this->modx->makeUrl($this->modx->getOption('campaigner.tracking_page', '', 1),'', array('t' => base_convert($this->created_urls[$url],10,36).'|[[+campaigner.key]]'), 'http');
+            $url = $this->modx->makeUrl($this->modx->getOption('campaigner.tracking_page', '', 1),'', array('t' => base_convert($this->created_urls[$url],10,36).'|[[+campaigner.key]]'), 'full');
         }
         // $url = str_replace(array('%5B%5B%2B','%5B%5B&#43;', '%5B%5B', '%5D%5D'), array('[[+', '[[+', '[[', ']]'), $url);
         return str_replace('https://', 'http://', $url);
@@ -1211,6 +1225,19 @@ class Campaigner
                         $click->set('view_total', $click->get('view_total')+1);
                     } else {
                         $click = $this->modx->newObject('SubscriberHits');
+
+                        //Test if it is a shared client
+                        // if (!empty($_SERVER['HTTP_CLIENT_IP'])){
+                        //     $ip=$_SERVER['HTTP_CLIENT_IP'];
+                        // //Is it a proxy address
+                        // } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+                        //   $ip= $_SERVER['HTTP_X_FORWARDED_FOR'];
+                        // }else{
+                        //   $ip= $_SERVER['REMOTE_ADDR'];
+                        // }
+                        //The value of $ip at this point would look something like: "192.0.34.166"
+                        $ip = ip2long($_SERVER['REMOTE_ADDR']);
+
                         $data = array(
                                 'newsletter' => $link->get('newsletter'),
                                 'subscriber' => $subscriber->get('id'),
@@ -1218,6 +1245,8 @@ class Campaigner
                                 'hit_type' => $type,
                                 'hit_date' => date('Y-m-d H:i:s'),
                                 'view_total' => 1,
+                                'client' => $_SERVER['HTTP_USER_AGENT'],
+                                'ip' => $ip,
                             );
                         $click->fromArray($data);
                     }

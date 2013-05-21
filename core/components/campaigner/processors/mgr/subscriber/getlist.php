@@ -61,7 +61,7 @@ $list = array();
 foreach ($subscribers as $subscriber) {
     $subscriber = $subscriber->toArray();
     $subscriber['type'] = $subscriber['text'] == 1 ? 'text' : 'html';
-    $subscriber['since'] = date('d.m.Y', $subscriber['since']);
+    // $subscriber['since'] = date('d.m.Y', $subscriber['since']);
     $grpArray = array();
     $c = $modx->newQuery('Group');
     $c->leftJoin('GroupSubscriber', 'GroupSubscriber', '`GroupSubscriber`.`group` = `Group`.`id`');
@@ -81,6 +81,7 @@ foreach ($subscribers as $subscriber) {
               $grpArray[] = explode(',', $grp);
         }
         */
+    // $subscriber['since'] = strtotime($subscriber['since']);
     $subscriber['groups'] = $grpArray;
     $list[] = $subscriber;
 }

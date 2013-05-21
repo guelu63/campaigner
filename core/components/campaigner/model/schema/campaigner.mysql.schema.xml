@@ -162,6 +162,8 @@
 		<field key="hit_type" dbtype="varchar" precision="16" phptype="string" null="true" />
 		<field key="hit_date" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="view_total" dbtype="int" precision="11" phptype="integer" null="true" />
+		<field key="client" dbtype="varchar" precision="255" phptype="string" null="true" />
+		<field key="ip" dbtype="int" precision="11" phptype="integer" null="true" />
 
 		<index alias="newsletter" name="newsletter" primary="false" unique="false" type="BTREE" >
 			<column key="newsletter" length="" collation="A" null="true" />

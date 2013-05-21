@@ -32,6 +32,7 @@ $items = $modx->getCollection('SubscriberHits', $c);
 $list = array();
 foreach ($items as $item) {
     $item = $item->toArray();
+    $item['ip'] = long2ip($item['ip']);
     $list[] = $item;
 }
 return $this->outputArray($list,$count);

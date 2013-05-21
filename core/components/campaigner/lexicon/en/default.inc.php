@@ -44,6 +44,7 @@ $_lang['campaigner.newsletter.date'] = 'Datum';
 $_lang['campaigner.newsletter.sentdate'] = 'Gesendet am';
 $_lang['campaigner.newsletter.document'] = 'Dokument';
 $_lang['campaigner.newsletter.total'] = 'Total';
+$_lang['campaigner.newsletter.filter.sent'] = 'Versandstatus';
 $_lang['campaigner.newsletter.sent'] = 'Gesendet';
 $_lang['campaigner.newsletter.scheduled'] = 'Angesetzt';
 $_lang['campaigner.newsletter.add'] = 'Neuer Newswletter';
@@ -52,6 +53,7 @@ $_lang['campaigner.newsletter.groups_add'] = 'Gruppen hinzuf&uuml;gen';
 $_lang['campaigner.newsletter.remove'] = 'Newsletter l&ouml;schen';
 $_lang['campaigner.newsletter.saved'] = 'Newsletter gespeichert (angesetzt)';
 $_lang['campaigner.newsletter.state'] = 'Status';
+$_lang['campaigner.newsletter.filter.state'] = 'Freigabestatus';
 $_lang['campaigner.newsletter.preview'] = 'Vorschau';
 $_lang['campaigner.newsletter.bounced'] = 'Bounced';
 $_lang['campaigner.newsletter.priority'] = 'Priorit&auml;t';
@@ -79,6 +81,7 @@ $_lang['campaigner.newsletter.preview.nopersona'] = 'Nein';
 $_lang['campaigner.newsletter.preview.personalize'] = 'Ja, f&uuml;r...';
 $_lang['campaigner.newsletter.preview.showtext'] = 'Text anzeigen';
 $_lang['campaigner.newsletter.preview.showhtml'] = 'HTML anzeigen';
+$_lang['campaigner.newsletter.preview.process_tags'] = 'Tags verarbeiten';
 
 $_lang['campaigner.newsletter.create.info'] = 'Please note: The normal way to make a Campaigner newsletter is to create a document within your newsletters folders as specified in the config.
 But you can also create a newsletter from another location. By checking the "copy" option a copy will be moved to the newsletter location.';
@@ -162,7 +165,9 @@ $_lang['campaigner.subscriber.astext'] = 'Newsletter als Text empfangen';
 $_lang['campaigner.subscriber.text'] = 'Text';
 $_lang['campaigner.subscriber.html'] = 'Html';
 $_lang['campaigner.subscriber.edit'] = 'Abonnent bearbeiten';
-$_lang['campainger.subscriber.since'] = 'Registriert seit';
+$_lang['campaigner.subscriber.show_statistics'] = 'Zeige Statistiken';
+$_lang['campaigner.subscriber.key'] = 'Schl&uuml;ssel';
+$_lang['campaigner.subscriber.since'] = 'Registriert seit';
 
 $_lang['campaigner.subscriber.saved'] = 'Abonnent gespeichert';
 $_lang['campaigner.subscriber.removed'] = 'Abonnent entfernt';
@@ -179,9 +184,27 @@ $_lang['campaigner.subscribe.error.noemail'] = 'Es muss eine g&uuml;ltige Email-
 $_lang['campaigner.subscribe.error.nogroup'] = 'Bitte w&auml;hlen sie eine Gruppe.';
 $_lang['campaigner.subscribe.success'] = 'Newsletter erfolgreich abonniert.';
 
-$_lang['campaigner.subscriber.exports'] = 'Exporte';
+$_lang['campaigner.subscriber.exports'] = 'Transport';
 $_lang['campaigner.subscribers.exportcsv'] = 'CSV exportieren';
 $_lang['campaigner.subscribers.exportxml'] = 'XML exportieren';
+$_lang['campaigner.subscribers.importcsv'] = 'CSV importieren';
+
+// Import subscribers
+$_lang['campaigner.subscriber.import.button_text'] = 'Importieren';
+$_lang['campaigner.subscriber.import.select_file'] = 'Datei ausw&auml;hlen';
+$_lang['campaigner.subscriber.import.save_file'] = 'Datei speichern';
+$_lang['campaigner.subscriber.import.delimiter'] = 'Feldbegrenzer';
+$_lang['campaigner.subscriber.import.fieldset_text'] = 'Feldabgleich';
+$_lang['campaigner.subscriber.import.firstname'] = 'Vorname';
+$_lang['campaigner.subscriber.import.lastname'] = 'Nachname';
+$_lang['campaigner.subscriber.import.email'] = 'E-Mail';
+$_lang['campaigner.subscriber.import.active'] = 'Active';
+$_lang['campaigner.subscriber.import.groups'] = 'Gruppen';
+
+
+$_lang['campaigner.subscriber.batch_actions'] = 'Stapel-Aktionen';
+$_lang['campaigner.subscribers.batch_deactivate'] = 'Markierte deaktivieren';
+$_lang['campaigner.subscribers.batch_remove'] = 'Markierte entfernen';
 
 // Unsubscribe process
 $_lang['campaigner.unsubscribe.error.nosubscriber'] = 'Abonnent wurde nicht gefunden.';
@@ -325,8 +348,14 @@ $_lang['campaigner.statistics.unsubcribers_info'] = 'Abmeldungen, die durch dies
 
 $_lang['campaigner.statistics.reason'] = 'Grund';
 $_lang['campaigner.statistics.via'] = 'Via';
-// $_lang[''] = '';
-// $_lang[''] = '';
+
+// Templates
+$_lang['campaigner.templates'] = 'Templates';
+$_lang['campaigner.templates.info'] = 'Editieren Sie ihre Templates';
+
+// Fields
+$_lang['campaigner.fields'] = 'Felder';
+$_lang['campaigner.fields.info'] = 'Editieren Sie benutzerdefinierte Felder';
 // $_lang[''] = '';
 // $_lang[''] = '';
 // $_lang[''] = '';

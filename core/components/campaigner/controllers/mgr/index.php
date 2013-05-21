@@ -3,10 +3,13 @@
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/campaigner.panel.js');
 // if($modx->getOption('campgaigner.has_autonewsletter')) {
 // 	$modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/campaigner.auto.panel.js');
-	
 // } else {
-	
 // }
+
+// Extend ExtJS
+$modx->regClientStartupScript($campaigner->config['jsUrl'].'/custom/fileuploadfield.js');
+$modx->regClientStartupScript($modx->getOption('base_url') . 'manager/assets/modext/util/datetime.js');
+
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/autonewsletter.grid.js');
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/newsletter.grid.js');
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/group.grid.js');

@@ -172,7 +172,7 @@ Campaigner.window.Group = function(config) {
         title: _('campaigner.group')
         ,id: this.ident
         ,height: 400
-        ,width: 475
+        ,width: 300
         ,url: Campaigner.config.connector_url
         ,action: 'mgr/group/save'
         ,fields: [{

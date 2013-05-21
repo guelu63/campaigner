@@ -36,6 +36,7 @@ HAVE
 * Allows to create newsletters which will be sent automatically
 	* Send daily, weekly, monthly and on a certain day
 * Simple export for subscribers (XML, CSV)
+* Simple import for subscribers (CSV)
 * Bounce-Handling
 * Allows either cron queue processing or manual processing
 * Track statistics for your newsletters:

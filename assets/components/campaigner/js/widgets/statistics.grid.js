@@ -62,12 +62,12 @@ Campaigner.grid.Statistics = function(config) {
             header: _('campaigner.statistics.sent')
             ,dataIndex: 'sent'
             ,sortable: true
-            ,width: 10
+            ,width: 5
         },{
             header: _('campaigner.statistics.unsubscribers')
             ,dataIndex: 'unsubscriber'
             ,sortable: true
-            ,width: 10
+            ,width: 5
         }]
         // /* Top toolbar */
         // tbar : [
@@ -284,14 +284,14 @@ Campaigner.grid.StatisticsDetailsOpen = function(config) {
         }
         ,primaryKey: 'id'
         ,sm: this.sm
-        ,fields: ['id','link','email', 'hit_date', 'view_total']
+        ,fields: ['id','link','email', 'hit_date', 'view_total', 'client', 'ip']
         ,paging: true
         ,remoteSort: true
         ,columns: [{
             header: _('campaigner.statistics.link')
             ,dataIndex: 'link'
             ,sortable: true
-            ,width: 25
+            ,width: 15
         },{
             header: _('campaigner.subscriber')
             ,dataIndex: 'email'
@@ -306,7 +306,17 @@ Campaigner.grid.StatisticsDetailsOpen = function(config) {
             header: _('campaigner.statistics.open')
             ,dataIndex: 'view_total'
             ,sortable: true
-            ,width: 10
+            ,width: 5
+        },{
+            header: _('campaigner.statistics.client')
+            ,dataIndex: 'client'
+            ,sortable: true
+            ,width: 25
+        },{
+            header: _('campaigner.statistics.ip')
+            ,dataIndex: 'ip'
+            ,sortable: true
+            ,width: 15
         }],
         tbar : [{
             xtype: 'textfield'
@@ -358,7 +368,7 @@ Campaigner.grid.StatisticsDetailsHits = function(config) {
             emptyText: _('campaigner.grid.no_data')
         }
         ,sm: this.sm
-        ,fields: ['id','link','email', 'hit_date', 'view_total']
+        ,fields: ['id','link','email', 'hit_date', 'view_total', 'client', 'ip']
         ,paging: true
         ,remoteSort: true
         ,columns: [{
@@ -379,6 +389,16 @@ Campaigner.grid.StatisticsDetailsHits = function(config) {
         },{
             header: _('campaigner.statistics.hits')
             ,dataIndex: 'view_total'
+            ,sortable: true
+            ,width: 10
+        },{
+            header: _('campaigner.statistics.client')
+            ,dataIndex: 'client'
+            ,sortable: true
+            ,width: 10
+        },{
+            header: _('campaigner.statistics.ip')
+            ,dataIndex: 'ip'
             ,sortable: true
             ,width: 10
         }],

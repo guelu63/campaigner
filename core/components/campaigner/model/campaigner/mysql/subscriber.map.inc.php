@@ -24,7 +24,7 @@ $xpdo_meta_map['Subscriber']= array (
       'precision' => '1',
       'attributes' => 'unsigned',
       'phptype' => 'integer',
-      'null' => false,
+      'null' => true,
     ),
     'email' => 
     array (
@@ -78,10 +78,8 @@ $xpdo_meta_map['Subscriber']= array (
     ),
     'since' => 
     array (
-      'dbtype' => 'int',
-      'precision' => '11',
-      'attributes' => 'unsigned',
-      'phptype' => 'integer',
+      'dbtype' => 'datetime',
+      'phptype' => 'datetime',
       'null' => true,
     ),
     'address' => 
