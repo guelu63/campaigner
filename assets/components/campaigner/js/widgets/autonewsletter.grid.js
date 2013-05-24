@@ -455,10 +455,10 @@ Ext.onReady(function() {
         ,listeners: {
             load: function(t, records, options) {
                 // this.ident = config.ident || 'campaigner-'+Ext.id();
-                console.log(this);
+                // console.log(this);
                 for(var i = 0; i < records.length; i++) {
-                    console.log(records[i].data.name);
-                    console.log(i[0]);
+                    // console.log(records[i].data.name);
+                    // console.log(i[0]);
                     checkboxArray.push({name: "groups[]", inputValue: records[i].data.id, boxLabel: records[i].data.name});
                 }
             }
@@ -574,7 +574,17 @@ Campaigner.window.AutonewsletterTest = function(config) {
             ,name: 'email'
             ,value: MODx['config']['campaigner.test_mail']
             ,id: this.ident+'-email'
-        }, {
+        }
+        ,{
+            xtype: 'textarea'
+            ,grow: true
+            ,anchor: '100%'
+            ,fieldLabel: _('campaigner.newsletter.sendtest.instructions')
+            ,name: 'instructions'
+            ,value: MODx['config']['campaigner.test_instructions']
+            ,id: this.ident+'-instructions'
+        }
+        ,{
            tag: 'div'
            ,html: '<span>' + _('campaigner.or') + '</span>'
            ,cls: 'campaigner-spacer'

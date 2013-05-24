@@ -9,6 +9,7 @@ $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/campaigner.
 // Extend ExtJS
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/custom/fileuploadfield.js');
 $modx->regClientStartupScript($modx->getOption('base_url') . 'manager/assets/modext/util/datetime.js');
+// $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/utilities.helper.js');
 
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/autonewsletter.grid.js');
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/newsletter.grid.js');
@@ -17,6 +18,7 @@ $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/subscriber.
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/queue.grid.js');
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/bounce.grid.js');
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/statistics.grid.js');
+$modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/socialsharing.grid.js');
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'sections/home.js');
 
 return '<div id="campaigner-panel-home-div"></div>';

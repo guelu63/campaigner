@@ -7,6 +7,15 @@ if ($subscriber == null) {
 	return $modx->error->failure($modx->lexicon('campaigner.subscriber.notfound'));
 }
 
+$unsub = $this->modx->newObject('Unsubscriber');
+$data = array(
+    'subscriber' => $subscriber->get('email'),
+    'date' => time(),
+    'via' => 'admin',
+    );
+$unsub->fromArray($data);
+if($unsub->save())
+
 // Remove group
 $subscriber->remove();
 

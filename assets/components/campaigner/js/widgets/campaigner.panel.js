@@ -134,26 +134,6 @@ Campaigner.panel.Main = function(config) {
                     preventRender: true
                 }]
             },{
-                title: _('campaigner.templates'),
-                defaults: { autoHeight: true },
-                id: 'campaigner-tab-templates',
-                disabled: true,
-                items: [{
-                    html: '<p>'+_('campaigner.templates.info')+'</p>',
-                    border: false,
-                    bodyStyle: 'padding: 10px'
-                }]
-            },{
-                title: _('campaigner.fields'),
-                defaults: { autoHeight: true },
-                id: 'campaigner-tab-fields',
-                disabled: true,
-                items: [{
-                    html: '<p>'+_('campaigner.fields.info')+'</p>',
-                    border: false,
-                    bodyStyle: 'padding: 10px'
-                }]
-            },{
                 title: _('campaigner.statistics'),
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-statistics',
@@ -164,6 +144,43 @@ Campaigner.panel.Main = function(config) {
                 },{
                     xtype: 'campaigner-grid-statistics',
                     id: 'campaigner-grid-statistics',
+                    preventRender: true
+                }]
+            }
+            // ,{
+            //     title: _('campaigner.templates'),
+            //     defaults: { autoHeight: true },
+            //     id: 'campaigner-tab-templates',
+            //     hidden: true,
+            //     items: [{
+            //         html: '<p>'+_('campaigner.templates.info')+'</p>',
+            //         border: false,
+            //         bodyStyle: 'padding: 10px'
+            //     }]
+            // }
+            // ,{
+            //     title: _('campaigner.fields'),
+            //     defaults: { autoHeight: true },
+            //     id: 'campaigner-tab-fields',
+            //     hidden: true,
+            //     items: [{
+            //         html: '<p>'+_('campaigner.fields.info')+'</p>',
+            //         border: false,
+            //         bodyStyle: 'padding: 10px'
+            //     }]
+            // }
+            ,{
+                title: _('campaigner.sharing'),
+                defaults: { autoHeight: true },
+                id: 'campaigner-tab-sharing',
+                // disabled: true,
+                items: [{
+                    html: '<p>'+_('campaigner.sharing.info')+'</p>',
+                    border: false,
+                    bodyStyle: 'padding: 10px'
+                },{
+                    xtype: 'campaigner-grid-socialsharing',
+                    id: 'campaigner-grid-socialsharing',
                     preventRender: true
                 }]
             }]

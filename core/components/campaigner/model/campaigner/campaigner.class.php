@@ -917,6 +917,7 @@ class Campaigner
             'campaigner.date'         => date('d.m.Y H:i', $newsletter->get('publishedon')),
             'campaigner.send_date'    => date('d.m.Y', $newsletter->get('sent_date')),
             'campaigner.letter'       => $newsletter->get('id'),
+            'campaigner.instructions' => $newsletter->get('instructions'),
             );
     }
 
@@ -1153,6 +1154,7 @@ class Campaigner
             $this->getTrackingUrls($newsletterID);
         }
         if ( empty($this->created_urls[$url]) ){
+
             $link = $this->modx->newObject('NewsletterLink');
             $link->set('url', $url);
             $link->set('newsletter', $newsletterID);
@@ -1198,7 +1200,7 @@ class Campaigner
         // Nothing set => Return
         if ( !isset($_REQUEST['t']) && $type == 'click' )
             return;
-        
+
         if ( isset($_REQUEST['t']) ) {
             list($t, $key ) = explode('|',$_REQUEST['t'], 2 );
             $link_id = base_convert($t, 36, 10);
@@ -1237,6 +1239,16 @@ class Campaigner
                         // }
                         //The value of $ip at this point would look something like: "192.0.34.166"
                         $ip = ip2long($_SERVER['REMOTE_ADDR']);
+
+                        // Track sharing
+                        $shares = array(
+                            'facebook'  => 'http://www.facebook.com',
+                            'twitter'   => 'http://www.twitter.com',
+                            );
+                        foreach($shares as $key => $value) {
+                            if(strpos($link->get('url'), $value) !== FALSE)
+                                $type = $key;
+                        }
 
                         $data = array(
                                 'newsletter' => $link->get('newsletter'),
@@ -1283,10 +1295,6 @@ class Campaigner
                             $opened->save();
                         }
                     }
-                    // add campaign/newsletter title for analytics:
-                    // 
-                    // getCollectionGraph('Box', '{"BoxColors":{"Color":{}}}', array('Box.width' => 40));
-                    // 
                     
                     $c = $this->modx->newQuery('modResource');
                     $c->leftJoin('Newsletter', 'Newsletter', '`modResource`.`id` = `Newsletter`.`docid`');
@@ -1371,7 +1379,6 @@ class Campaigner
             echo $contents;
             // $this->modx->log(modX::LOG_LEVEL_ERROR,'EletterNewsletter->logAction() filename: '.$filename );
             //exit;
-
         }
     }
 

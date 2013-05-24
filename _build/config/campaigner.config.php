@@ -659,6 +659,7 @@ $components = array(
         'default',
         'addUsers',
         'tables',
+        'policy',
     ),
 
     /* (optional) Validators can abort the install after checking

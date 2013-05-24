@@ -12,6 +12,8 @@ if(!$newsletter) return $modx->error->failure($modx->lexicon('campaigner.newslet
 $document = $modx->getObject('modDocument', array('id' => $newsletter->get('docid')));
 if(!$document) return $modx->error->failure($modx->lexicon('campaigner.newsletter.error.notfound'));
 
+$newsletter->set('instructions', $_POST['instructions']);
+
 // start message composing
 $message = $modx->campaigner->composeNewsletter($document);
 $subscriber = null;
@@ -58,9 +60,11 @@ if(!empty($_POST['email'])) {
     if($_POST['personalize'])
         $subscriber = $modx->getObject('Subscriber', array('email' => $_POST['email']));
     
+    $tags = $modx->campaigner->getNewsletterTags($newsletter);
+
     // the messages
     $message = $modx->campaigner->makeTrackingUrls($message, $newsletter);
-    $message = $modx->campaigner->processNewsletter($message, $subscriber);
+    $message = $modx->campaigner->processNewsletter($message, $subscriber, $tags);
     
     // echo $message;
     // die();

@@ -3,9 +3,8 @@ $ids = explode(',', $_REQUEST['marked']);
 
 $queue = $modx->getCollection('Queue', array('id:IN' => $ids));
 
-if ($queue == null) {
+if ($queue == null)
     return $modx->error->failure($modx->lexicon('campaigner.queue.error.notfound'));
-}
 
 foreach($queue as $item) {
 	// Reduce newsletter total when unsend

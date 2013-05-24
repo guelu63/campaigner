@@ -208,6 +208,7 @@ Campaigner.grid.Subscriber = function(config) {
             ,listeners: {
                 'click': {fn: this.addSubscriber, scope: this}
             }
+            ,hidden: MODx.perm.add_subscriber ? false : true
         }, {
             xtype: 'splitbutton'
             ,text: _('campaigner.subscriber.exports')
@@ -454,6 +455,16 @@ return true;
     this.updateWindow.setValues(vals);
     this.updateWindow.show(e.target);
 }
+// For this to work the processor needs refactoring
+// ,verifyPerm: function(perm,rs) {
+//     var valid = true;
+//     for (var i=0;i<rs.length;i++) {
+//         if (rs[i].data.cls.indexOf(perm) == -1) {
+//             valid = false;
+//         }
+//     }
+//     return valid;
+// }
 ,getMenu: function() {
     var m = [];
     if (this.getSelectionModel().getCount() == 1) {
@@ -469,21 +480,24 @@ return true;
         });
         m.push('-');
         if(this.menu.record.active != 1) {
-          m.push({
-              text: _('campaigner.subscriber.activate')
-              ,handler: this.activateSubscriber
-          });
-      } else {
-          m.push({
-              text: _('campaigner.subscriber.deactivate')
-              ,handler: this.deactivateSubscriber
-          });
-      }
-      m.push('-');
-      m.push({
-          text: _('campaigner.subscriber.remove')
-          ,handler: this.removeSubscriber
-      });
+            m.push({
+                text: _('campaigner.subscriber.activate')
+                ,handler: this.activateSubscriber
+            });
+        } else {
+            m.push({
+                text: _('campaigner.subscriber.deactivate')
+                ,handler: this.deactivateSubscriber
+            });
+        }
+        // if(this.verifyPerm('remove_subscriber', rs)) {
+        if(MODx.perm.remove_subscriber) {
+            m.push('-');
+            m.push({
+                text: _('campaigner.subscriber.remove')
+                ,handler: this.removeSubscriber
+            });
+        }
   }
   if (m.length > 0) {
     this.addContextMenuItem(m);
@@ -546,6 +560,7 @@ Campaigner.window.Import = function(config) {
             collapsed: false,
             items: [{
                 xtype: 'textfield'
+                ,anchor: '100%'
                 ,id: 'firstname'
                 ,name: 'import[firstname]'
                 ,fieldLabel: _('campaigner.subscriber.import.firstname')
@@ -553,6 +568,7 @@ Campaigner.window.Import = function(config) {
             }
             ,{
                 xtype: 'textfield'
+                ,anchor: '100%'
                 ,id: 'lastname'
                 ,name: 'import[lastname]'
                 ,fieldLabel: _('campaigner.subscriber.import.lastname')
@@ -560,6 +576,7 @@ Campaigner.window.Import = function(config) {
             }
             ,{
                 xtype: 'textfield'
+                ,anchor: '100%'
                 ,id: 'email'
                 ,name: 'import[email]'
                 ,fieldLabel: _('campaigner.subscriber.import.email')
@@ -567,6 +584,7 @@ Campaigner.window.Import = function(config) {
             }
             ,{
                 xtype: 'textfield'
+                ,anchor: '100%'
                 ,id: 'active'
                 ,name: 'import[active]'
                 ,fieldLabel: _('campaigner.subscriber.import.active')
@@ -574,6 +592,7 @@ Campaigner.window.Import = function(config) {
             }
             ,{
                 xtype: 'textfield'
+                ,anchor: '100%'
                 ,id: 'groups'
                 ,name: 'import[groups]'
                 ,fieldLabel: _('campaigner.subscriber.import.groups')
@@ -596,7 +615,6 @@ Ext.extend(Campaigner.window.Import,MODx.Window);
 
 Ext.extend(Campaigner.window.Import,MODx.Window,{
     analyzeImport: function(file) {
-        console.log(file);
         MODx.Ajax.request({
             url: Campaigner.config.connector_url
             ,params: {
@@ -680,42 +698,50 @@ Campaigner.window.Subscriber = function(config) {
         }
         ,fields: [{
             xtype: 'textfield'
+            ,anchor: '100%'
             ,readOnly: true
             ,hidden: true
             ,name: 'id'
             ,id: this.ident +'-id'
         },{
             xtype: 'textfield'
+            ,anchor: '100%'
             ,fieldLabel: _('campaigner.subscriber.address')
             ,name: 'address'
             ,id: 'campaigner-'+this.ident+'-address'
         },{
             xtype: 'textfield'
+            ,anchor: '100%'
             ,fieldLabel: _('campaigner.subscriber.title')
             ,name: 'title'
             ,id: 'campaigner-'+this.ident+'-title'
         },{
             xtype: 'textfield'
+            ,anchor: '100%'
             ,fieldLabel: _('campaigner.subscriber.firstname')
             ,name: 'firstname'
             ,id: 'campaigner-'+this.ident+'-firstname'
         },{
             xtype: 'textfield'
+            ,anchor: '100%'
             ,fieldLabel: _('campaigner.subscriber.lastname')
             ,name: 'lastname'
             ,id: 'campaigner-'+this.ident+'-lastname'
         },{
             xtype: 'textfield'
+            ,anchor: '100%'
             ,fieldLabel: _('campaigner.subscriber.email')
             ,name: 'email'
             ,id: 'campaigner-'+this.ident+'-email'
         },{
             xtype: 'textfield'
+            ,anchor: '100%'
             ,fieldLabel: _('campaigner.subscriber.company')
             ,name: 'company'
             ,id: 'campaigner-'+this.ident+'-company'
         },{
             xtype: 'textfield'
+            ,anchor: '100%'
             ,fieldLabel: _('campaigner.subscriber.key')
             ,name: 'key'
             ,id: 'campaigner-'+this.ident+'-key'

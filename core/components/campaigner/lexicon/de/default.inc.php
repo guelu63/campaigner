@@ -347,6 +347,8 @@ $_lang['campaigner.statistics.unsubcribers_info'] = 'Abmeldungen, die durch dies
 $_lang['campaigner.statistics.reason'] = 'Grund';
 $_lang['campaigner.statistics.via'] = 'Via';
 
+$_lang['campaigner.statistics.export'] = 'Daten-Export';
+
 // Templates
 $_lang['campaigner.templates'] = 'Templates';
 $_lang['campaigner.templates.info'] = 'Editieren Sie ihre Templates';

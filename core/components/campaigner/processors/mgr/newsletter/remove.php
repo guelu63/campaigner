@@ -3,17 +3,24 @@
  * Remove newsletter and its related resource
  * @package  campaigner
  */
-if(!empty($_POST['id'])) {
-    $newsletter = $modx->getObject('Newsletter', array('id' => $_POST['id']));
-}
+$ids = explode(',', $_REQUEST['marked']);
+var_dump($ids);
+$newsletters = $modx->getCollection('Newsletter', array('id:IN' => $ids));
 
-if(!$newsletter) return $modx->error->failure($modx->lexicon('campaigner.newsletter.error.notfound'));
-
-// Get the modResource object
-$res = $modx->getObject('modResource', $newsletter->get('docid'));
-
-if(!$res)
+if(!$newsletters)
 	return $modx->error->failure($modx->lexicon('campaigner.newsletter.error.notfound'));
 
-if($res->remove() && $newsletter->remove())
+$success = true;
+foreach($newsletters as $newsletter) {
+	// Get the modResource object
+	$res = $modx->getObject('modResource', $newsletter->get('docid'));
+	if($res)
+		if($res->remove())
+			$success = true;
+	if(!$newsletter->remove())
+		$success = false;
+}
+
+if($success)
 	return $modx->error->success('',$newsletter);
+return $modx->error->failure($modx->lexicon('campaigner.newsletter.batch_errors'));

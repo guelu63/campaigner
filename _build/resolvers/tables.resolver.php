@@ -46,7 +46,8 @@ if ($object->xpdo) {
             $manager->createObjectContainer('Bounce');
             $manager->createObjectContainer('ResendCheck');
             $manager->createObjectContainer('Bounces');
-
+            $manager->createObjectContainer('Unsubscriber');
+            $manager->createObjectContainer('SocialSharing');
             break;
         case xPDOTransport::ACTION_UPGRADE:
             break;

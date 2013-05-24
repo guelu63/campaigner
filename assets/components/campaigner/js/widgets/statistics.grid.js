@@ -112,6 +112,10 @@ Ext.extend(Campaigner.grid.Statistics,MODx.grid.Grid,{
                 text: _('campaigner.statistics.show_details')
                 ,handler: this.showDetails
             });
+            m.push({
+                text: _('campaigner.statistics.export_overview')
+                ,handler: this.exportStatistics
+            });
             // m.push('-');
             // if(this.menu.record.active != 1) {
             //   m.push({
@@ -160,9 +164,29 @@ Ext.extend(Campaigner.grid.Statistics,MODx.grid.Grid,{
 
         var grid_unsubscribers = Ext.getCmp('campaigner-grid-statistics-details-unsubscribers');
         grid_unsubscribers.store.load({params:{statistics_id: this.menu.record.id || 0}});
-        // var grid_open = Ext.getCmp('campaigner-grid-statistics-details-open');
-        // grid_open.store.load({params:{statistics_id: this.menu.record.id || 0}});
     }
+
+    ,exportStatistics: function(btn, e) {
+        var params = '';
+        params += '&export=1&statistics_id=' + this.menu.record.id;
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/statistics/export_overview'
+            }
+            ,listeners: {
+                'success': {fn:function(r) {
+                    location.href = Campaigner.config.connector_url +'?action=mgr/statistics/export_overview&HTTP_MODAUTH=' + MODx.siteId + params;
+                    // this.refresh();
+                },scope:this}
+            }
+        });
+    }
+
+    // ,exportDetails: function(btn, e) {
+    //     alert('tut!');
+        
+    // }
 });
 
 Campaigner.window.Statistics = function(config) {
@@ -249,7 +273,7 @@ Campaigner.window.Statistics = function(config) {
             }]
         }]
         ,buttons: [{
-            text: _('close')
+            text: _('campaigner.close')
             ,scope: this
             ,handler: function() { this.hide(); }
         }]
@@ -272,6 +296,7 @@ Campaigner.grid.StatisticsDetailsOpen = function(config) {
     Ext.applyIf(config,{
         id: 'campaigner-grid-statistics-details-open'
         ,url: Campaigner.config.connectorUrl
+        // ,requires: ['Campaigner.Utilities']
         ,baseParams: {
             action: 'mgr/statistics/details',
             open: 1
@@ -336,6 +361,11 @@ Campaigner.grid.StatisticsDetailsOpen = function(config) {
                     });
                 },scope:this}
             }
+        }, '->'
+        ,{
+            xtype: 'button'
+            ,text: _('campaigner.statistics.export')
+            ,handler: this.exportData
         }]
     });
     Campaigner.grid.StatisticsDetailsOpen.superclass.constructor.call(this,config);
@@ -347,6 +377,22 @@ Ext.extend(Campaigner.grid.StatisticsDetailsOpen,MODx.grid.Grid, {
         this.getBottomToolbar().changePage(1);
         this.refresh();
         return true;
+    }
+    ,exportData: function(rec) {
+        var params = '';
+        params += '&export=1&open=1&statistics_id=22';
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/statistics/export'
+            }
+            ,listeners: {
+                'success': {fn:function(r) {
+                    location.href = Campaigner.config.connector_url +'?action=mgr/statistics/export&HTTP_MODAUTH=' + MODx.siteId + params;
+                    // this.refresh();
+                },scope:this}
+            }
+        });
     }
 });
 
@@ -420,6 +466,11 @@ Campaigner.grid.StatisticsDetailsHits = function(config) {
                     });
                 },scope:this}
             }
+        }, '->'
+        , {
+            xtype: 'button'
+            ,text: _('campaigner.statistics.export')
+            ,handler: this.exportData
         }]
     });
     Campaigner.grid.StatisticsDetailsHits.superclass.constructor.call(this,config);
@@ -431,6 +482,23 @@ Ext.extend(Campaigner.grid.StatisticsDetailsHits,MODx.grid.Grid, {
         this.getBottomToolbar().changePage(1);
         this.refresh();
         return true;
+    }
+    ,exportData: function(rec) {
+        var params = '';
+        console.log(rec);
+        params += '&export=1&statistics_id=1';
+        // MODx.Ajax.request({
+        //     url: Campaigner.config.connector_url
+        //     ,params: {
+        //         action: 'mgr/statistics/export'
+        //     }
+        //     ,listeners: {
+        //         'success': {fn:function(r) {
+        //             location.href = Campaigner.config.connector_url +'?action=mgr/statistics/export&HTTP_MODAUTH=' + MODx.siteId + params;
+        //             // this.refresh();
+        //         },scope:this}
+        //     }
+        // });
     }
 });
 

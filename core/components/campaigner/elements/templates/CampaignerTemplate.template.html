@@ -375,6 +375,7 @@
     <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
     	<img src="[[+campaigner.tracking_image]]" alt="" />
     	<center>
+			<p>[[+campaigner.instructions]]</p>
         	<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="backgroundTable">
             	<tr>
                 	<td align="center" valign="top">
@@ -504,18 +505,18 @@
                                                                     <td valign="top">
                                                                         <div>
                                                                         	<p>[[+campaigner.email]]</p>
-			                                                                <p>[[+campaigner.address]]</p>
-			                                                                <p>[[+campaigner.title]]</p>
-			                                                                <p>[[+campaigner.firstname]]</p>
-			                                                                <p>[[+campaigner.lastname]]</p>
-			                                                                <p>[[+campaigner.salutation]]</p>
-			                                                                <p>[[+campaigner.key]]</p>
-			                                                                <p>[[+campaigner.unsubscribe]]</p>
-			                                                                <p>[[+campaigner.total]]</p>
-			                                                                <p>[[+campaigner.sender]]</p>
-			                                                                <p>[[+campaigner.sender_email]]</p>
-			                                                                <p>[[+campaigner.date]]</p>
-			                                                                <p>[[+campaigner.send_date]]</p>
+			                                                                <p>ADDR [[+campaigner.address]]</p>
+			                                                                <p>TITLE [[+campaigner.title]]</p>
+			                                                                <p>FNAME [[+campaigner.firstname]]</p>
+			                                                                <p>LNAME [[+campaigner.lastname]]</p>
+			                                                                <p>SALUT [[+campaigner.salutation]]</p>
+			                                                                <p>KEY [[+campaigner.key]]</p>
+			                                                                <p><a href="[[+campaigner.unsubscribe]]">UNSUBCRIBE LINK</a></p>
+			                                                                <p>TOTAL [[+campaigner.total]]</p>
+			                                                                <p>SENDER [[+campaigner.sender]]</p>
+			                                                                <p>SENDERMAIL [[+campaigner.sender_email]]</p>
+			                                                                <p>DATE [[+campaigner.date]]</p>
+			                                                                <p>SEND_DATE [[+campaigner.send_date]]</p>
                                                                         </div>
                                                                     </td>
                                                                 </tr>

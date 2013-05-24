@@ -24,6 +24,12 @@ Campaigner.grid.Newsletter = function(config) {
         ,columns: [
             this.sm,
         {
+            header: _('campaigner.newsletter.id')
+            ,dataIndex: 'id'
+            ,sortable: true
+            ,width: 40
+            // ,renderer: this._renderNewsletter
+        },{
             header: _('campaigner.newsletter.subject')
             ,dataIndex: 'subject'
             ,sortable: true
@@ -89,6 +95,18 @@ Campaigner.grid.Newsletter = function(config) {
         }],
         /* Top toolbar */
         tbar : [{
+            xtype: 'splitbutton'
+            ,hidden: MODx.perm.newsletter_remove ? false : true
+            ,text: _('campaigner.newsletter.batch_actions')
+            ,menu: {
+                items: [
+                {
+                    text: _('campaigner.newsletter.batch_remove')
+                    ,handler: this.removeNewsletter
+                    ,scope: this
+                }]
+            }
+        }, '-', {
             xtype: 'combo'
             ,name: 'sent'
             ,id: 'campaigner-filter-sent'
@@ -161,43 +179,9 @@ Campaigner.grid.Newsletter = function(config) {
               'click': {fn: this.toggleAuto, scope: this}
             }
         }
-    // },{
-    //         xtype: 'combo'
-    //         ,name: 'cleaner'
-    //         ,id: 'campaigner-cleaner-mediainfo'
-    //         ,text: 'Newsletter aufräumen'
-    //         ,emptyText: 'Aktion auswählen'
-    //         ,selectOnFocus: true
-    //         ,editable: false
-    //         ,store: [
-    //             [1, 'Alle'],
-    //             ['trash', 'Entrümpeln'],
-    //             ['archiver', 'Archivieren'],
-    //             ['dehtml', 'Content von HTML säubern']
-    //         ]
-    //         ,listeners: {
-    //             'change': {fn: this.cleanerMedia, scope: this}
-    //             ,'render': {fn: function(cmp) {
-    //                 new Ext.KeyMap(cmp.getEl(), {
-    //                     key: Ext.EventObject.ENTER
-    //                     ,fn: function() {
-    //                         this.fireEvent('change',this.getValue());
-    //                         this.blur();
-    //                         return true;}
-    //                     ,scope: cmp
-    //                 });
-    //             },
-    //             'success': function (res) {
-    //                 MODx.msg.status({
-    //                     title: _('save_successful'),
-    //                     message: res.result['message'],
-    //                     delay: 3
-    //                 });
-    //             }, scope:this}
-    //         }
-    //     }
-    , {
+        ,{
             xtype: 'splitbutton'
+            ,hidden: MODx.perm.newsletter_clearing ? false : true
             ,text: 'Alles bereinigen'
             ,handler: this.cleanerMedia.createDelegate(this, [{cleaner: 1}])
             // ,tooltip: {text:'This is a an example QuickTip for a toolbar item', title:'Tip Title'}
@@ -433,13 +417,19 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
         return;
     }
     ,removeNewsletter: function(e) {
+        var cs = this.getSelectedAsList();
+        if (cs === false) {return false;}
+
         MODx.msg.confirm({
             title: _('campaigner.newsletter.remove.title')
             ,text: _('campaigner.newsletter.remove.confirm')
             ,url: Campaigner.config.connector_url
             ,params: {
                 action: 'mgr/newsletter/remove'
-                ,id: this.menu.record.id
+                ,marked: cs
+            }
+            ,listeners: {
+                'success': {fn:this.refresh,scope:this}
             }
             // ,listeners: {
             //     'success': {fn: function() {
@@ -686,36 +676,50 @@ Campaigner.window.NewsletterTest = function(config) {
         title: _('campaigner.newsletter.sendtest')
         ,id: this.ident
         ,height: 400
-        ,width: 475
+        ,width: 350
         ,url: Campaigner.config.connector_url
         ,action: 'mgr/newsletter/sendtest'
         ,fields: [{
             xtype: 'hidden'
             ,name: 'id'
             ,id: this.ident+'-id'
-        },{
+        }
+        ,{
             xtype: 'checkbox'
             ,fieldLabel: _('campaigner.newsletter.sendtest.personalize')
             ,name: 'personalize'
             ,id: this.ident+'-personalize'
-	    ,inputValue: 1
-	    ,labelSeparator: ''
-	    ,hideLabel: true
-	    ,boxLabel: _('campaigner.newsletter.sendtest.personalize')
-        },{
+    	    ,inputValue: 1
+    	    ,labelSeparator: ''
+    	    ,hideLabel: true
+    	    ,boxLabel: _('campaigner.newsletter.sendtest.personalize')
+        }
+        ,{
             xtype: 'textfield'
+            ,anchor: '100%'
             ,fieldLabel: _('campaigner.newsletter.sendtest.email')
             ,name: 'email'
             ,value: MODx['config']['campaigner.test_mail']
             ,id: this.ident+'-email'
-        }, {
-	    tag: 'div'
-	    ,html: '<span>' + _('campaigner.or') + '</span>'
-	    ,cls: 'campaigner-spacer'
-	}, {
-	    tag: 'div'
-	    ,html: '<span>' + _('campaigner.newsletter.sendtest.selectgroup') + '</span>'
-	}]
+        }
+        ,{
+            xtype: 'textarea'
+            ,grow: true
+            ,anchor: '100%'
+            ,fieldLabel: _('campaigner.newsletter.sendtest.instructions')
+            ,name: 'instructions'
+            ,value: MODx['config']['campaigner.test_instructions']
+            ,id: this.ident+'-instructions'
+        }
+        ,{
+    	    tag: 'div'
+    	    ,html: '<span>' + _('campaigner.or') + '</span>'
+    	    ,cls: 'campaigner-spacer'
+        }
+        ,{
+            tag: 'div'
+            ,html: '<span>' + _('campaigner.newsletter.sendtest.selectgroup') + '</span>'
+	   }]
     });
     Campaigner.window.NewsletterTest.superclass.constructor.call(this,config);
     

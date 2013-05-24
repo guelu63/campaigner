@@ -170,4 +170,16 @@
 			<column key="subscriber" length="" collation="A" null="true" />
 		</index>
 	</object>
+
+	<object class="SocialSharing" table="social_sharing" extends="xPDOSimpleObject">
+		<field key="name" dbtype="varchar" precision="255" phptype="string" null="false" />
+		<field key="url" dbtype="tinytext" phptype="string" null="true" />
+		<field key="icon" dbtype="varchar" precision="255" phptype="string" null="true" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" null="true" />
+		<field key="linktext" dbtype="varchar" precision="255" phptype="string" null="true" />
+		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true">
+			<column key="id" collation="A" null="false" />
+		</index>
+	</object>
+	
 </model>
