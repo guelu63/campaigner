@@ -46,6 +46,8 @@ if ($object->xpdo) {
             $manager->createObjectContainer('Bounce');
             $manager->createObjectContainer('ResendCheck');
             $manager->createObjectContainer('Bounces');
+            $manager->createObjectContainer('SubscriberHits');
+            $manager->createObjectContainer('NewsletterLink');
             $manager->createObjectContainer('Unsubscriber');
             $manager->createObjectContainer('SocialSharing');
             break;

@@ -162,14 +162,34 @@
 		<field key="hit_type" dbtype="varchar" precision="16" phptype="string" null="true" />
 		<field key="hit_date" dbtype="datetime" phptype="datetime" null="true" />
 		<field key="view_total" dbtype="int" precision="11" phptype="integer" null="true" />
-		<field key="client" dbtype="varchar" precision="255" phptype="string" null="true" />
-		<field key="ip" dbtype="int" precision="11" phptype="integer" null="true" />
 
 		<index alias="newsletter" name="newsletter" primary="false" unique="false" type="BTREE" >
 			<column key="newsletter" length="" collation="A" null="true" />
 		</index>
 		<index alias="subscriber" name="subscriber" primary="false" unique="false" type="BTREE" >
 			<column key="subscriber" length="" collation="A" null="true" />
+		</index>
+	</object>
+
+	<object class="SocialSharing" table="social_sharing" extends="xPDOSimpleObject">
+		<field key="name" dbtype="varchar" precision="255" phptype="string" null="false" />
+		<field key="url" dbtype="tinytext" phptype="string" null="true" />
+		<field key="icon" dbtype="varchar" precision="255" phptype="string" null="true" />
+		<field key="active" dbtype="tinyint" precision="1" phptype="integer" null="true" />
+		<field key="linktext" dbtype="varchar" precision="255" phptype="string" null="true" />
+		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true">
+			<column key="id" collation="A" null="false" />
+		</index>
+	</object>
+	
+	<object class="Unsubscriber" table="unsubscriber" extends="xPDOSimpleObject">
+		<field key="subscriber" dbtype="varchar" precision="255" phptype="string" null="true" />
+		<field key="newsletter" dbtype="int" precision="11" phptype="integer" null="true" />
+		<field key="reason" dbtype="varchar" precision="50" phptype="string" null="true" />
+		<field key="date" dbtype="datetime" phptype="datetime" null="true" />
+		<field key="via" dbtype="varchar" precision="50" phptype="string" null="true" />
+		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true">
+			<column key="id" collation="A" null="false" />
 		</index>
 	</object>
 </model>

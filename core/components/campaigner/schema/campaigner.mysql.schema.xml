@@ -182,4 +182,14 @@
 		</index>
 	</object>
 	
+	<object class="Unsubscriber" table="unsubscriber" extends="xPDOSimpleObject">
+		<field key="subscriber" dbtype="varchar" precision="255" phptype="string" null="true" />
+		<field key="newsletter" dbtype="int" precision="11" phptype="integer" null="true" />
+		<field key="reason" dbtype="varchar" precision="50" phptype="string" null="true" />
+		<field key="date" dbtype="datetime" phptype="datetime" null="true" />
+		<field key="via" dbtype="varchar" precision="50" phptype="string" null="true" />
+		<index alias="PRIMARY" name="PRIMARY" primary="true" unique="true">
+			<column key="id" collation="A" null="false" />
+		</index>
+	</object>
 </model>
