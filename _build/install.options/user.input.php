@@ -56,13 +56,9 @@
  * */
 
 $output = '<p>&nbsp;</p>
-<p>Setting this option will do nothing because there is no resolver that acts on it.</p>
-<label for="sitename">The value here could be used to set the site_name system setting on install.</label>
-<p>&nbsp;</p>
-<input type="text" name="sitename" id="sitename" value="" align="left" size="40" maxlength="60" />
-<p>&nbsp;</p>
-<input type="checkbox" name="change_sitename" id="change_sitename" checked="checked" value="1" align="left" />&nbsp;&nbsp;
-<label for="change_sitename">Set site name on install</label>
+<p>Campaigner Installation options</p>
+<input type="checkbox" name="create_context" id="create_context" checked="checked" align="left" />&nbsp;&nbsp;
+<label for="change_sitename">Create new context for Campaigner resources</label>
 <p>&nbsp;</p>';
 
 
