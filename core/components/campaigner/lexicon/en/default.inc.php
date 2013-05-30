@@ -158,7 +158,6 @@ $_lang['campaigner.subscriber.inactive'] = 'inaktiv';
 $_lang['campaigner.subscriber.activate'] = 'aktivieren';
 $_lang['campaigner.subscriber.deactivate'] = 'deaktivieren';
 $_lang['campaigner.subscriber.email'] = 'Email';
-$_lang['campaigner.subscriber.company'] = 'Firma';
 $_lang['campaigner.subscriber.type'] = 'Email-Art';
 $_lang['campaigner.subscriber.groups'] = 'Gruppen';
 $_lang['campaigner.subscriber.add'] = 'Neuer Abonnent';
@@ -172,6 +171,16 @@ $_lang['campaigner.subscriber.edit'] = 'Abonnent bearbeiten';
 $_lang['campaigner.subscriber.show_statistics'] = 'Zeige Statistiken';
 $_lang['campaigner.subscriber.key'] = 'Schl&uuml;ssel';
 $_lang['campaigner.subscriber.since'] = 'Registriert seit';
+
+$_lang['campaigner.subscriber.additional'] = 'Weitere Angaben';
+$_lang['campaigner.subscriber.company'] = 'Firma';
+$_lang['campaigner.subscriber.street'] = 'Strasse';
+$_lang['campaigner.subscriber.zip'] = 'PLZ';
+$_lang['campaigner.subscriber.city'] = 'Ort';
+$_lang['campaigner.subscriber.state'] = 'Bundesland';
+$_lang['campaigner.subscriber.country'] = 'Land';
+
+$_lang['campaigner.subscriber.fields'] = 'Felder';
 
 $_lang['campaigner.subscriber.saved'] = 'Abonnent gespeichert';
 $_lang['campaigner.subscriber.removed'] = 'Abonnent entfernt';
@@ -380,6 +389,16 @@ $_lang['campaigner.templates.info'] = 'Editieren Sie ihre Templates';
 // Fields
 $_lang['campaigner.fields'] = 'Felder';
 $_lang['campaigner.fields.info'] = 'Editieren Sie benutzerdefinierte Felder';
+$_lang['campaigner.fields.name'] = 'Name';
+$_lang['campaigner.fields.label'] = 'Label';
+$_lang['campaigner.fields.type'] = 'Typ';
+$_lang['campaigner.fields.required'] = 'Ben&oumltigt';
+$_lang['campaigner.fields.add'] = 'Neues Element';
+$_lang['campaigner.fields.update'] = 'Editieren';
+$_lang['campaigner.fields.remove'] = 'Entfernen';
+$_lang['campaigner.fields.remove_confirm'] = 'Wollen Sie das Element wirklich entfernen?';
+$_lang['campaigner.fields.'] = '';
+$_lang['campaigner.fields.'] = '';
 
 
 // $_lang[''] = '';

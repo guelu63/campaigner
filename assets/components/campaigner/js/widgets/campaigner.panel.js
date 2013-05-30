@@ -183,6 +183,20 @@ Campaigner.panel.Main = function(config) {
                     id: 'campaigner-grid-socialsharing',
                     preventRender: true
                 }]
+            },{
+                title: _('campaigner.fields'),
+                defaults: { autoHeight: true },
+                id: 'campaigner-tab-fields',
+                // disabled: true,
+                items: [{
+                    html: '<p>'+_('campaigner.fields.info')+'</p>',
+                    border: false,
+                    bodyStyle: 'padding: 10px'
+                },{
+                    xtype: 'campaigner-grid-fields',
+                    id: 'campaigner-grid-fields',
+                    preventRender: true
+                }]
             }]
         }]
     });

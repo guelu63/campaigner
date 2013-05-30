@@ -1,5 +1,4 @@
 <?php
-
 // validate properties
 if (empty($_POST['email'])) $modx->error->addField('email',$modx->lexicon('campaigner.subscriber.error.noemail'));
 
@@ -31,6 +30,14 @@ $subscriber->fromArray($_POST);
 if ($subscriber->save() == false) {
     return $modx->error->failure($modx->lexicon('campaigner.err_save'));
 }
+
+$subfield = $modx->newObject('SubscriberFields');
+$subfield->set('field', 2);
+$subfield->set('subscriber', $subscriber->get('id'));
+$subfield->set('value', $_POST['custom']['test']);
+$subfields[] = $subfield;
+// $subfield->save();
+$subscriber->addMany($subfields, 'SubscriberFields');
 
 // lets get to the subsciber groups
 if($new) {

@@ -19,6 +19,7 @@ $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/queue.grid.
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/bounce.grid.js');
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/statistics.grid.js');
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/socialsharing.grid.js');
+$modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/fields.grid.js');
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'sections/home.js');
 
 return '<div id="campaigner-panel-home-div"></div>';
