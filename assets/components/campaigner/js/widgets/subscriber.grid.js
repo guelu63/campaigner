@@ -822,13 +822,18 @@ Campaigner.window.Subscriber = function(config) {
                     ,name: 'country'
                     ,id: 'campaigner-'+this.ident+'-country'
                 }]
-            },{
+            }
+            ,{
                 title: _('campaigner.subscriber.tab.groups')
                 ,id: 'campaigner-'+this.ident+'-groups'
-            },{
+                // ,xtype: 'campaigner-groups-checkboxes'
+                // ,scope: this
+            }
+            ,{
                 title: _('campaigner.subscriber.tab.fields')
                 ,id: 'campaigner-'+this.ident+'-fields'
-                ,xtype: 'modx-subscriber-fields'
+                ,xtype: 'campaigner-subscriber-fields'
+                ,scope: this
             }]
         }]
     });
@@ -1012,23 +1017,23 @@ Ext.extend(Campaigner.window.Subscriber,MODx.Window);
 Ext.reg('campaigner-window-subscriber',Campaigner.window.Subscriber);
 
 /**
-* User SuperBoxSelect
+* Subscriber Fields
 *
-* @class MODx.combo.Users
-* @extends Ext.ux.form.SuperBoxSelect
-* @xtype modx-superbox-user
+* @class Campaigner.Panel.Fields
+* @extends Ext.Container
+* @xtype modx-subscriber-fields
 */
 Campaigner.panel.Fields = function (config) {
     config = config || {};
     this.ident = config.ident || 'campaigner-'+Ext.id();
-    console.log(config);
     var id = null;
-    // if(cmp.record) id = cmp.record.id;
+    var record = config.scope.record;
+
     MODx.Ajax.request({
         url: Campaigner.config.connector_url
         ,params: {
             action: 'mgr/subscriber/getsubscriberfields'
-            ,subscriber: 9
+            ,subscriber: record.id
         }
         ,scope: this
         ,listeners: {
@@ -1137,18 +1142,62 @@ Campaigner.panel.Fields = function (config) {
             }, scope: this }
         }
     });
-
-    // Ext.apply(config, {
-    //     title: 'Test'
-    //     ,fields: [{
-    //         xtype: 'textfield'
-    //         ,id: 'delimiter'
-    //         ,name: 'delimiter'
-    //         ,fieldLabel: _('campaigner.subscriber.import.delimiter')
-    //         ,value: ';'
-    //     }]
-    // });
     Campaigner.panel.Fields.superclass.constructor.call(this, config);
 };
-Ext.extend(Campaigner.panel.Fields, Ext.Container);
-Ext.reg('modx-subscriber-fields', Campaigner.panel.Fields);
+Ext.extend(Campaigner.panel.Fields, Ext.Container, {
+    constructor: function(cfg) {
+        this.initConfig(cfg);
+    }
+});
+Ext.reg('campaigner-subscriber-fields', Campaigner.panel.Fields);
+
+Campaigner.panel.Groups = function (config) {
+    config = config || {};
+    this.ident = config.ident || 'campaigner-'+Ext.id();
+    var id = null;
+    var record = config.scope.record;
+    MODx.Ajax.request({
+        url: Campaigner.config.connector_url
+        ,params: {
+            action: 'mgr/group/getSubscriberList'
+            ,subscriber: record.id
+        }
+        ,scope: this
+        ,listeners: {
+            'success': {fn: function(response) {
+                var groups = Ext.decode(response.responseText);
+                var checked = false;
+                groups = response.object;
+
+                if(groups.length > 0) {
+                    Ext.each(groups, function(item, key) {
+                        checked = false;
+                        if(record.groups) {
+                            Ext.each(record.groups, function(i, k) {
+                                if(item.id == i[0]) checked = true;
+                            });
+                        }
+                        this.add({
+                            xtype: 'checkbox'
+                            ,name: 'groups[]'
+                            ,fieldLabel: item.name
+                            ,inputValue: item.id
+                            ,checked: checked
+                            ,labelSeparator: ''
+                            ,width: '45%'
+                            ,hideLabel: true
+                            ,boxLabel: '<span style="color: ' + item.color + ';">' + item.name + '</span>'
+                        });
+                    }, this);
+                }
+                this.doLayout(false, true);
+            }, scope: this }
+        }
+    });
+};
+Ext.extend(Campaigner.panel.Groups, Ext.Container, {
+    constructor: function(cfg) {
+        this.initConfig(cfg);
+    }
+});
+Ext.reg('campaigner-groups-checkboxes', Campaigner.panel.Groups);
