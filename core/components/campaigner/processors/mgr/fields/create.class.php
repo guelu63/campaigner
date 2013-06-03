@@ -5,10 +5,15 @@ class FieldsCreateProcessor extends modObjectCreateProcessor {
     public $objectType = 'campaigner.fields';
 
     public function beforeSet() {
-        $active = $this->getProperty('required');
+        $required = $this->getProperty('required');
+        if ($required == 'on') { $required = true; }
+        else  { $required = false; }
+        $this->setProperty('required',$required);
+
+        $active = $this->getProperty('active');
         if ($active == 'on') { $active = true; }
         else  { $active = false; }
-        $this->setProperty('required',$active);
+        $this->setProperty('active',$active);
         return parent::beforeSet();
     }
 

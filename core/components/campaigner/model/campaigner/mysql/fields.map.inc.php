@@ -9,6 +9,8 @@ $xpdo_meta_map['Fields']= array (
     'type' => NULL,
     'required' => NULL,
     'values' => NULL,
+    'active' => NULL,
+    'format' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -45,6 +47,21 @@ $xpdo_meta_map['Fields']= array (
     array (
       'dbtype' => 'varchar',
       'precision' => '255',
+      'phptype' => 'string',
+      'null' => true,
+    ),
+    'active' => 
+    array (
+      'dbtype' => 'tinyint',
+      'precision' => '1',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => true,
+    ),
+    'format' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '50',
       'phptype' => 'string',
       'null' => true,
     ),

@@ -149,6 +149,11 @@ $_lang['campaigner.subscribers.info'] = 'Verwalten sie Abonnenten und deren Grup
 $_lang['campaigner.subscriber.add'] = 'erstellen';
 $_lang['campaigner.subscriber.edit'] = 'bearbeiten';
 
+$_lang['campaigner.subscriber.tab.main'] = 'Generell';
+$_lang['campaigner.subscriber.tab.address'] = 'Adresse';
+$_lang['campaigner.subscriber.tab.groups'] = 'Gruppen';
+$_lang['campaigner.subscriber.tab.fields'] = 'Felder';
+
 $_lang['campaigner.subscriber.address'] = 'Anrede';
 $_lang['campaigner.subscriber.title'] = 'Titel';
 $_lang['campaigner.subscriber.firstname'] = 'Vorname';
@@ -393,12 +398,14 @@ $_lang['campaigner.fields.name'] = 'Name';
 $_lang['campaigner.fields.label'] = 'Label';
 $_lang['campaigner.fields.type'] = 'Typ';
 $_lang['campaigner.fields.required'] = 'Ben&oumltigt';
+$_lang['campaigner.fields.active'] = 'Aktiv';
+$_lang['campaigner.fields.values'] = 'Werte';
+$_lang['campaigner.fields.format'] = 'Format';
 $_lang['campaigner.fields.add'] = 'Neues Element';
 $_lang['campaigner.fields.update'] = 'Editieren';
 $_lang['campaigner.fields.remove'] = 'Entfernen';
 $_lang['campaigner.fields.remove_confirm'] = 'Wollen Sie das Element wirklich entfernen?';
-$_lang['campaigner.fields.'] = '';
-$_lang['campaigner.fields.'] = '';
+
 
 
 // $_lang[''] = '';

@@ -27,17 +27,23 @@ $_POST['key'] = md5(time() . substr($_SERVER['REQUEST_URI'], rand(1, 20)) . $_SE
 $subscriber->fromArray($_POST);
 
 // save it
-if ($subscriber->save() == false) {
+if ($subscriber->save() == false)
     return $modx->error->failure($modx->lexicon('campaigner.err_save'));
-}
 
-$subfield = $modx->newObject('SubscriberFields');
-$subfield->set('field', 2);
-$subfield->set('subscriber', $subscriber->get('id'));
-$subfield->set('value', $_POST['custom']['test']);
-$subfields[] = $subfield;
+foreach($_POST['fields'] as $key => $field) {
+    if(empty($field))
+        continue;
+    $subfield = $modx->getObject('SubscriberFields', array('field' => $key, 'subscriber' => $subscriber->get('id')));
+    if(!$subfield)
+        $subfield = $modx->newObject('SubscriberFields');
+    $subfield->set('field', $key);
+    // $subfield->set('subscriber', $subscriber->get('id'));
+    $subfield->set('value', $field);
+    $subfields[] = $subfield;
+}
 // $subfield->save();
 $subscriber->addMany($subfields, 'SubscriberFields');
+$subscriber->save();
 
 // lets get to the subsciber groups
 if($new) {

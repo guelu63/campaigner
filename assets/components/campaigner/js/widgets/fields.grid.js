@@ -4,7 +4,7 @@ Campaigner.grid.Fields = function(config) {
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url
         ,baseParams: { action: 'mgr/fields/getList' }
-        ,fields: ['id', 'name', 'label', 'type', 'required']
+        ,fields: ['id', 'name', 'label', 'type', 'required', 'active', 'values', 'format']
         ,paging: true
         ,remoteSort: true
         ,enableDragDrop: true
@@ -29,7 +29,14 @@ Campaigner.grid.Fields = function(config) {
                             // here
                             // to send the new order
                             // and then reload the store
-
+                            console.log(ds);
+                            // MODx.Ajax.request({
+                            //     url: Campaigner.config.connector_url
+                            //     ,params: {
+                            //         action: 'mgr/fields/updateOrder'
+                            //         ,field: id
+                            //     }
+                            // })
 
                             // alternatively, you can handle the
                             // changes
@@ -75,15 +82,36 @@ Campaigner.grid.Fields = function(config) {
             header: _('campaigner.fields.label')
             ,dataIndex: 'label'
             ,sortable: true
-            ,width: 40
+            ,width: 15
         },{
             header: _('campaigner.fields.type')
             ,dataIndex: 'type'
             ,sortable: true
             ,width: 15
         },{
+            header: _('campaigner.fields.values')
+            ,dataIndex: 'values'
+            ,sortable: true
+            ,width: 15
+        },{
+            header: _('campaigner.fields.format')
+            ,dataIndex: 'format'
+            ,sortable: true
+            ,width: 15
+        },{
             header: _('campaigner.fields.required')
             ,dataIndex: 'required'
+            ,sortable: true
+            ,width: 5
+            ,renderer: function(value, p, rec) {
+                if(value == 1) {
+                    return '<img src="'+ Campaigner.config.base_url +'images/mgr/yes.png" alt="' + _('campaigner.newsletter.approved') + '" />';
+                }
+                return '<img src="'+ Campaigner.config.base_url +'images/mgr/no.png" alt="' + _('campaigner.newsletter.unapproved') + '" />';
+            }
+        },{
+            header: _('campaigner.fields.active')
+            ,dataIndex: 'active'
             ,sortable: true
             ,width: 5
             ,renderer: function(value, p, rec) {
@@ -189,7 +217,7 @@ Campaigner.window.CreateFields = function(config) {
             ,allowBlank: false
             ,blankText: _('campaigner.field.required')
         },{
-            xtype: 'textarea'
+            xtype: 'textfield'
             ,fieldLabel: _('campaigner.fields.label')
             ,name: 'label'
             ,anchor: '100%'
@@ -201,12 +229,29 @@ Campaigner.window.CreateFields = function(config) {
             ,name: 'type'
             ,anchor: '100%'
         },{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.fields.values')
+            ,name: 'values'
+            ,anchor: '100%'
+        },{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.fields.format')
+            ,name: 'format'
+            ,anchor: '100%'
+        },{
             xtype: 'checkbox'
             ,fieldLabel: _('campaigner.fields.required')
             ,labelSeparator: ''
             ,hideLabel: true
             ,boxLabel: _('campaigner.fields.required')
             ,name: 'required'
+        },{
+            xtype: 'checkbox'
+            ,fieldLabel: _('campaigner.fields.active')
+            ,labelSeparator: ''
+            ,hideLabel: true
+            ,boxLabel: _('campaigner.fields.active')
+            ,name: 'active'
         }]
     });
     Campaigner.window.CreateFields.superclass.constructor.call(this,config);
@@ -234,7 +279,7 @@ Campaigner.window.UpdateFields = function(config) {
             ,allowBlank: false
             ,blankText: _('campaigner.field.required')
         },{
-            xtype: 'textarea'
+            xtype: 'textfield'
             ,fieldLabel: _('campaigner.fields.label')
             ,name: 'label'
             ,anchor: '100%'
@@ -246,12 +291,29 @@ Campaigner.window.UpdateFields = function(config) {
             ,name: 'type'
             ,anchor: '100%'
         },{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.fields.values')
+            ,name: 'values'
+            ,anchor: '100%'
+        },{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.fields.format')
+            ,name: 'format'
+            ,anchor: '100%'
+        },{
             xtype: 'checkbox'
             ,fieldLabel: _('campaigner.fields.required')
             ,labelSeparator: ''
             ,hideLabel: true
             ,boxLabel: _('campaigner.fields.required')
             ,name: 'required'
+        },{
+            xtype: 'checkbox'
+            ,fieldLabel: _('campaigner.fields.active')
+            ,labelSeparator: ''
+            ,hideLabel: true
+            ,boxLabel: _('campaigner.fields.active')
+            ,name: 'active'
         }]
     });
     Campaigner.window.UpdateFields.superclass.constructor.call(this,config);
