@@ -15,6 +15,10 @@ HAVE
 * Send tests to yourself or a group of people to review
 * Creates groups people can sign up for.
 * Goes with as many templates as you wish.
+* You can customize your subscribers information with custom fields
+	* Add a birthday field datefield
+	* Add gender field combo box
+	* ...
 * Comes with personal tags for each subscribers:
 	* Email [campaigner.email]
 	* Firstname [campaigner.firstname]

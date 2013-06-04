@@ -1,1 +1,41 @@
-<p>Chunk content goes here</p>
+<div class="newsletterSignupBox">
+  [[+msg:notempty=`<div class="notice positive">[[+msg]]</div>`]]
+  [[+error:notempty=`<div class="notice negative">[[+error]]</div>`]]
+  <form method="post" action="[[~[[*id]]]]" class="letterForm">
+    <input type="hidden" name="subscribed" value="subscribed" />
+    <div class="row gender">
+      <div class="label"><label for="email">Anrede*:</label></div>
+      <div class="right">
+        <label><input type="radio" name="gender" id="gender" value="female" />Frau</label>
+        <label><input type="radio" name="gender" id="gender" value="male" />Herr</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label"><label for="email">Email*:</label></div>
+      <div class="right"><input type="text" name="email" id="email" value="[[+email]]" class="medium" /></div>
+    </div>
+    <div class="row">
+      <div class="label"><label for="firstname">Vorname*:</label></div>
+      <div class="right"><input type="text" name="firstname" id="firstname" value="[[+firstname]]" class="medium" /></div>
+    </div>
+    <div class="row">
+      <div class="label"><label for="lastname">Nachname*:</label></div>
+      <div class="right"><input type="text" name="lastname" id="lastname" value="[[+lastname]]" class="medium" /></div>
+    </div>
+    
+    <div class="row categories">
+      <div class="label">Kategorien*:</div>
+      <div class="right">[[+groups_check]]</div>
+    </div>
+    <br/>
+    <hr/>
+    
+      <label for="rightsCheck"><input type="checkbox" name="rights" id="rightsCheck" value="1" [[+rights:eq=`1`:then=`checked`:else=``]] />Nutzungbestimmungen zustimmen</label>      
+    
+    <hr/>
+    <div class="clearfix w-100">
+      <span class="legend flt-l">* Pflichtfeld</span>
+      <input id="signupButton" class="btn flt-r" type="submit" name="subscribe" value="Newsletter bestellen" />
+    </div>
+  </form>
+</div>
