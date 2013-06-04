@@ -16,7 +16,6 @@ $xpdo_meta_map['Unsubscriber']= array (
     array (
       'dbtype' => 'varchar',
       'precision' => '255',
-      'attributes' => 'unsigned',
       'phptype' => 'string',
       'null' => false,
     ),
