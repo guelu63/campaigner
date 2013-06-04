@@ -13,7 +13,7 @@ Campaigner.grid.Subscriber = function(config) {
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url
         ,baseParams: { action: 'mgr/subscriber/getList' }
-        ,fields: ['id', 'active', 'email', 'title', 'firstname', 'lastname', 'company', 'type', 'groups', 'key', 'since', 'address']
+        ,fields: ['id', 'active', 'email', 'title', 'firstname', 'lastname', 'company', 'type', 'groups', 'key', 'since', 'address', 'street', 'zip', 'city', 'state', 'country']
         ,paging: true
         ,autosave: false
         ,remoteSort: true
@@ -636,7 +636,7 @@ Ext.reg('campaigner-window-import',Campaigner.window.Import);
  * Subscriber statistics
  * @todo  Build it!
  */
- Campaigner.window.SubscriberStatistics = function(config) {
+Campaigner.window.SubscriberStatistics = function(config) {
     config = config || {};
     // console.log(config.record);
     Ext.applyIf(config,{
@@ -677,13 +677,13 @@ Campaigner.window.Subscriber = function(config) {
     config = config || {};
     this.ident = config.ident || 'campaigner-'+Ext.id();
     this.gpstore = new Ext.data.Store({
-     proxy: new Ext.data.HttpProxy({url: Campaigner.config.connector_url, method:'POST'})
-     ,baseParams: { action: 'mgr/group/getlist' }
-     ,reader: new Ext.data.JsonReader({
-         root: 'results',
-         fields: [ {name: 'id'},{name: 'name'}, {name: 'color'}]
-     })
- });
+        proxy: new Ext.data.HttpProxy({url: Campaigner.config.connector_url, method:'POST'})
+        ,baseParams: { action: 'mgr/group/getlist' }
+        ,reader: new Ext.data.JsonReader({
+            root: 'results',
+            fields: [ {name: 'id'},{name: 'name'}, {name: 'color'}]
+        })
+    });
     Ext.applyIf(config,{
         title: config.hasOwnProperty('record') ? _('campaigner.subscriber.edit') : _('campaigner.subscriber.add')
         ,id: this.ident
@@ -697,131 +697,507 @@ Campaigner.window.Subscriber = function(config) {
             ,boxMinWidth: 350
         }
         ,fields: [{
-            xtype: 'textfield'
-            ,anchor: '100%'
-            ,readOnly: true
-            ,hidden: true
-            ,name: 'id'
-            ,id: this.ident +'-id'
-        },{
-            xtype: 'textfield'
-            ,anchor: '100%'
-            ,fieldLabel: _('campaigner.subscriber.address')
-            ,name: 'address'
-            ,id: 'campaigner-'+this.ident+'-address'
-        },{
-            xtype: 'textfield'
-            ,anchor: '100%'
-            ,fieldLabel: _('campaigner.subscriber.title')
-            ,name: 'title'
-            ,id: 'campaigner-'+this.ident+'-title'
-        },{
-            xtype: 'textfield'
-            ,anchor: '100%'
-            ,fieldLabel: _('campaigner.subscriber.firstname')
-            ,name: 'firstname'
-            ,id: 'campaigner-'+this.ident+'-firstname'
-        },{
-            xtype: 'textfield'
-            ,anchor: '100%'
-            ,fieldLabel: _('campaigner.subscriber.lastname')
-            ,name: 'lastname'
-            ,id: 'campaigner-'+this.ident+'-lastname'
-        },{
-            xtype: 'textfield'
-            ,anchor: '100%'
-            ,fieldLabel: _('campaigner.subscriber.email')
-            ,name: 'email'
-            ,id: 'campaigner-'+this.ident+'-email'
-        },{
-            xtype: 'textfield'
-            ,anchor: '100%'
-            ,fieldLabel: _('campaigner.subscriber.company')
-            ,name: 'company'
-            ,id: 'campaigner-'+this.ident+'-company'
-        },{
-            xtype: 'textfield'
-            ,anchor: '100%'
-            ,fieldLabel: _('campaigner.subscriber.key')
-            ,name: 'key'
-            ,id: 'campaigner-'+this.ident+'-key'
-            ,width: 250
-        },{
-            xtype: 'xdatetime'
-            ,fieldLabel: _('campaigner.subscriber.since')
-            ,name: 'since'
-            ,id: 'campaigner-'+this.ident+'-since'
-            ,dateFormat: 'Y-m-d'
-            ,timeFormat: 'H:i'
-            ,dateWidth: 120
-            ,timeWidth: 120
-        },{
-            xtype: 'checkbox'
-            ,fieldLabel: _('campaigner.subscriber.active')
-            ,name: 'active'
-            ,id: 'campaigner-'+this.ident+'-active'
-            ,labelSeparator: ''
-            ,hideLabel: true
-            ,boxLabel: _('campaigner.subscriber.active')
-        },{
-            xtype: 'checkbox'
-            ,fieldLabel: _('campaigner.subscriber.astext')
-            ,name: 'text'
-            ,id: 'campaigner-'+this.ident+'-astext'
-            ,labelSeparator: ''
-            ,hideLabel: true
-            ,boxLabel: _('campaigner.subscriber.astext')
-        }, {
-         tag: 'div'
-         ,cls: 'subscriber-window-groups-header'
-         ,html: 'Gruppen'
-     }]
- });
-Campaigner.window.Subscriber.superclass.constructor.call(this,config);
-
-this.addListener('show', function(cmp) {
-    var id = null;
-    if(cmp.record) id = cmp.record.id;
-    MODx.Ajax.request({
-      url: Campaigner.config.connector_url
-      ,params: {
-       action: 'mgr/group/getSubscriberList'
-       ,subscriber: id
-   }
-   ,scope: this
-   ,listeners: {
-       'success': {fn: function(response) {
-           var groups = Ext.decode(response.responseText);
-           var checked = false;
-           groups = response.object;
-
-           if(groups.length > 0) {
-            Ext.each(groups, function(item, key) {
-                checked = false;
-                if(cmp.record.groups) {
-                    Ext.each(cmp.record.groups, function(i, k) {
-                        if(item.id == i[0]) checked = true;
-                    });
-                }
-                this.items.items[0].add({
+            xtype: 'modx-tabs',
+            autoHeight: true,
+            deferredRender: false,
+            forceLayout: true,
+            width: '98%',
+            bodyStyle: 'padding: 10px 10px 10px 10px;',
+            border: true,
+            defaults: {
+                border: false,
+                autoHeight: true,
+                bodyStyle: 'padding: 5px 8px 5px 5px;',
+                layout: 'form',
+                deferredRender: false,
+                forceLayout: true
+            },
+            items: [{
+                title: _('campaigner.subscriber.tab.main')
+                ,items: [{
+                    xtype: 'textfield'
+                    ,anchor: '100%'
+                    ,readOnly: true
+                    ,hidden: true
+                    ,name: 'id'
+                    ,id: this.ident +'-id'
+                },{
+                    xtype: 'textfield'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.address')
+                    ,name: 'address'
+                    ,id: 'campaigner-'+this.ident+'-address'
+                },{
+                    xtype: 'textfield'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.title')
+                    ,name: 'title'
+                    ,id: 'campaigner-'+this.ident+'-title'
+                },{
+                    xtype: 'textfield'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.firstname')
+                    ,name: 'firstname'
+                    ,id: 'campaigner-'+this.ident+'-firstname'
+                },{
+                    xtype: 'textfield'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.lastname')
+                    ,name: 'lastname'
+                    ,id: 'campaigner-'+this.ident+'-lastname'
+                },{
+                    xtype: 'textfield'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.email')
+                    ,name: 'email'
+                    ,id: 'campaigner-'+this.ident+'-email'
+                },{
+                    xtype: 'textfield'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.key')
+                    ,name: 'key'
+                    ,id: 'campaigner-'+this.ident+'-key'
+                },{
+                    xtype: 'xdatetime'
+                    ,fieldLabel: _('campaigner.subscriber.since')
+                    ,name: 'since'
+                    ,id: 'campaigner-'+this.ident+'-since'
+                    ,dateFormat: 'Y-m-d'
+                    ,timeFormat: 'H:i'
+                    ,dateWidth: 120
+                    ,timeWidth: 120
+                },{
                     xtype: 'checkbox'
-                    ,name: 'groups[]'
-                    ,fieldLabel: item.name
-                    ,inputValue: item.id
-                    ,checked: checked
+                    ,fieldLabel: _('campaigner.subscriber.active')
+                    ,name: 'active'
+                    ,id: 'campaigner-'+this.ident+'-active'
                     ,labelSeparator: ''
-                    ,width: '45%'
                     ,hideLabel: true
-                    ,boxLabel: '<span style="color: ' + item.color + ';">' + item.name + '</span>'
-                });
-            }, this);
-        }
-        this.doLayout(false, true);
-    }, scope: this }
-}
-});
+                    ,boxLabel: _('campaigner.subscriber.active')
+                },{
+                    xtype: 'checkbox'
+                    ,fieldLabel: _('campaigner.subscriber.astext')
+                    ,name: 'text'
+                    ,id: 'campaigner-'+this.ident+'-astext'
+                    ,labelSeparator: ''
+                    ,hideLabel: true
+                    ,boxLabel: _('campaigner.subscriber.astext')
+                }]
+            },{
+                title: _('campaigner.subscriber.tab.address')
+                ,items: [{
+                    xtype: 'textfield'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.company')
+                    ,name: 'company'
+                    ,id: 'campaigner-'+this.ident+'-company'
+                },{
+                    xtype: 'textfield'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.street')
+                    ,name: 'street'
+                    ,id: 'campaigner-'+this.ident+'-street'
+                },{
+                    xtype: 'textfield'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.zip')
+                    ,name: 'zip'
+                    ,id: 'campaigner-'+this.ident+'-zip'
+                },{
+                    xtype: 'textfield'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.city')
+                    ,name: 'city'
+                    ,id: 'campaigner-'+this.ident+'-city'
+                },{
+                    xtype: 'textfield'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.state')
+                    ,name: 'state'
+                    ,id: 'campaigner-'+this.ident+'-state'
+                },{
+                    xtype: 'modx-combo-country'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.country')
+                    ,name: 'country'
+                    ,id: 'campaigner-'+this.ident+'-country'
+                }]
+            }
+            ,{
+                title: _('campaigner.subscriber.tab.groups')
+                ,id: 'campaigner-'+this.ident+'-groups'
+                // ,xtype: 'campaigner-groups-checkboxes'
+                // ,scope: this
+            }
+            ,{
+                title: _('campaigner.subscriber.tab.fields')
+                ,id: 'campaigner-'+this.ident+'-fields'
+                ,xtype: 'campaigner-subscriber-fields'
+                ,scope: this
+            }]
+        }]
+    });
+    Campaigner.window.Subscriber.superclass.constructor.call(this,config);
 
-}, this);
+    
+
+    /**
+     * @todo  Make custom xtype from this
+    
+    this.addListener('show', function(cmp) {
+        var fieldcontainer = Ext.getCmp('campaigner-'+this.ident+'-fields');
+        var id = null;
+        // if(cmp.record) id = cmp.record.id;
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/subscriber/getsubscriberfields'
+                ,subscriber: id
+            }
+            ,scope: this
+            ,listeners: {
+                'success': {fn: function(response) {
+                    var fields = Ext.decode(response.responseText);
+                    var checked = false;
+                    fields = response.object;
+
+                    if(fields.length > 0) {
+                        Ext.each(fields, function(item, key) {
+                            var config = {
+                                xtype: item.type
+                                ,name: 'fields[' + item.id + ']'
+                                ,id: 'campaigner-'+this.ident+'-field-' + item.name
+                                ,fieldLabel: item.label
+                                ,anchor: '100%'
+                            };
+                            switch(item.type) {
+                                case "textfield":
+                                    config = Ext.apply({
+                                        value: item.value
+                                    }, config);
+                                break;
+
+                                case "modx-combo":
+                                    config = Ext.apply({
+                                        displayField: 'name'
+                                        ,valueField: 'id'
+                                        ,store: new Ext.data.JsonStore({
+                                            url: Campaigner.config.connector_url
+                                            ,baseParams: {
+                                                action : 'mgr/fields/getFieldValues'
+                                                ,key: item.id
+                                            }
+                                            ,fields: ['id','name']
+                                            ,root: 'results'
+
+                                            // ,data: item.values
+                                        })
+                                        ,mode: 'remote'
+                                    }, config);
+                                break;
+
+                                case "textarea":
+                                    config = Ext.apply({
+                                        value: item.value
+                                    }, config);
+                                break;
+
+                                case "datefield":
+                                    config = Ext.apply({
+                                        dateFormat: item.format
+                                        ,timeFormat: 'H:i'
+                                        ,dateWidth: 120
+                                        ,timeWidth: 120
+                                        ,value: item.value
+                                    }, config);
+                                break;
+
+                                case "radiogroup":
+
+                                break;
+
+                                // case "checkboxgroup":
+                                //     values = new Array();
+                                //     var store = new Ext.data.JsonStore({
+                                //         url: Campaigner.config.connector_url
+                                //         ,baseParams: {
+                                //             action : 'mgr/fields/getFieldValues'
+                                //             ,key: item.id
+                                //         }
+                                //         ,root: 'results'
+                                //         ,fields: ['id','name']
+                                //         ,autoLoad: true
+                                //         ,listeners: {
+                                //             load: function(t, records, options) {
+                                //                 for (var i=0; i<records.length; i++) {
+                                //                     values.push({name: "myfield[]", inputValue: records[i].data.id, boxLabel: records[i].data.name});
+                                //                 }
+                                //             }
+                                //         }
+                                //     });
+                                //     console.log(store);
+                                //     config = Ext.apply({
+                                //         // Distribute controls across 3 even columns, filling each row
+                                //         // from left to right before starting the next row
+                                //         columns: 3,
+                                //         items: values
+                                //     }, config);
+                                // break;
+                            }
+                            // checked = false;
+                            // if(cmp.record.fields) {
+                            //     Ext.each(cmp.record.fields, function(i, k) {
+                            //         if(item.id == i[0]) checked = true;
+                            //     });
+                            // }
+                            // var values = null;
+                            // if(item.values)
+                            //     values = item.values;
+                            // console.log(item.values);
+                            fieldcontainer.add(config);
+                        }, this);
+                    }
+                    fieldcontainer.doLayout(false, true);
+                }, scope: this }
+            }
+        });
+    }, this);
+    */
+    /**
+     * @todo  Make custom xtype from this
+    
+    this.addListener('show', function(cmp) {
+        var groupcontainer = Ext.getCmp('campaigner-'+this.ident+'-groups');
+        console.log(groupcontainer);
+        var id = null;
+        if(cmp.record) id = cmp.record.id;
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/group/getSubscriberList'
+                ,subscriber: id
+            }
+            ,scope: this
+            ,listeners: {
+                'success': {fn: function(response) {
+                    var groups = Ext.decode(response.responseText);
+                    var checked = false;
+                    groups = response.object;
+
+                    if(groups.length > 0) {
+                        Ext.each(groups, function(item, key) {
+                            checked = false;
+                            if(cmp.record.groups) {
+                                Ext.each(cmp.record.groups, function(i, k) {
+                                    if(item.id == i[0]) checked = true;
+                                });
+                            }
+                            groupcontainer.add({
+                                xtype: 'checkbox'
+                                ,name: 'groups[]'
+                                ,fieldLabel: item.name
+                                ,inputValue: item.id
+                                ,checked: checked
+                                ,labelSeparator: ''
+                                ,width: '45%'
+                                ,hideLabel: true
+                                ,boxLabel: '<span style="color: ' + item.color + ';">' + item.name + '</span>'
+                            });
+                        }, this);
+                    }
+                    groupcontainer.doLayout(false, true);
+                }, scope: this }
+            }
+        });
+    }, this);
+    */
 };
+
 Ext.extend(Campaigner.window.Subscriber,MODx.Window);
 Ext.reg('campaigner-window-subscriber',Campaigner.window.Subscriber);
+
+/**
+* Subscriber Fields
+*
+* @class Campaigner.Panel.Fields
+* @extends Ext.Container
+* @xtype modx-subscriber-fields
+*/
+Campaigner.panel.Fields = function (config) {
+    config = config || {};
+    this.ident = config.ident || 'campaigner-'+Ext.id();
+    var id = null;
+    var record = config.scope.record;
+
+    MODx.Ajax.request({
+        url: Campaigner.config.connector_url
+        ,params: {
+            action: 'mgr/subscriber/getsubscriberfields'
+            ,subscriber: record.id
+        }
+        ,scope: this
+        ,listeners: {
+            'success': {fn: function(response) {
+                var fields = Ext.decode(response.responseText);
+                var checked = false;
+                fields = response.object;
+
+                if(fields.length > 0) {
+                    Ext.each(fields, function(item, key) {
+                        var config = {
+                            xtype: item.type
+                            ,name: 'fields[' + item.id + ']'
+                            ,id: 'campaigner-'+this.ident+'-field-' + item.name
+                            ,fieldLabel: item.label
+                            ,anchor: '100%'
+                        };
+                        switch(item.type) {
+                            case "textfield":
+                                config = Ext.apply({
+                                    value: item.value
+                                }, config);
+                            break;
+
+                            case "modx-combo":
+                                config = Ext.apply({
+                                    displayField: 'name'
+                                    ,valueField: 'id'
+                                    ,store: new Ext.data.JsonStore({
+                                        url: Campaigner.config.connector_url
+                                        ,baseParams: {
+                                            action : 'mgr/fields/getFieldValues'
+                                            ,key: item.id
+                                        }
+                                        ,fields: ['id','name']
+                                        ,root: 'results'
+
+                                        // ,data: item.values
+                                    })
+                                    ,mode: 'remote'
+                                }, config);
+                            break;
+
+                            case "textarea":
+                                config = Ext.apply({
+                                    value: item.value
+                                }, config);
+                            break;
+
+                            case "datefield":
+                                config = Ext.apply({
+                                    dateFormat: item.format
+                                    ,timeFormat: 'H:i'
+                                    ,dateWidth: 120
+                                    ,timeWidth: 120
+                                    ,value: item.value
+                                }, config);
+                            break;
+
+                            case "radiogroup":
+
+                            break;
+
+                            // case "checkboxgroup":
+                            //     values = new Array();
+                            //     var store = new Ext.data.JsonStore({
+                            //         url: Campaigner.config.connector_url
+                            //         ,baseParams: {
+                            //             action : 'mgr/fields/getFieldValues'
+                            //             ,key: item.id
+                            //         }
+                            //         ,root: 'results'
+                            //         ,fields: ['id','name']
+                            //         ,autoLoad: true
+                            //         ,listeners: {
+                            //             load: function(t, records, options) {
+                            //                 for (var i=0; i<records.length; i++) {
+                            //                     values.push({name: "myfield[]", inputValue: records[i].data.id, boxLabel: records[i].data.name});
+                            //                 }
+                            //             }
+                            //         }
+                            //     });
+                            //     console.log(store);
+                            //     config = Ext.apply({
+                            //         // Distribute controls across 3 even columns, filling each row
+                            //         // from left to right before starting the next row
+                            //         columns: 3,
+                            //         items: values
+                            //     }, config);
+                            // break;
+                        }
+                        // checked = false;
+                        // if(cmp.record.fields) {
+                        //     Ext.each(cmp.record.fields, function(i, k) {
+                        //         if(item.id == i[0]) checked = true;
+                        //     });
+                        // }
+                        // var values = null;
+                        // if(item.values)
+                        //     values = item.values;
+                        // console.log(item.values);
+                        this.add(config);
+                    }, this);
+                }
+                this.doLayout(false, true);
+            }, scope: this }
+        }
+    });
+    Campaigner.panel.Fields.superclass.constructor.call(this, config);
+};
+Ext.extend(Campaigner.panel.Fields, Ext.Container, {
+    constructor: function(cfg) {
+        this.initConfig(cfg);
+    }
+});
+Ext.reg('campaigner-subscriber-fields', Campaigner.panel.Fields);
+
+Campaigner.panel.Groups = function (config) {
+    config = config || {};
+    this.ident = config.ident || 'campaigner-'+Ext.id();
+    var id = null;
+    var record = config.scope.record;
+    MODx.Ajax.request({
+        url: Campaigner.config.connector_url
+        ,params: {
+            action: 'mgr/group/getSubscriberList'
+            ,subscriber: record.id
+        }
+        ,scope: this
+        ,listeners: {
+            'success': {fn: function(response) {
+                var groups = Ext.decode(response.responseText);
+                var checked = false;
+                groups = response.object;
+
+                if(groups.length > 0) {
+                    Ext.each(groups, function(item, key) {
+                        checked = false;
+                        if(record.groups) {
+                            Ext.each(record.groups, function(i, k) {
+                                if(item.id == i[0]) checked = true;
+                            });
+                        }
+                        this.add({
+                            xtype: 'checkbox'
+                            ,name: 'groups[]'
+                            ,fieldLabel: item.name
+                            ,inputValue: item.id
+                            ,checked: checked
+                            ,labelSeparator: ''
+                            ,width: '45%'
+                            ,hideLabel: true
+                            ,boxLabel: '<span style="color: ' + item.color + ';">' + item.name + '</span>'
+                        });
+                    }, this);
+                }
+                this.doLayout(false, true);
+            }, scope: this }
+        }
+    });
+};
+Ext.extend(Campaigner.panel.Groups, Ext.Container, {
+    constructor: function(cfg) {
+        this.initConfig(cfg);
+    }
+});
+Ext.reg('campaigner-groups-checkboxes', Campaigner.panel.Groups);

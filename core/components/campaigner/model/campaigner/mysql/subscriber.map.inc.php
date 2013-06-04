@@ -15,6 +15,11 @@ $xpdo_meta_map['Subscriber']= array (
     'key' => NULL,
     'since' => NULL,
     'address' => NULL,
+    'street' => NULL,
+    'zip' => NULL,
+    'city' => NULL,
+    'state' => NULL,
+    'country' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -89,6 +94,41 @@ $xpdo_meta_map['Subscriber']= array (
       'phptype' => 'string',
       'null' => true,
     ),
+    'street' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '255',
+      'phptype' => 'string',
+      'null' => true,
+    ),
+    'zip' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '50',
+      'phptype' => 'string',
+      'null' => true,
+    ),
+    'city' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '255',
+      'phptype' => 'string',
+      'null' => true,
+    ),
+    'state' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '255',
+      'phptype' => 'string',
+      'null' => true,
+    ),
+    'country' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '255',
+      'phptype' => 'string',
+      'null' => true,
+    ),
   ),
   'indexes' => 
   array (
@@ -128,6 +168,14 @@ $xpdo_meta_map['Subscriber']= array (
     'Bounce' => 
     array (
       'class' => 'Bounce',
+      'local' => 'id',
+      'foreign' => 'subscriber',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
+    'SubscriberFields' => 
+    array (
+      'class' => 'SubscriberFields',
       'local' => 'id',
       'foreign' => 'subscriber',
       'cardinality' => 'many',
