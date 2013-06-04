@@ -55,6 +55,11 @@ TODO
 * Create graphical statistics
 * Frontend modules
 
+WISHLIST
+--------
+* Create user account per subscriber
+* Connect subscriber with user account
+
 INSTALLATION
 ----
 

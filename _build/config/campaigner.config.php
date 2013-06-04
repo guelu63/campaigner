@@ -102,6 +102,15 @@ $components = array(
             'value' => 'No interest==interest||Too much content==content_big||Content boring==content_boring',
             'area' => 'mailing',
         ),
+        'campaigner.tac' => array( // key
+            'key' => 'campaigner.tac',
+            'name' => 'Campaigner Terms & Conditions',
+            'description' => 'Campaigner Terms and Conditions are required',
+            'namespace' => 'campaigner',
+            'xtype' => 'combo-boolean',
+            'value' => true,
+            'area' => 'mailing',
+        ),
 
         // System
         'campaigner.mail_smtp_auth' => array( // key
@@ -563,7 +572,7 @@ $components = array(
         ),
     ),
     /* (optional) will make all element objects static - 'static' field above will be ignored */
-    'allStatic' => false,
+    'allStatic' => true,
 
 
     /* ************************* RESOURCES ****************************

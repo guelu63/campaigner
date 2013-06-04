@@ -54,11 +54,13 @@ if(count(array_filter($post)) > 0)
 if($submit && !isset($post['subscribed']))
   $params['error'][] = 'Formular falsch!';
 
-if($submit && !isset($post['rights']))
+if($submit && $modx->getOption('campaigner.tac') && !isset($post['rights']))
   $params['error'][] = 'Sie müssen den Nutzungsbestimmungen zustimmen';
 
-if($submit && !$groups)
+if($submit && ($modx->getOption('campaigner.default_groups') == 0) && !$groups)
   $params['error'][] = 'Wählen Sie mindestens eine Gruppe!';
+
+$post['groups'] = $modx->getOption('campaigner.default_groups');
 
 var_dump($params);
 
