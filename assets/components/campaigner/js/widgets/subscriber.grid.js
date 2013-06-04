@@ -208,7 +208,7 @@ Campaigner.grid.Subscriber = function(config) {
             ,listeners: {
                 'click': {fn: this.addSubscriber, scope: this}
             }
-            ,hidden: MODx.perm.add_subscriber ? false : true
+            ,hidden: MODx.perm.subscriber_create ? false : true
         }, {
             xtype: 'splitbutton'
             ,text: _('campaigner.subscriber.exports')
