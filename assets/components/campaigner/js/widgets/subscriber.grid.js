@@ -491,7 +491,7 @@ return true;
             });
         }
         // if(this.verifyPerm('remove_subscriber', rs)) {
-        if(MODx.perm.remove_subscriber) {
+        if(MODx.perm.subscriber_remove) {
             m.push('-');
             m.push({
                 text: _('campaigner.subscriber.remove')
