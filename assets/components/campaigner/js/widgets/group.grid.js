@@ -156,28 +156,6 @@ Ext.extend(Campaigner.grid.Group,MODx.grid.Grid,{
 
         this.updateAssignmentWindow.setValues(this.menu.record);
         this.updateAssignmentWindow.show(e.target);
-
-        // if (!this.updateStatisticsWindow) {
-        //     this.updateStatisticsWindow = MODx.load({
-        //         xtype: 'campaigner-window-statistics-details'
-        //         ,record: this.menu.record
-        //         ,listeners: {
-        //             'success': {fn:this.refresh,scope:this}
-        //         }
-        //     });
-        // }
-
-        // this.updateStatisticsWindow.setValues(this.menu.record);
-        // this.updateStatisticsWindow.show(e.target);
-
-        // var grid_subs = Ext.getCmp('campaigner-grid-group-subscribers');
-        // grid_subs.on('click', function(dv, record, item, index, e) {
-        //     var assigned = grid_subs.getSelectedAsList();
-        //     console.log(assigned);
-        //     grid_subs.store.load({params:{assigned: assigned || 0}});
-        // });
-        
-
     }
     ,getMenu: function() {
         var m = [];
@@ -266,27 +244,10 @@ Campaigner.window.Group.superclass.constructor.call(this,config);
 };
 Ext.extend(Campaigner.window.Group,MODx.Window);
 Ext.reg('campaigner-window-group',Campaigner.window.Group);
-
-
-
+    
 Campaigner.window.AssignSubscriber = function(config) {
     config = config || {};
-    
-    // if(Ext.getCmp('campaigner-grid-group-subscribers') != undefined) {
-        // alert('heelo');
-        // var grid_subs = Ext.getCmp('campaigner-grid-group-subscribers');
-        // var selected = grid_subs.getSelectedAsList();
-        // var selected = grid_subs.getSelectionModel().getSelected();
-        // if (selected ==undefined){
-        //     alert('no good');
-        // }
-        // else{
-        //     alert(selected);
-        // }
-    // }
-    // var store = grid_subs.store.load();
-    // var assigned = store.assigned
-    
+    var assigned;
     this.ident = config.ident || 'campaigner-'+Ext.id();
     Ext.applyIf(config,{
         title: _('campaigner.group.assign_subscriber')
@@ -296,7 +257,7 @@ Campaigner.window.AssignSubscriber = function(config) {
         ,url: Campaigner.config.connector_url
         ,baseParams: {
             action: 'mgr/group/assignsubscriber'
-            // ,assigned: selected
+            ,assigned: assigned
         }
         ,items: [
         {
@@ -310,6 +271,14 @@ Campaigner.window.AssignSubscriber = function(config) {
             ,scope: this
             ,preventRender: true
             ,style: 'padding: 10px'
+            ,listeners: {
+                click: function(dv, record, item, index, e) {
+                    var grid_subs = Ext.getCmp('campaigner-grid-group-subscribers');
+                    assigned = grid_subs.getSelectedAsList();
+                    console.log(assigned);
+                    return assigned;
+                },scope: this
+            }
         }]
     });
     Campaigner.window.AssignSubscriber.superclass.constructor.call(this,config);
@@ -322,12 +291,6 @@ Campaigner.grid.GroupSubscribers = function(config) {
     this.sm = new Ext.grid.CheckboxSelectionModel();
     Ext.applyIf(config,{
         id: 'campaigner-grid-group-subscribers'
-        // ,viewConfig: {
-        //     ,forceFit: true
-        //     ,getRowClass: function(record, rowIndex, rp, ds){ // rp = rowParams
-        //         return 'x-grid3-row x-grid-condensed-row';
-        //     }
-        // }
         ,url: Campaigner.config.connector_url
         ,baseParams: {
             action: 'mgr/group/getsubscriberlist'
@@ -347,18 +310,6 @@ Campaigner.grid.GroupSubscribers = function(config) {
             ,sortable: true
             ,width: 40
         }
-        // ,{
-        //     header: _('campaigner.subscriber.address')
-        //     ,dataIndex: 'address'
-        //     ,sortable: true
-        //     ,width: 20
-        // }
-        // ,{
-        //     header: _('campaigner.subscriber.title')
-        //     ,dataIndex: 'title'
-        //     ,sortable: true
-        //     ,width: 20
-        // }
         ,{
             header: _('campaigner.subscriber.firstname')
             ,dataIndex: 'firstname'
@@ -370,12 +321,6 @@ Campaigner.grid.GroupSubscribers = function(config) {
             ,sortable: true
             ,width: 20
         }]
-        ,listeners: {
-            click: function(dv, record, item, index, e) {
-                var assigned = this.getSelectedAsList();
-                console.log(assigned);
-            },scope: this
-        }
     });
     Campaigner.grid.GroupSubscribers.superclass.constructor.call(this,config);
 };
