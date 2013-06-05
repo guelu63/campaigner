@@ -879,6 +879,20 @@ class Campaigner
                 );
         }
         
+        $c = $this->modx->newQuery('SubscriberFields');
+        $c->leftJoin('Fields', 'Fields');
+        $c->where(array('`SubscriberFields`.`subscriber`' => $subscriber->get('id')));
+        $c->select($this->modx->getSelectColumns('SubscriberFields', 'SubscriberFields', '', array('id', 'value')));
+        $c->select(array(
+            '`Fields`.`name`'
+        ));
+        // $c->prepare();
+        // echo $c->toSQL();
+        $customs = $this->modx->getCollection('SubscriberFields', $c);
+        foreach($customs as $custom) {
+            $values['campaigner.'.$custom->get('name')] = $custom->get('value');
+        }
+
         $salutation = $this->modx->getOption('campaigner.salutation') . ' ' . ($subscriber->get('firstname') && $subscriber->get('lastname') ? $subscriber->get('firstname') . ' ' . $subscriber->get('lastname') : $subscriber->get('email'));
         
         $params = array(
@@ -887,7 +901,7 @@ class Campaigner
             'letter' => $subscriber->get('newsletter'),
             );
         
-        return array(
+        $sub_tags = array_merge($values, array(
             'campaigner.email'       => $subscriber->get('email'),
             'campaigner.address'     => $subscriber->get('address'),
             'campaigner.title'       => $subscriber->get('title'),
@@ -898,7 +912,10 @@ class Campaigner
             'campaigner.istext'      => $subscriber->get('text') ? 1 : null,
             'campaigner.key'         => $subscriber->get('key'),
             'campaigner.tracking_image' => $this->modx->getOption('site_url').'assets/components/campaigner/?t='.base_convert($this->created_urls['trackingImage'],10,36).'|[[+campaigner.key]]&amp;',
-            );
+            )
+        );
+        // var_dump($sub_tags);
+        return $sub_tags;
     }
     
     /**

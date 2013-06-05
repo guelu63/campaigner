@@ -242,267 +242,253 @@ Ext.extend(Campaigner.grid.Subscriber,MODx.grid.Grid,{
         var tip = '';
 
         if(value) {
-         for(var i = 0; i < value.length; i++) {
-             if(value[i][2]) {
-              out += '<div class="group" style=" background: '+ value[i][2] +'"></div>';
-              tip += value[i][1] + ' ';
-          }
-        }
-        p.attr = 'ext:qtip="'+ tip +'" ext:qtitle="'+ _('campaigner.groups') +'"';
+            for(var i = 0; i < value.length; i++) {
+                if(value[i][2]) {
+                    out += '<div class="group" style=" background: '+ value[i][2] +'"></div>';
+                    tip += value[i][1] + ' ';
+                }
+            }
+            p.attr = 'ext:qtip="'+ tip +'" ext:qtitle="'+ _('campaigner.groups') +'"';
         }
         return out;
     }
     ,_renderActive: function(value, p, rec) {
         if(value == 1) {
-        return '<img src="'+ Campaigner.config.base_url +'images/mgr/yes.png" class="small" alt="" />';
+            return '<img src="'+ Campaigner.config.base_url +'images/mgr/yes.png" class="small" alt="" />';
+        }
+        return '<img src="'+ Campaigner.config.base_url +'images/mgr/no.png" class="small" alt="" />';
     }
- return '<img src="'+ Campaigner.config.base_url +'images/mgr/no.png" class="small" alt="" />';
-}
-,exportCsv: function() {
-    var params = '';
-    if(this.getStore().baseParams.text) {
-        params += '&text=' + this.getStore().baseParams.text;
-    }
-    if(this.getStore().baseParams.group) {
-        params += '&group=' + this.getStore().baseParams.group;
-    }
-    if(typeof  this.getStore().baseParams.active != "undefined") {
-        params += '&active=' + this.getStore().baseParams.active;
-    }
-    if(typeof this.getStore().baseParams.search != "undefined") {
-        params += '&search=' + this.getStore().baseParams.search;
-    }
+    ,exportCsv: function() {
+        var params = '';
+        if(this.getStore().baseParams.text) {
+            params += '&text=' + this.getStore().baseParams.text;
+        }
+        if(this.getStore().baseParams.group) {
+            params += '&group=' + this.getStore().baseParams.group;
+        }
+        if(typeof  this.getStore().baseParams.active != "undefined") {
+            params += '&active=' + this.getStore().baseParams.active;
+        }
+        if(typeof this.getStore().baseParams.search != "undefined") {
+            params += '&search=' + this.getStore().baseParams.search;
+        }
 
-    MODx.Ajax.request({
-        url: Campaigner.config.connector_url
-        ,params: {
-            action: 'mgr/subscriber/exportcsv'
-            // ,id: this.menu.record.id
-        }
-        // ,method: 'remote'
-        ,listeners: {
-            'success': {fn:function(r) {
-                location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportcsv&export=1&HTTP_MODAUTH=' + MODx.siteId + params;
-                // this.refresh();
-            },scope:this}
-        }
-    });
-    // window.location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportcsv&HTTP_MODAUTH=' + Campaigner.site_id + params;
-}
-,exportXml: function() {
-    // Collect the params from grid view
-    var params = '';
-    if(this.getStore().baseParams.text) {
-     params += '&text=' + this.getStore().baseParams.text;
- }
- if(this.getStore().baseParams.group) {
-     params += '&group=' + this.getStore().baseParams.group;
- }
- if(typeof this.getStore().baseParams.active != "undefined") {
-     params += '&active=' + this.getStore().baseParams.active;
- }
- if(typeof this.getStore().baseParams.search != "undefined") {
-     params += '&search=' + this.getStore().baseParams.search;
- }
-
- MODx.Ajax.request({
-    url: Campaigner.config.connector_url
-    ,params: {
-        action: 'mgr/subscriber/exportxml'
-            // ,id: this.menu.record.id
-        }
-        // ,method: 'remote'
-        ,listeners: {
-            'success': {fn:function(r) {
-                location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportxml&export=1&HTTP_MODAUTH=' + MODx.siteId + params;
-                // this.refresh();
-            },scope:this}
-        }
-    });
-    // window.location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportxml&HTTP_MODAUTH=' + Campaigner.site_id + params;
-}
-,importCsv: function(e) {
-    var w = MODx.load({
-        xtype: 'campaigner-window-import'
-        ,listeners: {
-            'success': {fn:this.refresh,scope:this}
-        }
-    });
-    // this.updateWindow.setValues(vals);
-    // this.updateWindow.show(e.target);
-    // this.on('show',function() { this.fp.getForm().reset(); },this);
-    w.show(e.target);
-}
-,filterActive: function(tf,newValue,oldValue) {
-    var nv = newValue;
-    var s = this.getStore();
-    if(nv == '-') {
-     delete s.baseParams.active;
- } else {
-    s.baseParams.active = nv;
-}
-this.getBottomToolbar().changePage(1);
-this.refresh();
-return true;
-}
-,filterType: function(tf,newValue,oldValue) {
-    var nv = newValue;
-    var s = this.getStore();
-    if(nv == '-') {
-     delete s.baseParams.text;
- } else {
-    s.baseParams.text = nv;
-}
-this.getBottomToolbar().changePage(1);
-this.refresh();
-return true;
-}
-,filterGroup: function(tf,newValue,oldValue) {
-    var nv = newValue;
-    var s = this.getStore();
-    if(nv == '-') {
-     delete s.baseParams.group;
- } else {
-    s.baseParams.group = nv;
-}
-this.getBottomToolbar().changePage(1);
-this.refresh();
-return true;
-}
-,filterSearch: function(tf,newValue,oldValue) {
-    var nv = newValue;
-    this.getStore().baseParams.search = nv;
-    this.getBottomToolbar().changePage(1);
-    this.refresh();
-    return true;
-}
-,addSubscriber: function(e) {
-    var w = MODx.load({
-     xtype: 'campaigner-window-subscriber'
-     ,listeners: {
-        'success': {fn:this.refresh,scope:this}
-    }
-});
-    w.show(e.target);
-}
-,editSubscriber: function(e) {
-    this.updateWindow = MODx.load({
-     xtype: 'campaigner-window-subscriber'
-     ,record: this.menu.record
-     ,listeners: {
-        'success': {fn:this.refresh,scope:this}
-    }
-});
-    var vals = this.menu.record;
-    vals.text = vals.type == 'text' ? 1 : 0;
-    this.updateWindow.setValues(vals);
-    this.updateWindow.show(e.target);
-}
-,activateSubscriber: function() {
-    MODx.Ajax.request({
-        url: Campaigner.config.connector_url
-        ,params: {
-            action: 'mgr/subscriber/activate'
-            ,id: this.menu.record.id
-        }
-        ,listeners: {
-            'success': {fn:function(r) {
-                this.refresh();
-            },scope:this}
-        }
-    });
-}
-,deactivateSubscriber: function() {
-    MODx.Ajax.request({
-        url: Campaigner.config.connector_url
-        ,params: {
-            action: 'mgr/subscriber/deactivate'
-            ,id: this.menu.record.id
-        }
-        ,listeners: {
-            'success': {fn:function(r) {
-                this.refresh();
-            },scope:this}
-        }
-    });
-}
-,removeSubscriber: function() {
-    MODx.msg.confirm({
-        title: _('campaigner.subscriber.remove.title')
-        ,text: _('campaigner.subscriber.remove.confirm')
-        ,url: Campaigner.config.connector_url
-        ,params: {
-            action: 'mgr/subscriber/remove'
-            ,id: this.menu.record.id
-        }
-        ,listeners: {
-            'success': {fn:function(r) {
-                this.refresh();
-            },scope:this}
-        }
-    });
-}
-,showStatistics: function(e) {
-    this.updateWindow = MODx.load({
-        xtype: 'campaigner-window-subscriber-statistics'
-        ,record: this.menu.record
-        ,listeners: {
-            'success': {fn:this.refresh,scope:this}
-        }
-    });
-    var vals = this.menu.record;
-    vals.text = vals.type == 'text' ? 1 : 0;
-    this.updateWindow.setValues(vals);
-    this.updateWindow.show(e.target);
-}
-// For this to work the processor needs refactoring
-// ,verifyPerm: function(perm,rs) {
-//     var valid = true;
-//     for (var i=0;i<rs.length;i++) {
-//         if (rs[i].data.cls.indexOf(perm) == -1) {
-//             valid = false;
-//         }
-//     }
-//     return valid;
-// }
-,getMenu: function() {
-    var m = [];
-    if (this.getSelectionModel().getCount() == 1) {
-        var rs = this.getSelectionModel().getSelections();
-
-        m.push({
-            text: _('campaigner.subscriber.edit')
-            ,handler: this.editSubscriber
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/subscriber/exportcsv'
+                // ,id: this.menu.record.id
+            }
+            // ,method: 'remote'
+            ,listeners: {
+                'success': {fn:function(r) {
+                    location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportcsv&export=1&HTTP_MODAUTH=' + MODx.siteId + params;
+                    // this.refresh();
+                },scope:this}
+            }
         });
-        m.push({
-            text: _('campaigner.subscriber.show_statistics')
-            ,handler: this.showStatistics
+        // window.location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportcsv&HTTP_MODAUTH=' + Campaigner.site_id + params;
+    }
+    ,exportXml: function() {
+        // Collect the params from grid view
+        var params = '';
+        if(this.getStore().baseParams.text) {
+            params += '&text=' + this.getStore().baseParams.text;
+        }
+        if(this.getStore().baseParams.group) {
+            params += '&group=' + this.getStore().baseParams.group;
+        }
+        if(typeof this.getStore().baseParams.active != "undefined") {
+            params += '&active=' + this.getStore().baseParams.active;
+        }
+        if(typeof this.getStore().baseParams.search != "undefined") {
+            params += '&search=' + this.getStore().baseParams.search;
+        }
+
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/subscriber/exportxml'
+            }
+            ,listeners: {
+                'success': {fn:function(r) {
+                    location.href = Campaigner.config.connector_url +'?action=mgr/subscriber/exportxml&export=1&HTTP_MODAUTH=' + MODx.siteId + params;
+                },scope:this}
+            }
         });
-        m.push('-');
-        if(this.menu.record.active != 1) {
-            m.push({
-                text: _('campaigner.subscriber.activate')
-                ,handler: this.activateSubscriber
-            });
+    }
+    ,importCsv: function(e) {
+        var w = MODx.load({
+            xtype: 'campaigner-window-import'
+            ,listeners: {
+                'success': {fn:this.refresh,scope:this}
+            }
+        });
+        // this.updateWindow.setValues(vals);
+        // this.updateWindow.show(e.target);
+        // this.on('show',function() { this.fp.getForm().reset(); },this);
+        w.show(e.target);
+    }
+    ,filterActive: function(tf,newValue,oldValue) {
+        var nv = newValue;
+        var s = this.getStore();
+        if(nv == '-') {
+            delete s.baseParams.active;
         } else {
-            m.push({
-                text: _('campaigner.subscriber.deactivate')
-                ,handler: this.deactivateSubscriber
-            });
+            s.baseParams.active = nv;
         }
-        // if(this.verifyPerm('remove_subscriber', rs)) {
-        if(MODx.perm.subscriber_remove) {
+        this.getBottomToolbar().changePage(1);
+        this.refresh();
+        return true;
+    }
+    ,filterType: function(tf,newValue,oldValue) {
+        var nv = newValue;
+        var s = this.getStore();
+        if(nv == '-') {
+            delete s.baseParams.text;
+        } else {
+            s.baseParams.text = nv;
+        }
+        this.getBottomToolbar().changePage(1);
+        this.refresh();
+        return true;
+    }
+    ,filterGroup: function(tf,newValue,oldValue) {
+        var nv = newValue;
+        var s = this.getStore();
+        if(nv == '-') {
+            delete s.baseParams.group;
+        } else {
+            s.baseParams.group = nv;
+        }
+        this.getBottomToolbar().changePage(1);
+        this.refresh();
+        return true;
+    }
+    ,filterSearch: function(tf,newValue,oldValue) {
+        var nv = newValue;
+        this.getStore().baseParams.search = nv;
+        this.getBottomToolbar().changePage(1);
+        this.refresh();
+        return true;
+    }
+    ,addSubscriber: function(e) {
+        var w = MODx.load({
+            xtype: 'campaigner-window-subscriber'
+            ,listeners: {
+                'success': {fn:this.refresh,scope:this}
+            }
+        });
+        w.show(e.target);
+    }
+    ,editSubscriber: function(e) {
+        this.updateWindow = MODx.load({
+            xtype: 'campaigner-window-subscriber'
+            ,record: this.menu.record
+            ,listeners: {
+                'success': {fn:this.refresh,scope:this}
+            }
+        });
+        var vals = this.menu.record;
+        vals.text = vals.type == 'text' ? 1 : 0;
+        this.updateWindow.setValues(vals);
+        this.updateWindow.show(e.target);
+    }
+    ,activateSubscriber: function() {
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/subscriber/activate'
+                ,id: this.menu.record.id
+            }
+            ,listeners: {
+                'success': {fn:function(r) {
+                    this.refresh();
+                },scope:this}
+            }
+        });
+    }
+    ,deactivateSubscriber: function() {
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/subscriber/deactivate'
+                ,id: this.menu.record.id
+            }
+            ,listeners: {
+                'success': {fn:function(r) {
+                    this.refresh();
+                },scope:this}
+            }
+        });
+    }
+    ,removeSubscriber: function() {
+        MODx.msg.confirm({
+            title: _('campaigner.subscriber.remove.title')
+            ,text: _('campaigner.subscriber.remove.confirm')
+            ,url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/subscriber/remove'
+                ,id: this.menu.record.id
+            }
+            ,listeners: {
+                'success': {fn:function(r) {
+                    this.refresh();
+                },scope:this}
+            }
+        });
+    }
+    ,showStatistics: function(e) {
+        this.updateWindow = MODx.load({
+            xtype: 'campaigner-window-subscriber-statistics'
+            ,record: this.menu.record
+            ,listeners: {
+                'success': {fn:this.refresh,scope:this}
+            }
+        });
+        var vals = this.menu.record;
+        vals.text = vals.type == 'text' ? 1 : 0;
+        this.updateWindow.setValues(vals);
+        this.updateWindow.show(e.target);
+    }
+    ,getMenu: function() {
+        var m = [];
+        if (this.getSelectionModel().getCount() == 1) {
+            var rs = this.getSelectionModel().getSelections();
+
+            m.push({
+                text: _('campaigner.subscriber.edit')
+                ,handler: this.editSubscriber
+            });
+            m.push({
+                text: _('campaigner.subscriber.show_statistics')
+                ,handler: this.showStatistics
+            });
             m.push('-');
-            m.push({
-                text: _('campaigner.subscriber.remove')
-                ,handler: this.removeSubscriber
-            });
+            if(this.menu.record.active != 1) {
+                m.push({
+                    text: _('campaigner.subscriber.activate')
+                    ,handler: this.activateSubscriber
+                });
+            } else {
+                m.push({
+                    text: _('campaigner.subscriber.deactivate')
+                    ,handler: this.deactivateSubscriber
+                });
+            }
+            // if(this.verifyPerm('remove_subscriber', rs)) {
+            if(MODx.perm.subscriber_remove) {
+                m.push('-');
+                m.push({
+                    text: _('campaigner.subscriber.remove')
+                    ,handler: this.removeSubscriber
+                });
+            }
         }
-  }
-  if (m.length > 0) {
-    this.addContextMenuItem(m);
-}
-}
+        if (m.length > 0) {
+            this.addContextMenuItem(m);
+        }
+    }
 });
 Ext.reg('campaigner-grid-subscriber',Campaigner.grid.Subscriber);
 
@@ -747,6 +733,7 @@ Campaigner.window.Subscriber = function(config) {
                     ,id: 'campaigner-'+this.ident+'-lastname'
                 },{
                     xtype: 'textfield'
+                    ,vtype: 'email'
                     ,anchor: '100%'
                     ,fieldLabel: _('campaigner.subscriber.email')
                     ,name: 'email'
@@ -825,13 +812,13 @@ Campaigner.window.Subscriber = function(config) {
             }
             ,{
                 title: _('campaigner.subscriber.tab.groups')
-                ,id: 'campaigner-'+this.ident+'-groups'
-                // ,xtype: 'campaigner-groups-checkboxes'
-                // ,scope: this
+                ,id: 'campaigner-subscriber-'+this.ident+'-groups'
+                ,xtype: 'campaigner-subscriber-groups'
+                ,scope: this
             }
             ,{
                 title: _('campaigner.subscriber.tab.fields')
-                ,id: 'campaigner-'+this.ident+'-fields'
+                ,id: 'campaigner-subscriber-'+this.ident+'-fields'
                 ,xtype: 'campaigner-subscriber-fields'
                 ,scope: this
             }]
@@ -1016,6 +1003,62 @@ Campaigner.window.Subscriber = function(config) {
 Ext.extend(Campaigner.window.Subscriber,MODx.Window);
 Ext.reg('campaigner-window-subscriber',Campaigner.window.Subscriber);
 
+Campaigner.panel.Groups = function (config) {
+    config = config || {};
+    this.ident = config.ident || 'campaigner-'+Ext.id();
+    var id = null;
+    var record = config.scope.record;
+    Ext.Ajax.request({
+        url: Campaigner.config.connector_url
+        ,params: {
+            action: 'mgr/group/getgrouplist'
+            ,subscriber: record.id
+        }
+        ,scope: this
+        // ,listeners: {
+            ,success: function(response) {
+                var groups = Ext.util.JSON.decode(response.responseText);
+                var checked = false;
+                groups = groups.object;
+                if(groups.length > 0) {
+                    Ext.each(groups, function(item, key) {
+
+                        checked = false;
+                        if(record.groups) {
+                            Ext.each(record.groups, function(i, k) {
+                                if(item.id == i[0]) checked = true;
+                            });
+                        }
+                        this.add({
+                            xtype: 'checkbox'
+                            ,name: 'groups[]'
+                            ,fieldLabel: item.name
+                            ,inputValue: item.id
+                            ,checked: checked
+                            ,labelSeparator: ''
+                            ,width: '45%'
+                            ,hideLabel: true
+                            ,boxLabel: '<span style="color: ' + item.color + ';">' + item.name + '</span>'
+                        });
+                    }, this);
+                }
+                this.doLayout(false, true);
+            }
+            // , scope: this }
+        // }
+    });
+    Campaigner.panel.Groups.superclass.constructor.call(this, config);
+};
+Ext.extend(Campaigner.panel.Groups, Ext.Container
+    ,{
+        constructor: function(cfg) {
+            this.initConfig(cfg);
+        }
+    }
+);
+Ext.reg('campaigner-subscriber-groups', Campaigner.panel.Groups);
+
+
 /**
 * Subscriber Fields
 *
@@ -1150,54 +1193,3 @@ Ext.extend(Campaigner.panel.Fields, Ext.Container, {
     }
 });
 Ext.reg('campaigner-subscriber-fields', Campaigner.panel.Fields);
-
-Campaigner.panel.Groups = function (config) {
-    config = config || {};
-    this.ident = config.ident || 'campaigner-'+Ext.id();
-    var id = null;
-    var record = config.scope.record;
-    MODx.Ajax.request({
-        url: Campaigner.config.connector_url
-        ,params: {
-            action: 'mgr/group/getSubscriberList'
-            ,subscriber: record.id
-        }
-        ,scope: this
-        ,listeners: {
-            'success': {fn: function(response) {
-                var groups = Ext.decode(response.responseText);
-                var checked = false;
-                groups = response.object;
-
-                if(groups.length > 0) {
-                    Ext.each(groups, function(item, key) {
-                        checked = false;
-                        if(record.groups) {
-                            Ext.each(record.groups, function(i, k) {
-                                if(item.id == i[0]) checked = true;
-                            });
-                        }
-                        this.add({
-                            xtype: 'checkbox'
-                            ,name: 'groups[]'
-                            ,fieldLabel: item.name
-                            ,inputValue: item.id
-                            ,checked: checked
-                            ,labelSeparator: ''
-                            ,width: '45%'
-                            ,hideLabel: true
-                            ,boxLabel: '<span style="color: ' + item.color + ';">' + item.name + '</span>'
-                        });
-                    }, this);
-                }
-                this.doLayout(false, true);
-            }, scope: this }
-        }
-    });
-};
-Ext.extend(Campaigner.panel.Groups, Ext.Container, {
-    constructor: function(cfg) {
-        this.initConfig(cfg);
-    }
-});
-Ext.reg('campaigner-groups-checkboxes', Campaigner.panel.Groups);

@@ -1,36 +1,17 @@
 <?php
 /**
- * Get a list of groups
- *
- *
- * @package ditsnews
- * @subpackage processors.groups.list
+ * Get list of subscribers
  */
+$start = $modx->getOption('start',$scriptProperties,0);
+$limit = $modx->getOption('limit',$scriptProperties,10);
 
-/* setup default properties */
-$isLimit    = !empty($_REQUEST['limit']);
-$start      = $modx->getOption('start',$_REQUEST,0);
-$limit      = $modx->getOption('limit',$_REQUEST,20);
-$sort       = $modx->getOption('sort',$_REQUEST,'id');
-$dir        = $modx->getOption('dir',$_REQUEST,'ASC');
-$public     = $modx->getOption('public',$_REQUEST,null);
-
-/* query for groups */
-$c = $modx->newQuery('Group');
-if(!empty($public)) {
-    $c->where(array('public' => $public));
-}
-
-$count = $modx->getCount('Group',$c);
-
-$c->sortby($sort,$dir);
-if ($isLimit) $c->limit($limit,$start);
-$groups = $modx->getCollection('Group',$c);
-
-/* iterate through groups */
+$c = $modx->newQuery('Subscriber');
+$c->limit($limit,$start);
+$subscribers = $modx->getCollection('Subscriber', $c);
+$count = $modx->getCount('Subscriber',$c);
 $list = array();
-foreach ($groups as $group) {
-        $group = $group->toArray();
-        $list[] = $group;
+foreach($subscribers as $item) {
+	$list[] = $item->toArray();
 }
-return $modx->error->success('',$list);
+return $this->outputArray($list,$count);
+// return $modx->error->success('', $list);

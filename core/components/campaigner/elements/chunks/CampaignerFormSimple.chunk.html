@@ -1,0 +1,16 @@
+<div class="newsletterSignupBox">
+  [[+msg:notempty=`<div class="notice positive">[[+msg]]</div>`]]
+  [[+error:notempty=`<div class="notice negative">[[+error]]</div>`]]
+  <form method="post" action="[[~[[*id]]]]" class="letterForm">
+    <input type="hidden" name="subscribed" value="subscribed" />
+    <div class="row">
+      <div class="label"><label for="email">Email*:</label></div>
+      <div class="right"><input type="text" name="email" id="email" value="[[+email]]" class="medium" /></div>
+    </div>
+    <hr/>
+    <div class="clearfix w-100">
+      <span class="legend flt-l">* Pflichtfeld</span>
+      <input id="signupButton" class="btn flt-r" type="submit" name="subscribe" value="Newsletter bestellen" />
+    </div>
+  </form>
+</div>

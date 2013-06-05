@@ -448,7 +448,7 @@ Ext.onReady(function() {
         url: Campaigner.config.connector_url
         ,root: "object"
         ,baseParams: {
-            action: "mgr/group/getSubscriberList"
+            action: "mgr/group/getgrouplist"
         }
         ,fields: ["id", "name", "color"]
         ,autoLoad: false
@@ -603,7 +603,7 @@ Campaigner.window.AutonewsletterTest = function(config) {
        MODx.Ajax.request({
           url: Campaigner.config.connector_url
           ,params: {
-             action: 'mgr/group/getSubscriberList'
+             action: 'mgr/group/getgrouplist'
          }
          ,scope: this
          ,listeners: {

@@ -531,12 +531,12 @@ Campaigner.window.Reactivate = function(config) {
     config = config || {};
     this.ident = config.ident || 'campaigner-'+Ext.id();
     this.gpstore = new Ext.data.Store({
-	proxy: new Ext.data.HttpProxy({url: Campaigner.config.connector_url, method:'POST'})
-	,baseParams: { action: 'mgr/group/getlist' }
-	,reader: new Ext.data.JsonReader({
-	    root: 'results',
-	    fields: [ {name: 'id'},{name: 'name'}, {name: 'color'}] 
-	})
+        proxy: new Ext.data.HttpProxy({url: Campaigner.config.connector_url, method:'POST'})
+        ,baseParams: { action: 'mgr/group/getlist' }
+        ,reader: new Ext.data.JsonReader({
+            root: 'results',
+            fields: [ {name: 'id'},{name: 'name'}, {name: 'color'}] 
+        })
     });
     Ext.applyIf(config,{
         title: _('campaigner.subscriber')
@@ -578,7 +578,7 @@ Campaigner.window.Reactivate = function(config) {
 	    MODx.Ajax.request({
 		url: Campaigner.config.connector_url
 		,params: {
-		    action: 'mgr/group/getSubscriberList'
+		    action: 'mgr/group/getgrouplist'
 		    ,subscriber: id
 		}
 		,scope: this

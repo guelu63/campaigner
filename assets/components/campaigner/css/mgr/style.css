@@ -68,3 +68,7 @@ img.small {
     color: #00AA00;
     font-weight: bold;
 }
+
+.x-grid-condensed-row {
+    height: 25px;
+}

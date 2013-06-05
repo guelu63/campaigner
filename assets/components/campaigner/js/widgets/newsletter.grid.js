@@ -3,7 +3,9 @@ Campaigner.grid.Newsletter = function(config) {
     this.sm = new Ext.grid.CheckboxSelectionModel();
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url
-        ,baseParams: { action: 'mgr/newsletter/getList' }
+        ,baseParams: {
+            action: 'mgr/newsletter/getList'
+        }
         ,fields: ['id', 'docid', 'state', 'sent_date', 'auto', 'nl_count', 'total', 'sent', 'bounced', 'sender', 'sender_email', 'subject', 'date', 'groups', 'priority']
         ,paging: true
         ,grouping: true
@@ -629,7 +631,7 @@ Campaigner.window.NewsletterGroups = function(config) {
 		MODx.Ajax.request({
 		    url: Campaigner.config.connector_url
 		    ,params: {
-			action: 'mgr/group/getSubscriberList'
+			action: 'mgr/group/getgrouplist'
 		    }
 		    ,scope: this
 		    ,listeners: {
@@ -727,7 +729,7 @@ Campaigner.window.NewsletterTest = function(config) {
 		MODx.Ajax.request({
 		    url: Campaigner.config.connector_url
 		    ,params: {
-			action: 'mgr/group/getSubscriberList'
+			action: 'mgr/group/getgrouplist'
 		    }
 		    ,scope: this
 		    ,listeners: {

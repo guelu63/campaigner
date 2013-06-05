@@ -537,6 +537,9 @@ $components = array(
             'CampaignerForm' => array(
                 'category' => 'campaigner',
             ),
+            'CampaignerFormSimple' => array(
+                'category' => 'campaigner',
+            ),
             'CampaignerMessage' => array(
                 'category' => 'campaigner',
             ),
@@ -633,9 +636,9 @@ $components = array(
         'js' => true,
         /* If true, a default (empty) JS file will be created */
         'images' => true,
-        'audio' => true,
-        'video' => true,
-        'themes' => true,
+        'audio' => false,
+        'video' => false,
+        'themes' => false,
         'imports' => true,
     ),
 
