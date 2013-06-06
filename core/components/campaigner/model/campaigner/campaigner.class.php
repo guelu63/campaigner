@@ -878,7 +878,7 @@ class Campaigner
                 'campaigner.tracking_image' => null,
                 );
         }
-        
+        $values = array();
         $c = $this->modx->newQuery('SubscriberFields');
         $c->leftJoin('Fields', 'Fields');
         $c->where(array('`SubscriberFields`.`subscriber`' => $subscriber->get('id')));

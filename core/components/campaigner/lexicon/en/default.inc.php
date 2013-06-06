@@ -133,6 +133,7 @@ $_lang['campaigner.group.remove.confirm'] = 'Diese Gruppe wirklich entfernen?';
 $_lang['campaigner.group.removed'] = 'Gruppe wurde entfernt.';
 $_lang['campaigner.group.update'] = 'Gruppe bearbeiten';
 $_lang['campaigner.group.assign_subscriber'] = 'Abonnenten zuweisen';
+$_lang['campaigner.group.assign_subscriber_info'] = 'Weisen Sie mehere Abonnenten einer Gruppe durch Anhaken zu. Wenn bei einem bereits angehakten Abonnenten die Markierung entfernt wird, wird dieser aus der Gruppe entfernt.';
 $_lang['campaigner.group.saved'] = 'Gruppe wurde gespeichert';
 $_lang['campaigner.group.notfound'] = 'Gruppe wurde nicht gefunden.';
 $_lang['campaigner.group.filter.public'] = 'Status filtern';

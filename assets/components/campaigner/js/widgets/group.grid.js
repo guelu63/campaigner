@@ -144,18 +144,19 @@ Ext.extend(Campaigner.grid.Group,MODx.grid.Grid,{
         });
     }
     ,assignSubscriber: function(e) {
-        if (!this.updateAssignmentWindow) {
-            this.updateAssignmentWindow = MODx.load({
-                xtype: 'campaigner-window-assign-subscriber'
-                ,record: this.menu.record
-                ,listeners: {
-                    'success': {fn:this.refresh,scope:this}
-                }
-            });
-        }
+        var w = MODx.load({
+            xtype: 'campaigner-window-assign-subscriber'
+            ,record: this.menu.record
+            ,group_id: this.menu.record
+            ,listeners: {
+                'success': {fn:this.refresh,scope:this}
+            }
+        });
+        w.setValues(this.menu.record);
+        w.show(e.target);
 
-        this.updateAssignmentWindow.setValues(this.menu.record);
-        this.updateAssignmentWindow.show(e.target);
+        var grid_subs = Ext.getCmp('campaigner-grid-group-subscribers');
+        grid_subs.store.load({params:{group_id: this.menu.record.id || 0}});
     }
     ,getMenu: function() {
         var m = [];
@@ -178,6 +179,27 @@ Ext.extend(Campaigner.grid.Group,MODx.grid.Grid,{
             this.addContextMenuItem(m);
         }
     }
+    // ,viewOptions: function(btn,e) {
+    //     if (!this.updateDoodleListWindow) {
+    //         this.updateDoodleListWindow = MODx.load({
+    //             xtype: 'campaigner-window-assign-subscriber'
+    //             ,record: this.menu.record
+    //             ,group_id: this.menu.record.id // pass the doodle id on to the window so it can be passed to the grid for the first time it opens
+    //             ,listeners: {
+    //                 'success': {fn:this.refresh,scope:this}
+    //             }
+    //         });
+    //     } 
+    //     this.updateDoodleListWindow.setValues(this.menu.record);
+    //     this.updateDoodleListWindow.show(e.target);
+    //     var optionsgrid = Ext.getCmp('campaigner-grid-group-subscribers');
+    //     // must define action here, otherwise the baseParams will remove it and cause the grid to never load
+    //     optionsgrid.store.baseParams = {action: 'mgr/group/getsubscriberlist',group_id: this.menu.record.id || 0,start: 0 ,limit: 20};
+    //     // still have to load the grid
+    //     optionsgrid.store.load();
+
+    //     // optionsgrid.store.load({params:{doodle_id: this.menu.record.id || 0}}); removed this line
+    // }
 });
 Ext.reg('campaigner-grid-group',Campaigner.grid.Group);
 
@@ -247,21 +269,28 @@ Ext.reg('campaigner-window-group',Campaigner.window.Group);
     
 Campaigner.window.AssignSubscriber = function(config) {
     config = config || {};
-    var assigned;
     this.ident = config.ident || 'campaigner-'+Ext.id();
+    var record = config.record;
     Ext.applyIf(config,{
         title: _('campaigner.group.assign_subscriber')
-        ,id: this.ident
+        // ,id: this.ident
         ,height: 500
         ,width: 750
+        ,id: this.ident
         ,url: Campaigner.config.connector_url
-        ,baseParams: {
-            action: 'mgr/group/assignsubscriber'
-            ,assigned: assigned
-        }
+        ,action: 'mgr/group/assignsubscriber'
+        ,fields: [{
+            xtype: 'hidden'
+            ,name: 'id'
+            ,id: 'campaigner-'+this.ident +'-id'
+        },{
+            xtype: 'hidden'
+            ,id: 'campaigner-group-subscriber-assignments'
+            ,name: 'assigned'
+        }]
         ,items: [
         {
-            html: '<p>'+_('campaigner.statistics.open_info')+'</p>',
+            html: '<p>'+_('campaigner.group.assign_subscriber_info')+'</p>',
             border: false,
             bodyStyle: 'padding: 10px'
         },{
@@ -271,40 +300,75 @@ Campaigner.window.AssignSubscriber = function(config) {
             ,scope: this
             ,preventRender: true
             ,style: 'padding: 10px'
-            ,listeners: {
-                click: function(dv, record, item, index, e) {
-                    var grid_subs = Ext.getCmp('campaigner-grid-group-subscribers');
-                    assigned = grid_subs.getSelectedAsList();
-                    console.log(assigned);
-                    return assigned;
-                },scope: this
-            }
         }]
     });
     Campaigner.window.AssignSubscriber.superclass.constructor.call(this,config);
 };
-Ext.extend(Campaigner.window.AssignSubscriber,MODx.Window);
+Ext.extend(Campaigner.window.AssignSubscriber,MODx.Window
+    ,{
+        constructor: function(cfg) {
+            this.initConfig(cfg);
+        }
+    }
+);
 Ext.reg('campaigner-window-assign-subscriber',Campaigner.window.AssignSubscriber);
 
 Campaigner.grid.GroupSubscribers = function(config) {
     config = config || {};
-    this.sm = new Ext.grid.CheckboxSelectionModel();
+    this.ident = config.ident || 'campaigner-'+Ext.id();
+    var tt = new Ext.ux.grid.CheckColumn({
+        header: 'test'
+        ,dataIndex: 'assigned'
+        ,width: 10
+        ,sortable: false
+        ,onMouseDown: function(e, t){
+            if(t.className && t.className.indexOf('x-grid3-cc-'+this.id) != -1){
+                e.stopEvent();
+                var index = this.grid.getView().findRowIndex(t);
+                var record = this.grid.store.getAt(index);
+                record.set(this.dataIndex, !record.data[this.dataIndex]);
+            }
+            // Find records with indoor=true
+            var grid = Ext.getCmp('campaigner-grid-group-subscribers');
+            var records = grid.getStore().queryBy(function(record) {
+                return record.get('assigned') === true;
+            });
+            // Collect ids of those records
+            var ids = [];
+            records.each(function(record) {
+                ids.push(record.get('id'));
+            });
+            var hidden = Ext.getCmp('campaigner-group-subscriber-assignments');
+            hidden.setValue(ids.join(","));
+            return;
+        }
+    });
+    // this.sm = new Ext.grid.CheckboxSelectionModel();
     Ext.applyIf(config,{
         id: 'campaigner-grid-group-subscribers'
         ,url: Campaigner.config.connector_url
         ,baseParams: {
             action: 'mgr/group/getsubscriberlist'
+            ,group_id: config.scope.record.id
         }
-        ,fields: ['id', 'email', 'firstname', 'lastname']
+        ,fields: ['id', 'email', 'firstname', 'lastname', 'assigned']
         ,paging: true
         ,pageSize: 10
+        ,plugins: tt
         ,autosave: false
         ,remoteSort: true
         ,primaryKey: 'id'
-        ,sm: this.sm
+        // ,sm: this.sm
         ,columns: [
-            this.sm,
+            tt,
+            // this.sm,
         {
+            header: _('campaigner.subscriber.id')
+            ,dataIndex: 'id'
+            ,sortable: true
+            ,width: 10
+        }
+        ,{
             header: _('campaigner.subscriber.email')
             ,dataIndex: 'email'
             ,sortable: true
@@ -324,5 +388,11 @@ Campaigner.grid.GroupSubscribers = function(config) {
     });
     Campaigner.grid.GroupSubscribers.superclass.constructor.call(this,config);
 };
-Ext.extend(Campaigner.grid.GroupSubscribers,MODx.grid.Grid);
+Ext.extend(Campaigner.grid.GroupSubscribers,MODx.grid.Grid
+    ,{
+        constructor: function(cfg) {
+            this.initConfig(cfg);
+        }
+    }
+);
 Ext.reg('campaigner-grid-group-subscribers',Campaigner.grid.GroupSubscribers);
