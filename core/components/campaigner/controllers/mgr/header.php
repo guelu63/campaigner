@@ -30,9 +30,9 @@ $perms = array(
 	'campaigner.autonewsletter_preview',
 	'campaigner.autonewsletter_sendtest',
 	
-	'campaigner.groups_create',
-	'campaigner.groups_edit',
-	'campaigner.groups_remove',
+	'campaigner.group_create',
+	'campaigner.group_edit',
+	'campaigner.group_remove',
 	'campaigner.group_assignment',
 	
 	'campaigner.subscriber_create',

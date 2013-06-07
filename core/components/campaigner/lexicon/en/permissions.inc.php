@@ -23,9 +23,9 @@ $_lang['campaigner.perm.autonewsletter_edit'] = 'Berechtigung zum Bearbeiten ein
 $_lang['campaigner.perm.autonewsletter_sendtest'] = 'Berechtigung zum Versenden von Tests';
 $_lang['campaigner.perm.autonewsletter_preview'] = 'Berechtigung zum Anzeigen der Vorschau';
 
-$_lang['campaigner.perm.groups_create'] = 'Berechtigung zum Erstellen einer Gruppe';
-$_lang['campaigner.perm.groups_edit'] = 'Berechtigung zum Bearbeiten einer Gruppe';
-$_lang['campaigner.perm.groups_remove'] = 'Berechtigung zum Entfernen einer Gruppe';
+$_lang['campaigner.perm.group_create'] = 'Berechtigung zum Erstellen einer Gruppe';
+$_lang['campaigner.perm.group_edit'] = 'Berechtigung zum Bearbeiten einer Gruppe';
+$_lang['campaigner.perm.group_remove'] = 'Berechtigung zum Entfernen einer Gruppe';
 $_lang['campaigner.perm.group_assignment'] = 'Berechtigung zum Zuweisen von Abonnenten einer Gruppe';
 
 $_lang['campaigner.perm.subscriber_create'] = 'Berechtigung zum Erstellen eines Abonnenten';

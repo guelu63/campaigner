@@ -26,13 +26,13 @@ $_lang['campaigner.close'] = 'Schliessen';
 $_lang['campaigner.field.required'] = 'Feld notwendig';
 $_lang['campaigner.error.save'] = 'Fehler beim speichern.';
 
-$_lang['campaigner.day.1'] = 'Monday';
-$_lang['campaigner.day.2'] = 'Tuesday';
-$_lang['campaigner.day.3'] = 'Wednesday';
-$_lang['campaigner.day.4'] = 'Thursday';
-$_lang['campaigner.day.5'] = 'Friday';
-$_lang['campaigner.day.6'] = 'Saturday';
-$_lang['campaigner.day.7'] = 'Sunday';
+$_lang['campaigner.day.1'] = 'Montag';
+$_lang['campaigner.day.2'] = 'Dienstag';
+$_lang['campaigner.day.3'] = 'Mittwoch';
+$_lang['campaigner.day.4'] = 'Donnerstag';
+$_lang['campaigner.day.5'] = 'Freitag';
+$_lang['campaigner.day.6'] = 'Samstag';
+$_lang['campaigner.day.7'] = 'Sonntag';
 
 //newsletter
 $_lang['campaigner.newsletters'] = 'Newsletter';
