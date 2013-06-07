@@ -110,6 +110,7 @@ Campaigner.grid.SocialSharing = function(config) {
     	    xtype: 'button'
                 ,text: _('campaigner.socialsharing.add')
                 ,handler: { xtype: 'campaigner-window-socialsharing-add' ,blankValues: true }
+                ,hidden: !MODx.perm.sharing_create
         }]
         	 // }, '->', {
           //           xtype: 'combo'
@@ -145,13 +146,36 @@ Campaigner.grid.SocialSharing = function(config) {
 
 Ext.extend(Campaigner.grid.SocialSharing,MODx.grid.Grid, {
     getMenu: function() {
-        return [{
-            text: _('campaigner.socialsharing.update')
-            ,handler: this.updateSocialSharing
-        },'-',{
-            text: _('campaigner.socialsharing.remove')
-            ,handler: this.removeSocialSharing
-        }];
+        var m = [];
+        if(MODx.perm.sharing_edit) {
+            m.push({
+                text: _('campaigner.socialsharing.update')
+                ,handler: this.updateSocialSharing
+                ,hidden: !MODx.perm.sharing_edit
+            });
+            m.push('-');
+        }
+
+        if(MODx.perm.sharing_remove) {
+            m.push({
+                text: _('campaigner.socialsharing.remove')
+                ,handler: this.removeSocialSharing
+                ,hidden: !MODx.perm.sharing_remove
+            });
+        }
+
+        if (m.length > 0)
+                this.addContextMenuItem(m);
+
+        // return [{
+        //     text: _('campaigner.socialsharing.update')
+        //     ,handler: this.updateSocialSharing
+        //     ,hidden: !MODx.perm.sharing_edit
+        // },'-',{
+        //     text: _('campaigner.socialsharing.remove')
+        //     ,handler: this.removeSocialSharing
+        //     ,hidden: !MODx.perm.sharing_remove
+        // }];
     }
     ,updateSocialSharing: function(btn,e) {
         if (!this.updateSocialSharingWindow) {

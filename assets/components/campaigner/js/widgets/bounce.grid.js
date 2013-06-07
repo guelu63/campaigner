@@ -50,16 +50,20 @@ Campaigner.grid.Soft = function(config) {
         tbar : [{
             xtype: 'splitbutton'
             ,text: _('campaigner.bounce.batch_actions')
+            ,hidden: !MODx.perm.bounce_soft_remove_batch || !MODx.perm.bounce_soft_deactivate_batch || !MODx.perm.bounce_soft_activate_batch
             ,menu: {
                 items: [{
                     text: _('campaigner.bounce.soft.deleteMarkedSubscribers')
                     ,handler: this.deleteSubscriber
+                    ,hidden: !MODx.perm.bounce_soft_remove_batch
                 }, {
                     text : _( "campaigner.bounce.soft.deactivateMarkedSubscribers" )
                     ,handler: this.deactivateSubscriber
+                    ,hidden: !MODx.perm.bounce_soft_deactivate_batch
                 }, {
                     text : _( "campaigner.bounce.soft.activateMarkedSubscribers" )
                     ,handler: this.activateSubscriber
+                    ,hidden: !MODx.perm.bounce_soft_activate_batch
                 }]
             }
             // ,{
@@ -175,36 +179,46 @@ Ext.extend(Campaigner.grid.Soft,MODx.grid.Grid,{
     ,getMenu: function() {
         var m = [];
 	if (this.getSelectionModel().getCount() == 1) {
-            var rs = this.getSelectionModel().getSelections();
-	    m.push({
-		text: _('campaigner.bounce.soft.details')
-		,handler: this.showDetails
-	    });
-	    //Ext.Msg.alert("Notification",this.menu.record.active);
-	    //wenn der Subscriber aktiv ist
-	    if(this.menu.record.active==1) {
-		//Dann kann er deaktiviert werden
-		m.push('-');
-		m.push({
-		    text: _('campaigner.bounce.soft.deactivateSubscriber')
-		    ,handler: this.deactivateSubscriber
-		});
-	    }
-	    //wenn er jedoch deaktiviert ist
-	    else if(this.menu.record.active==0) {
-		//Dann kann er aktviert werden
-		m.push('-');
-		m.push({
-		    text: _('campaigner.bounce.soft.activateSubscriber')
-		    ,handler: this.activateSubscriber
-		});
-	    }
-	    m.push('-');
-	    m.push({
-		text: _('campaigner.bounce.soft.deleteSubscriber')
-		,handler: this.deleteSubscriber
-	    });
+        var rs = this.getSelectionModel().getSelections();
+        
+        if(MODx.perm.bounce_soft_showdetails) {
+            m.push({
+                text: _('campaigner.bounce.soft.details')
+                ,handler: this.showDetails
+            });
+        }
+
+        if(MODx.perm.bounce_soft_togglestatus) {
+            //Ext.Msg.alert("Notification",this.menu.record.active);
+    	    //wenn der Subscriber aktiv ist
+    	    if(this.menu.record.active==1) {
+        		//Dann kann er deaktiviert werden
+        		m.push('-');
+        		m.push({
+        		    text: _('campaigner.bounce.soft.deactivateSubscriber')
+        		    ,handler: this.deactivateSubscriber
+        		});
+    	    }
+    	    //wenn er jedoch deaktiviert ist
+    	    else if(this.menu.record.active==0) {
+        		//Dann kann er aktviert werden
+        		m.push('-');
+        		m.push({
+        		    text: _('campaigner.bounce.soft.activateSubscriber')
+        		    ,handler: this.activateSubscriber
+        		});
+    	    }
+            m.push('-');
+        }
+	    
+        if(MODx.perm.bounce_soft_remove) {
+    	    m.push({
+                text: _('campaigner.bounce.soft.deleteSubscriber')
+                ,handler: this.deleteSubscriber
+    	    });
+        }
 	}
+
 	if (m.length > 0) {
             this.addContextMenuItem(m);
         }
@@ -268,17 +282,23 @@ Campaigner.grid.Hard = function(config) {
 
 Ext.extend(Campaigner.grid.Hard,MODx.grid.Grid,{
     getMenu: function() {
-	var m = [];
-	m.push({
-        text: _('campaigner.bounce.hard.reactivate')
-        ,handler: this.reactivate
-	});
-	m.push('-');
-	m.push({
-        text: _('campaigner.bounce.soft.deleteSubscriber')
-        ,handler: this.deleteSubscriber
-	});
-	if (m.length > 0) {
+    	var m = [];
+        if(MODx.perm.bounce_hard_togglestatus) {
+        	m.push({
+                text: _('campaigner.bounce.hard.reactivate')
+                ,handler: this.reactivate
+        	});
+        	m.push('-');
+        }
+        
+        if(MODx.perm.bounce_hard_remove) {
+        	m.push({
+                text: _('campaigner.bounce.soft.deleteSubscriber')
+                ,handler: this.deleteSubscriber
+        	});
+        }
+
+    	if (m.length > 0) {
             this.addContextMenuItem(m);
         }
     }
@@ -376,18 +396,20 @@ Ext.extend(Campaigner.grid.Resend,MODx.grid.Grid,{
     }
     ,getMenu: function() {
         var m = [];
-        if (this.getSelectionModel().getCount() == 1) {
-            var rs = this.getSelectionModel();
-            if(rs.getSelected().get('state') == "0") {
-                m.push({
-                    text: _('campaigner.bounce.resend.cancelJob')
-                    ,handler: this.deleteJob
-                });
-            } else {
-                m.push({
-                    text: _('campaigner.bounce.resend.deleteJob')
-                    ,handler: this.deleteJob
-                });
+        if(MODx.perm.bounce_resend_remove) {
+            if (this.getSelectionModel().getCount() == 1) {
+                var rs = this.getSelectionModel();
+                if(rs.getSelected().get('state') == "0") {
+                    m.push({
+                        text: _('campaigner.bounce.resend.cancelJob')
+                        ,handler: this.deleteJob
+                    });
+                } else {
+                    m.push({
+                        text: _('campaigner.bounce.resend.deleteJob')
+                        ,handler: this.deleteJob
+                    });
+                }
             }
         }
         if (m.length > 0) {
@@ -483,14 +505,13 @@ Campaigner.grid.SoftDetail = function(config) {
 
 Ext.extend(Campaigner.grid.SoftDetail,MODx.grid.Grid,{
     getMenu: function() {
-	var m = [];
-	m.push({
-		text: _('campaigner.bounce.soft.detail.resend')
-		,handler: this._resendNewsletter
-	    });
-	if (m.length > 0) {
+    	var m = [];
+    	m.push({
+    		text: _('campaigner.bounce.soft.detail.resend')
+    		,handler: this._resendNewsletter
+        });
+    	if (m.length > 0)
             this.addContextMenuItem(m);
-        }
     }
     ,_resendNewsletter: function(e) {
 	/*this.updateWindow = MODx.load({

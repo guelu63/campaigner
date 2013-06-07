@@ -76,6 +76,7 @@ Campaigner.grid.Group = function(config) {
             xtype: 'button'
             ,id: 'campaigner-group-add'
             ,text: _('campaigner.group.add')
+            ,disabled: !MODx.perm.group_create
             ,listeners: {
                 'click': {fn: this.addGroup, scope: this}
             }
@@ -162,18 +163,24 @@ Ext.extend(Campaigner.grid.Group,MODx.grid.Grid,{
         var m = [];
         if (this.getSelectionModel().getCount() == 1) {
             var rs = this.getSelectionModel().getSelections();
-            m.push({
-                text: _('campaigner.group.edit')
-                ,handler: this.editGroup
-            });
-            m.push({
-                text: _('campaigner.group.remove')
-                ,handler: this.removeGroup
-            });
-            m.push({
-                text: _('campaigner.group.assign_subscriber')
-                ,handler: this.assignSubscriber
-            })
+            if(MODx.perm.group_edit) {
+                m.push({
+                    text: _('campaigner.group.edit')
+                    ,handler: this.editGroup
+                });
+            }
+            if(MODx.perm.group_remove) {
+                m.push({
+                    text: _('campaigner.group.remove')
+                    ,handler: this.removeGroup
+                });
+            }
+            if(MODx.perm.group_assignment) {
+                m.push({
+                    text: _('campaigner.group.assign_subscriber')
+                    ,handler: this.assignSubscriber
+                });
+            }
         }
         if (m.length > 0) {
             this.addContextMenuItem(m);
@@ -313,6 +320,10 @@ Ext.extend(Campaigner.window.AssignSubscriber,MODx.Window
 );
 Ext.reg('campaigner-window-assign-subscriber',Campaigner.window.AssignSubscriber);
 
+/**
+ * @todo  Keep/store grid selections when multi-paging
+ */
+
 Campaigner.grid.GroupSubscribers = function(config) {
     config = config || {};
     this.ident = config.ident || 'campaigner-'+Ext.id();
@@ -340,6 +351,7 @@ Campaigner.grid.GroupSubscribers = function(config) {
             });
             var hidden = Ext.getCmp('campaigner-group-subscriber-assignments');
             hidden.setValue(ids.join(","));
+            console.log(ids.join(","));
             return;
         }
     });
@@ -355,6 +367,7 @@ Campaigner.grid.GroupSubscribers = function(config) {
         ,paging: true
         ,pageSize: 10
         ,plugins: tt
+        ,pruneRemoved: false
         ,autosave: false
         ,remoteSort: true
         ,primaryKey: 'id'

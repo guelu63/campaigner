@@ -126,6 +126,7 @@ Campaigner.grid.Fields = function(config) {
     	    xtype: 'button'
                 ,text: _('campaigner.fields.add')
                 ,handler: { xtype: 'campaigner-window-fields-add' ,blankValues: true }
+                ,disabled: !MODx.perm.field_create
         }]
         	 // }, '->', {
           //           xtype: 'combo'
@@ -164,9 +165,11 @@ Ext.extend(Campaigner.grid.Fields,MODx.grid.Grid, {
         return [{
             text: _('campaigner.fields.update')
             ,handler: this.updateFields
+            ,disabled: !MODx.perm.field_edit
         },'-',{
             text: _('campaigner.fields.remove')
             ,handler: this.removeFields
+            ,disabled: !MODx.perm.field_remove
         }];
     }
     ,updateFields: function(btn,e) {

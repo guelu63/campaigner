@@ -98,13 +98,14 @@ Campaigner.grid.Newsletter = function(config) {
         /* Top toolbar */
         tbar : [{
             xtype: 'splitbutton'
-            ,hidden: MODx.perm.newsletter_remove ? false : true
+            ,hidden: !MODx.perm.newsletter_remove_batch
             ,text: _('campaigner.newsletter.batch_actions')
             ,menu: {
                 items: [
                 {
                     text: _('campaigner.newsletter.batch_remove')
                     ,handler: this.removeNewsletter
+                    ,hidden: !MODx.perm.newsletter_remove_batch
                     ,scope: this
                 }]
             }
@@ -183,7 +184,7 @@ Campaigner.grid.Newsletter = function(config) {
         }
         ,{
             xtype: 'splitbutton'
-            ,hidden: MODx.perm.newsletter_clearing ? false : true
+            ,hidden: !MODx.perm.newsletter_clean
             ,text: 'Alles bereinigen'
             ,handler: this.cleanerMedia.createDelegate(this, [{cleaner: 1}])
             // ,tooltip: {text:'This is a an example QuickTip for a toolbar item', title:'Tip Title'}
@@ -192,15 +193,18 @@ Campaigner.grid.Newsletter = function(config) {
                 items: [{
                     text: 'Entrümpeln'
                     ,handler: this.cleanerMedia.createDelegate(this, [{cleaner: 'trash'}], true)
-                    ,scope : this
+                    ,scope: this
+                    ,hidden: !MODx.perm.newsletter_clean_trash
                 }, {
                     text: 'Archivieren'
                     ,handler: this.cleanerMedia.createDelegate(this, [{cleaner: 'archiver'}], true)
                     ,scope : this
+                    ,hidden: !MODx.perm.newsletter_clean_archive
                 }, '-', {
                     text: 'HTML aus Content entfernen'
                     ,handler: this.cleanerMedia.createDelegate(this, [{cleaner: 'dehtml'}], true)
                     ,scope : this
+                    ,hidden: !MODx.perm.newsletter_clean_dehtml
                 }]
             }
         }]
@@ -313,11 +317,11 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
         }
         return out;
     },_renderCount: function(value, p, rec) {
-	var extend = '';
-	if(value > 0) {
-		extend += ' (' + Math.round(value*100 / rec.data.total) + '%)';
-	}
-	return value + extend;
+    	var extend = '';
+    	if(value > 0) {
+    		extend += ' (' + Math.round(value*100 / rec.data.total) + '%)';
+    	}
+    	return value + extend;
     }
     ,approveNewsletter: function() {
         MODx.Ajax.request({
@@ -457,58 +461,75 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
             var rs = this.getSelectionModel().getSelections();
 
             if(!this.menu.record.sent_date) {
-                if(this.menu.record.state == 1) {
+                if(MODx.perm.newsletter_approve) {
+                    if(this.menu.record.state == 1) {
+                        m.push({
+                            text: _('campaigner.newsletter.unapprove')
+                            ,handler: this.unapproveNewsletter
+                        });
+                    } else {
+                        m.push({
+                            text: _('campaigner.newsletter.approve')
+                            ,handler: this.approveNewsletter
+                        });
+                    }
+                    m.push('-');
+                }
+                if(MODx.perm.newsletter_editprops) {
                     m.push({
-                        text: _('campaigner.newsletter.unapprove')
-                        ,handler: this.unapproveNewsletter
-                    });
-                } else {
-                    m.push({
-                        text: _('campaigner.newsletter.approve')
-                        ,handler: this.approveNewsletter
+                        text: _('campaigner.newsletter.editproperties')
+                        ,handler: this.editProperties
                     });
                 }
-                m.push('-');
+                if(MODx.perm.newsletter_editgroups) {
+                    m.push({
+                        text: _('campaigner.newsletter.assigngroups')
+                        ,handler: this.assignGroups
+                    });
+                    m.push('-');
+                }
+            }
+            if(MODx.perm.newsletter_edit) {
                 m.push({
-                    text: _('campaigner.newsletter.editproperties')
-                    ,handler: this.editProperties
+                    text: _('campaigner.newsletter.edit')
+                    ,handler: this.editNewsletter
                 });
+            }
+            if(MODx.perm.newsletter_remove) {
                 m.push({
-                    text: _('campaigner.newsletter.assigngroups')
-                    ,handler: this.assignGroups
+                    text: _('campaigner.newsletter.remove')
+                    ,handler: this.removeNewsletter
                 });
                 m.push('-');
             }
-            m.push({
-                text: _('campaigner.newsletter.edit')
-                ,handler: this.editNewsletter
-            });
-            m.push({
-                text: _('campaigner.newsletter.remove')
-                ,handler: this.removeNewsletter
-            });
+            
             // m.push({
             //     text: _('campaigner.newsletter.sendagain')
             //     ,handler: this.resendNewsletter
             // });
-            m.push('-');
-            m.push({
+            
+            if(MODx.perm.newsletter_preview) {
+                m.push({
                     text: _('campaigner.newsletter.preview')
                     ,handler: this.previewNewsletter
                 });
+            }
+            if(MODx.perm.newsletter_sendtest) {
                 m.push({
                     text: '<strong>' + _('campaigner.newsletter.sendtest') + '</strong>'
                     ,handler: this.testNewsletter
                 });
+                m.push('-');
             }
-            m.push('-');
-            m.push({
-                text: _('campaigner.newsletter.kicknow')
-                ,handler: this.kickNewsletter
-            });
-            if (m.length > 0) {
+            if(MODx.perm.newsletter_kick) {
+                m.push({
+                    text: _('campaigner.newsletter.kicknow')
+                    ,handler: this.kickNewsletter
+                });
+            }
+            if (m.length > 0)
                 this.addContextMenuItem(m);
-            }
+        }
     }
 });
 Ext.reg('campaigner-grid-newsletter',Campaigner.grid.Newsletter);

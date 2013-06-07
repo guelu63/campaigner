@@ -107,32 +107,18 @@ Ext.extend(Campaigner.grid.Statistics,MODx.grid.Grid,{
         var m = [];
         if (this.getSelectionModel().getCount() == 1) {
             var rs = this.getSelectionModel().getSelections();
-
-            m.push({
-                text: _('campaigner.statistics.show_details')
-                ,handler: this.showDetails
-            });
-            m.push({
-                text: _('campaigner.statistics.export_overview')
-                ,handler: this.exportStatistics
-            });
-            // m.push('-');
-            // if(this.menu.record.active != 1) {
-            //   m.push({
-            //       text: _('campaigner.subscriber.activate')
-            //       ,handler: this.activateSubscriber
-            //   });
-            // } else {
-            //   m.push({
-            //       text: _('campaigner.subscriber.deactivate')
-            //       ,handler: this.deactivateSubscriber
-            //   });
+            // if(MODx.perm.statistics_showdetails) {
+                m.push({
+                    text: _('campaigner.statistics.show_details')
+                    ,handler: this.showDetails
+                });
             // }
-            // m.push('-');
-            // m.push({
-            //     text: _('campaigner.subscriber.remove')
-            //     ,handler: this.removeSubscriber
-            // });
+            if(MODx.perm.statistics_export) {
+                m.push({
+                    text: _('campaigner.statistics.export_overview')
+                    ,handler: this.exportStatistics
+                });
+            }
         }
         if (m.length > 0) {
             this.addContextMenuItem(m);
@@ -365,6 +351,7 @@ Campaigner.grid.StatisticsDetailsOpen = function(config) {
         ,{
             xtype: 'button'
             ,text: _('campaigner.statistics.export')
+            ,disabled: !MODx.perm.statistics_opens_export
             ,handler: this.exportData
         }]
     });
@@ -470,6 +457,7 @@ Campaigner.grid.StatisticsDetailsHits = function(config) {
         , {
             xtype: 'button'
             ,text: _('campaigner.statistics.export')
+            ,disabled: !MODx.perm.statistics_clicks_export
             ,handler: this.exportData
         }]
     });

@@ -251,45 +251,59 @@ Ext.extend(Campaigner.grid.Autonewsletter,MODx.grid.Grid,{
         if (this.getSelectionModel().getCount() == 1) {
             var rs = this.getSelectionModel().getSelections();
 
-            if(this.menu.record.state == 1) {
+            if(MODx.perm.autonewsletter_approve) {
+                if(this.menu.record.state == 1) {
+                    m.push({
+                        text: _('campaigner.newsletter.unapprove')
+                        ,handler: this.unapproveNewsletter
+                    });
+                } else {
+                    m.push({
+                        text: _('campaigner.newsletter.approve')
+                        ,handler: this.approveNewsletter
+                    });
+                }
+                m.push('-');
+            }
+            if(MODx.perm.autonewsletter_editprops) {
                 m.push({
-                    text: _('campaigner.newsletter.unapprove')
-                    ,handler: this.unapproveNewsletter
-                });
-            } else {
-                m.push({
-                    text: _('campaigner.newsletter.approve')
-                    ,handler: this.approveNewsletter
+                    text: _('campaigner.newsletter.properties')
+                    ,handler: this.editProperties
                 });
             }
-            m.push('-');
-            m.push({
-                text: _('campaigner.newsletter.properties')
-                ,handler: this.editProperties
-            });
-            m.push({
-                text: _('campaigner.newsletter.assigngroups')
-                ,handler: this.assignGroups
-            });
-            m.push('-');
-            m.push({
-                text: _('campaigner.newsletter.edit')
-                ,handler: this.editNewsletter
-            });
-            m.push('-');
-            m.push({
-                text: _('campaigner.newsletter.kicknow')
-                ,handler: this.kickNewsletter
-            });
-            m.push('-');
-            m.push({
-                text: _('campaigner.newsletter.preview')
-                ,handler: this.previewNewsletter
-            });
-            m.push({
-                text: _('campaigner.newsletter.sendtest')
-                ,handler: this.testNewsletter
-            });
+            if(MODx.perm.autonewsletter_editgroups) {
+                m.push({
+                    text: _('campaigner.newsletter.assigngroups')
+                    ,handler: this.assignGroups
+                });
+                m.push('-');
+            }
+            if(MODx.perm.autonewsletter_edit) {
+                m.push({
+                    text: _('campaigner.newsletter.edit')
+                    ,handler: this.editNewsletter
+                });
+                m.push('-');
+            }
+            if(MODx.perm.autonewsletter_kick) {
+                m.push({
+                    text: _('campaigner.newsletter.kicknow')
+                    ,handler: this.kickNewsletter
+                });
+                m.push('-');
+            }
+            if(MODx.perm.autonewsletter_preview) {
+                m.push({
+                    text: _('campaigner.newsletter.preview')
+                    ,handler: this.previewNewsletter
+                });
+            }
+            if(MODx.perm.autonewsletter_sendtest) {
+                m.push({
+                    text: _('campaigner.newsletter.sendtest')
+                    ,handler: this.testNewsletter
+                });
+            }
         }
         if (m.length > 0) {
             this.addContextMenuItem(m);

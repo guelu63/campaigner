@@ -46,6 +46,7 @@ Campaigner.grid.Queue = function(config) {
 
             xtype: 'splitbutton'
             ,text: _('campaigner.queue.batch_actions')
+            ,hidden: !MODx.perm.queue_remove_batch || !MODx.perm.queue_send_batch
             // ,handler: this.cleanerMedia.createDelegate(this, [{cleaner: 1}])
             // ,tooltip: {text:'This is a an example QuickTip for a toolbar item', title:'Tip Title'}
             // Menus can be built/referenced by using nested menu config objects
@@ -54,10 +55,12 @@ Campaigner.grid.Queue = function(config) {
                     text: _('campaigner.queue.remove_marked')
                     ,handler: this.removeQueue
                     ,scope : this
+                    ,hidden: !MODx.perm.queue_remove_batch
                 }, {
                     text: _('campaigner.queue.send_marked')
                     ,handler: this.processQueue
                     ,scope : this
+                    ,hidden: !MODx.perm.queue_send_batch
                 }]
             }
         }, {
@@ -91,6 +94,7 @@ Campaigner.grid.Queue = function(config) {
             xtype: 'button'
             ,id: 'campaigner-process-queue'
             ,text: _('campaigner.queue.process_queue')
+            ,hidden: !MODx.perm.queue_process
             ,listeners: {
                 'click': {fn: this.processQueue, scope: this}
             }
@@ -99,6 +103,7 @@ Campaigner.grid.Queue = function(config) {
             xtype: 'button'
             ,id: 'campaigner-remove-tests'
             ,text: _('campaigner.queue.remove_tests')
+            ,hidden: !MODx.perm.queue_remove_tests
             ,listeners: {
                 'click': {fn: this.removeTests, scope: this}
             }
@@ -186,18 +191,21 @@ Ext.extend(Campaigner.grid.Queue,MODx.grid.Grid,{
         var m = [];
         if (this.getSelectionModel().getCount() == 1) {
             var rs = this.getSelectionModel().getSelections();
-            m.push({
-                text: _('campaigner.queue.remove')
-                ,handler: this.removeQueue
-            });
-            m.push({
-                text: _('campaigner.queue.send')
-                ,handler: this.processQueue
-            });
+            if(MODx.perm.queue_remove) {
+                m.push({
+                    text: _('campaigner.queue.remove')
+                    ,handler: this.removeQueue
+                });
+            }
+            if(MODx.perm.queue_send) {
+                m.push({
+                    text: _('campaigner.queue.send')
+                    ,handler: this.processQueue
+                });
+            }
         }
-        if (m.length > 0) {
+        if (m.length > 0)
             this.addContextMenuItem(m);
-        }
     }
     ,filterSearch: function(tf,newValue,oldValue) {
         var nv = newValue;
