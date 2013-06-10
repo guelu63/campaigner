@@ -214,7 +214,7 @@ Campaigner.window.Group = function(config) {
     config = config || {};
     this.ident = config.ident || 'campaigner-'+Ext.id();
     Ext.applyIf(config,{
-        title: _('campaigner.group')
+        title: _('campaigner.group') + ' ' + config.record.name
         ,id: this.ident
         ,height: 400
         ,width: 300
@@ -279,7 +279,7 @@ Campaigner.window.AssignSubscriber = function(config) {
     this.ident = config.ident || 'campaigner-'+Ext.id();
     var record = config.record;
     Ext.applyIf(config,{
-        title: _('campaigner.group.assign_subscriber')
+        title: _('campaigner.group') + ' ' + record.name + ': ' + _('campaigner.group.assign_subscriber')
         // ,id: this.ident
         ,height: 500
         ,width: 750
@@ -308,6 +308,9 @@ Campaigner.window.AssignSubscriber = function(config) {
             ,preventRender: true
             ,style: 'padding: 10px'
         }]
+        ,success: function(t) {
+            t.suspendEvents();
+        }
     });
     Campaigner.window.AssignSubscriber.superclass.constructor.call(this,config);
 };
@@ -363,23 +366,29 @@ Campaigner.grid.GroupSubscribers = function(config) {
             action: 'mgr/group/getsubscriberlist'
             ,group_id: config.scope.record.id
         }
-        ,fields: ['id', 'email', 'firstname', 'lastname', 'assigned']
+        ,fields: ['id', 'email', 'firstname', 'lastname', 'assigned', 'active']
         ,paging: true
         ,pageSize: 10
         ,plugins: tt
-        ,pruneRemoved: false
         ,autosave: false
         ,remoteSort: true
         ,primaryKey: 'id'
         // ,sm: this.sm
         ,columns: [
-            tt,
+            tt
             // this.sm,
-        {
-            header: _('campaigner.subscriber.id')
-            ,dataIndex: 'id'
+        // ,{
+        //     header: _('campaigner.subscriber.id')
+        //     ,dataIndex: 'id'
+        //     ,sortable: true
+        //     ,width: 10
+        // }
+        ,{
+            header: _('campaigner.subscriber.active')
+            ,dataIndex: 'active'
             ,sortable: true
-            ,width: 10
+            ,width: 8
+            ,renderer: this._renderPublic
         }
         ,{
             header: _('campaigner.subscriber.email')
@@ -398,6 +407,25 @@ Campaigner.grid.GroupSubscribers = function(config) {
             ,sortable: true
             ,width: 20
         }]
+        , tbar: [{
+            xtype: 'textfield'
+            ,name: 'search'
+            ,id: 'campaigner-filter-search-group-subscribers'
+            ,emptyText: _('campaigner.subscriber.search')+'...'
+            ,listeners: {
+                'change': {fn: this.filterSearch, scope: this}
+                ,'render': {fn: function(cmp) {
+                    new Ext.KeyMap(cmp.getEl(), {
+                        key: Ext.EventObject.ENTER
+                        ,fn: function() {
+                            this.fireEvent('change',this.getValue());
+                            this.blur();
+                            return true;
+                        }, scope: cmp
+                    });
+                },scope:this}
+            }
+        }]
     });
     Campaigner.grid.GroupSubscribers.superclass.constructor.call(this,config);
 };
@@ -405,6 +433,18 @@ Ext.extend(Campaigner.grid.GroupSubscribers,MODx.grid.Grid
     ,{
         constructor: function(cfg) {
             this.initConfig(cfg);
+        }
+        ,filterSearch: function(tf,newValue,oldValue) {
+            var nv = newValue;
+            this.getStore().baseParams.search = nv;
+            this.getBottomToolbar().changePage(1);
+            this.refresh();
+            return true;
+        }
+        ,_renderPublic: function(value, p, rec) {
+            if(value == 1)
+                return '<img src="'+ Campaigner.config.base_url +'images/mgr/yes.png" class="small" alt="' + _('campaigner.group.public') + '" />';
+            return '<img src="'+ Campaigner.config.base_url +'images/mgr/no.png" class="small" alt="' + _('campaigner.group.private') + '" />';
         }
     }
 );

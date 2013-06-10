@@ -32,13 +32,12 @@ $c->leftJoin('GroupSubscriber', 'GroupSubscriber', '`GroupSubscriber`.`group` = 
 $c->leftJoin('Subscriber', 'Subscriber', '`GroupSubscriber`.`subscriber` = `Subscriber`.`id`');
 
 $c->sortby($sort,$dir);
-if ($isLimit) $c->limit($limit,$start);
 $c->groupby('`Group`.`id`');
+if ($isLimit) $c->limit($limit,$start);
 
 $c->select('`Group`.*, COALESCE( COUNT(`Subscriber`.`id`) , 0 ) AS total, COALESCE( SUM(`Subscriber`.`active`) , 0 ) AS `active`');
 
 $groups = $modx->getCollection('Group',$c);
-
 /* iterate through groups */
 $list = array();
 foreach ($groups as $group) {

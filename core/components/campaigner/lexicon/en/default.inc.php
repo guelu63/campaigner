@@ -133,7 +133,9 @@ $_lang['campaigner.group.remove.confirm'] = 'Diese Gruppe wirklich entfernen?';
 $_lang['campaigner.group.removed'] = 'Gruppe wurde entfernt.';
 $_lang['campaigner.group.update'] = 'Gruppe bearbeiten';
 $_lang['campaigner.group.assign_subscriber'] = 'Abonnenten zuweisen';
-$_lang['campaigner.group.assign_subscriber_info'] = 'Weisen Sie mehere Abonnenten einer Gruppe durch Anhaken zu. Wenn bei einem bereits angehakten Abonnenten die Markierung entfernt wird, wird dieser aus der Gruppe entfernt.';
+$_lang['campaigner.group.assign_subscriber_info'] = 'Weisen Sie mehere Abonnenten einer Gruppe durch Anhaken zu.';
+$_lang['campaigner.group.assign_subscriber_info'] .= '<br/>Wenn bei einem bereits angehakten Abonnenten die Markierung entfernt wird, wird dieser aus der Gruppe entfernt.';
+$_lang['campaigner.group.assign_subscriber_info'] .= '<br/>ACHTUNG: Vor dem Umschalten auf eine neue Seite, muss gespeichert werden.';
 $_lang['campaigner.group.saved'] = 'Gruppe wurde gespeichert';
 $_lang['campaigner.group.notfound'] = 'Gruppe wurde nicht gefunden.';
 $_lang['campaigner.group.filter.public'] = 'Status filtern';
@@ -209,6 +211,8 @@ $_lang['campaigner.subscribers.exportcsv'] = 'CSV exportieren';
 $_lang['campaigner.subscribers.exportxml'] = 'XML exportieren';
 $_lang['campaigner.subscribers.importcsv'] = 'CSV importieren';
 
+$_lang['campaigner.subscriber.search'] = 'Abonnenten suchen';
+
 // Import subscribers
 $_lang['campaigner.subscriber.import.button_text'] = 'Importieren';
 $_lang['campaigner.subscriber.import.select_file'] = 'Datei ausw&auml;hlen';
@@ -220,6 +224,7 @@ $_lang['campaigner.subscriber.import.lastname'] = 'Nachname';
 $_lang['campaigner.subscriber.import.email'] = 'E-Mail';
 $_lang['campaigner.subscriber.import.active'] = 'Active';
 $_lang['campaigner.subscriber.import.groups'] = 'Gruppen';
+$_lang['campaigner.subscriber.import.default_group'] = 'bei Standard-Gruppe anmelden?';
 
 
 $_lang['campaigner.subscriber.batch_actions'] = 'Stapel-Aktionen';

@@ -460,7 +460,7 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
         if (this.getSelectionModel().getCount() == 1) {
             var rs = this.getSelectionModel().getSelections();
 
-            if(!this.menu.record.sent_date) {
+            // if(!this.menu.record.sent_date) {
                 if(MODx.perm.newsletter_approve) {
                     if(this.menu.record.state == 1) {
                         m.push({
@@ -488,7 +488,7 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
                     });
                     m.push('-');
                 }
-            }
+            // }
             if(MODx.perm.newsletter_edit) {
                 m.push({
                     text: _('campaigner.newsletter.edit')
@@ -578,18 +578,20 @@ Campaigner.window.NewsletterProperties = function(config) {
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.newsletter.sender')
             ,name: 'sender'
+            ,anchor: '100%'
             ,id: 'campaigner-'+this.ident+'-sender'
         },{
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.newsletter.senderemail')
             ,name: 'sender_email'
+            ,anchor: '100%'
             ,id: 'campaigner-'+this.ident+'-sender-email'
         },{
             xtype: 'combo'
             ,fieldLabel: _('campaigner.newsletter.priority')
             ,name: 'campaigner'
+            ,anchor: '100%'
             ,id: 'campaigner-'+this.ident+'-priority'
-            ,width: 200
             ,emptyText: '5'
             ,fields: [
                 'id',
@@ -612,6 +614,7 @@ Campaigner.window.NewsletterProperties = function(config) {
         },{
             xtype: 'combo'
             ,name: 'state'
+            ,anchor: '100%'
             ,id: 'campaigner-'+this.ident+'-state'
             ,store: [
                 [1, _('campaigner.newsletter.approved')],

@@ -101,7 +101,7 @@ Campaigner.grid.Subscriber = function(config) {
                     // }
                 }]
             }
-        }, '-', '-', '-', {
+        }, {
             xtype: 'combo'
             ,name: 'active'
             ,id: 'campaigner-filter-active'
@@ -597,6 +597,15 @@ Campaigner.window.Import = function(config) {
                 ,fieldLabel: _('campaigner.subscriber.import.groups')
                 ,value: 'Gruppen'
             }]
+        }
+        ,{
+            xtype: 'checkbox'
+            ,id: 'default_group'
+            ,name: 'default_group'
+            ,labelSeparator: ''
+            ,hideLabel: true
+            ,boxLabel: _('campaigner.subscriber.import.default_group')
+            ,fieldLabel: _('campaigner.subscriber.import.default_group')
         }
         ,{
             xtype: 'checkbox'
