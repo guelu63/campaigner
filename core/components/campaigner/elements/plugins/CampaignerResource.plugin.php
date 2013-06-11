@@ -113,4 +113,13 @@ switch($modx->event->name) {
             $newsletter->remove();
         }
     break;
+
+    case 'OnDocFormRender':
+        $letter = $_REQUEST['letter'];
+        $modx->controller->setProperty('template', 2);
+        $modx->controller->setProperty('parent', 13);
+        if(!$letter || $letter ==! 1)
+            return;
+        
+    break;
 }

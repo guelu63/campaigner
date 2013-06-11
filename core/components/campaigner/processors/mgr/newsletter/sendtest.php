@@ -182,4 +182,18 @@ $data = array(
 $l->fromArray($data);
 $l->save();
 
+/**
+ * Set tvCampaignerData
+ */
+$tv_data = $modx->getObject('modTemplateVar',array('name'=>'tvCampaignerData'));
+$tv_data->setValue($newsletter->get('docid'), json_encode($newsletter->toArray()));
+$tv_data->save();
+
+/**
+ * Set tvCampaignerSent
+ */
+$tv_sent = $modx->getObject('modTemplateVar',array('name'=>'tvCampaignerSent'));
+$tv_sent->setValue($newsletter->get('docid'), 1);
+$tv_sent->save();
+
 return $modx->error->success('',$newsletter);
