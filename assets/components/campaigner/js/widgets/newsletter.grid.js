@@ -113,11 +113,11 @@ Campaigner.grid.Newsletter = function(config) {
                     ,scope: this
                 }]
             }
-        }, '-', {
+        },{
             xtype: 'combo'
             ,name: 'sent'
             ,id: 'campaigner-filter-sent'
-            ,width: 150
+            ,width: 130
             ,store: [
                 ['-', _('campaigner.all')],
                 [1, _('campaigner.newsletter.sent')],
@@ -146,7 +146,7 @@ Campaigner.grid.Newsletter = function(config) {
             xtype: 'combo'
             ,name: 'state'
             ,id: 'campaigner-filter-state'
-            ,width: 150
+            ,width: 130
             ,store: [
                 ['-', _('campaigner.all')],
                 [1, _('campaigner.newsletter.approved')],
@@ -171,26 +171,19 @@ Campaigner.grid.Newsletter = function(config) {
                     });
                 },scope:this}
             }
-        },'->',{
-            xtype: 'button'
-            ,id: 'campaigner-newsletter-create'
-            ,text: 'Neuer Newsletter'
-            ,listeners: {
-                'click': {fn: this.createLetter, scope: this}
-            }
-        },{
-            xtype: 'button'
-            ,id: 'campaigner-filter-mediainfo'
-            ,text: 'nur Mediainfo'
-            ,listeners: {
-                'click': {fn: this.toggleMedia, scope: this}
-            }
         },{
             xtype: 'button'
             ,id: 'campaigner-filter-autonewsletter'
             ,text: 'ohne Auto-Newsletter'
             ,listeners: {
               'click': {fn: this.toggleAuto, scope: this}
+            }
+        },'->',{
+            xtype: 'button'
+            ,id: 'campaigner-newsletter-create'
+            ,text: 'Neuer Newsletter'
+            ,listeners: {
+                'click': {fn: this.createLetter, scope: this}
             }
         }
         ,{

@@ -25,7 +25,7 @@ Campaigner.grid.Subscriber = function(config) {
             header: _('campaigner.subscriber.email')
             ,dataIndex: 'email'
             ,sortable: true
-            ,width: 40
+            ,width: 20
         }
         // ,{
         //     header: _('campaigner.subscriber.address')
@@ -44,12 +44,14 @@ Campaigner.grid.Subscriber = function(config) {
             ,dataIndex: 'firstname'
             ,sortable: true
             ,width: 20
-        },{
-            header: _('campaigner.subscriber.lastname')
-            ,dataIndex: 'lastname'
-            ,sortable: true
-            ,width: 20
+            ,renderer: this._renderName
         }
+        // ,{
+        //     header: _('campaigner.subscriber.lastname')
+        //     ,dataIndex: 'lastname'
+        //     ,sortable: true
+        //     ,width: 20
+        // }
         // ,{
         //     header: _('campaigner.subscriber.company')
         //     ,dataIndex: 'company'
@@ -265,6 +267,10 @@ Ext.extend(Campaigner.grid.Subscriber,MODx.grid.Grid,{
             return '<img src="'+ Campaigner.config.base_url +'images/mgr/yes.png" class="small" alt="" />';
         }
         return '<img src="'+ Campaigner.config.base_url +'images/mgr/no.png" class="small" alt="" />';
+    }
+    ,_renderName: function(value, p, rec) {
+        // console.log(rec);
+        return rec.data.firstname + ' ' + rec.data.lastname;
     }
     ,exportCsv: function() {
         var params = '';
