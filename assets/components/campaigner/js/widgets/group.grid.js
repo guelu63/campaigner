@@ -214,7 +214,7 @@ Campaigner.window.Group = function(config) {
     config = config || {};
     this.ident = config.ident || 'campaigner-'+Ext.id();
     Ext.applyIf(config,{
-        title: _('campaigner.group') + ' ' + config.record.name
+        title: _('campaigner.group') + ' ' + (config.record ? config.record.name : '')
         ,id: this.ident
         ,height: 400
         ,width: 300
