@@ -1,4 +1,3 @@
-<?php
 /**
  * The campaigner subscription confirmation snippet
  *

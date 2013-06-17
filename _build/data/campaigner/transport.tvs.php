@@ -3,7 +3,7 @@
  * templateVars transport file for campaigner extra
  *
  * Copyright 2013 by Subsolutions <http://www.subsolutions.at>
- * Created on 04-18-2013
+ * Created on 06-17-2013
  *
  * @package campaigner
  * @subpackage build

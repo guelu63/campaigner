@@ -56,6 +56,33 @@ if ($object->xpdo) {
             break;
         case xPDOTransport::ACTION_UPGRADE:
             break;
+
+        case xPDOTransport::ACTION_UNINSTALL:
+            // $modx =& $object->xpdo;
+            // $modelPath = $modx->getOption('campaigner.core_path',null,$modx->getOption('core_path').'components/campaigner/').'model/';
+            // $modx->addPackage('campaigner',$modelPath, 'camp_');
+
+            // $manager = $modx->getManager();
+
+            // $manager->removeObjectContainer('Autonewsletter');
+            // $manager->removeObjectContainer('Newsletter');
+            // $manager->removeObjectContainer('Subscriber');
+            // $manager->removeObjectContainer('Group');
+            // $manager->removeObjectContainer('GroupSubscriber');
+            // $manager->removeObjectContainer('NewsletterGroup');
+            // $manager->removeObjectContainer('AutonewsletterGroup');
+            // $manager->removeObjectContainer('Queue');
+            // $manager->removeObjectContainer('Bounce');
+            // $manager->removeObjectContainer('ResendCheck');
+            // $manager->removeObjectContainer('Bounces');
+            // $manager->removeObjectContainer('SubscriberHits');
+            // $manager->removeObjectContainer('NewsletterLink');
+            // $manager->removeObjectContainer('SocialSharing');
+            // $manager->removeObjectContainer('Fields');
+            // $manager->removeObjectContainer('SubscriberFields');
+            // $manager->removeObjectContainer('Unsubscriber');
+
+            break;
     }
 }
 return true;

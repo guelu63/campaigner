@@ -3,7 +3,7 @@
  * snippets transport file for campaigner extra
  *
  * Copyright 2013 by Subsolutions <http://www.subsolutions.at>
- * Created on 04-18-2013
+ * Created on 06-17-2013
  *
  * @package campaigner
  * @subpackage build
@@ -29,30 +29,40 @@ $snippets[1] = $modx->newObject('modSnippet');
 $snippets[1]->fromArray(array(
     'id' => '1',
     'property_preprocess' => '',
-    'name' => 'CampaignerConfirm',
-    'description' => 'Confirms a subscription',
+    'name' => 'CampaignerUnsubscribe',
+    'description' => 'Unsubscribe snippet',
     'properties' => '',
 ), '', true, true);
-$snippets[1]->setContent(file_get_contents($sources['source_core'] . '/elements/snippets/campaignerconfirm.snippet.php'));
+$snippets[1]->setContent(file_get_contents($sources['source_core'] . '/elements/snippets/campaignerunsubscribe.snippet.php'));
 
 $snippets[2] = $modx->newObject('modSnippet');
 $snippets[2]->fromArray(array(
     'id' => '2',
     'property_preprocess' => '',
-    'name' => 'CampaignerSubscribe',
-    'description' => 'Subscribe snippet',
+    'name' => 'CampaignerSharing',
+    'description' => '',
     'properties' => '',
 ), '', true, true);
-$snippets[2]->setContent(file_get_contents($sources['source_core'] . '/elements/snippets/campaignersubscribe.snippet.php'));
+$snippets[2]->setContent(file_get_contents($sources['source_core'] . '/elements/snippets/campaignersharing.snippet.php'));
 
 $snippets[3] = $modx->newObject('modSnippet');
 $snippets[3]->fromArray(array(
     'id' => '3',
     'property_preprocess' => '',
-    'name' => 'CampaignerUnsubscribe',
-    'description' => 'Unsubscribe snippet',
+    'name' => 'CampaignerConfirm',
+    'description' => 'Confirms a subscription',
     'properties' => '',
 ), '', true, true);
-$snippets[3]->setContent(file_get_contents($sources['source_core'] . '/elements/snippets/campaignerunsubscribe.snippet.php'));
+$snippets[3]->setContent(file_get_contents($sources['source_core'] . '/elements/snippets/campaignerconfirm.snippet.php'));
+
+$snippets[4] = $modx->newObject('modSnippet');
+$snippets[4]->fromArray(array(
+    'id' => '4',
+    'property_preprocess' => '',
+    'name' => 'CampaignerSubscribe',
+    'description' => 'Subscribe snippet',
+    'properties' => '',
+), '', true, true);
+$snippets[4]->setContent(file_get_contents($sources['source_core'] . '/elements/snippets/campaignersubscribe.snippet.php'));
 
 return $snippets;
