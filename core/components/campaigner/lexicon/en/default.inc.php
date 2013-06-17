@@ -47,6 +47,7 @@ $_lang['campaigner.newsletter.total'] = 'Total';
 $_lang['campaigner.newsletter.filter.sent'] = 'Versandstatus';
 $_lang['campaigner.newsletter.sent'] = 'Gesendet';
 $_lang['campaigner.newsletter.scheduled'] = 'Angesetzt';
+$_lang['campaigner.newsletter.toggleauto'] = 'ohne Auto-Newsletter';
 $_lang['campaigner.newsletter.add'] = 'Neuer Newswletter';
 $_lang['campaigner.newsletter.groups'] = 'Gruppen';
 $_lang['campaigner.newsletter.groups_add'] = 'Gruppen hinzuf&uuml;gen';
@@ -84,8 +85,8 @@ $_lang['campaigner.newsletter.preview.showtext'] = 'Text anzeigen';
 $_lang['campaigner.newsletter.preview.showhtml'] = 'HTML anzeigen';
 $_lang['campaigner.newsletter.preview.process_tags'] = 'Tags verarbeiten';
 
-$_lang['campaigner.newsletter.create.info'] = 'Please note: The normal way to make a Campaigner newsletter is to create a document within your newsletters folders as specified in the config.
-But you can also create a newsletter from another location. By checking the "copy" option a copy will be moved to the newsletter location.';
+$_lang['campaigner.newsletter.create.info'] = 'Please note: The normal way to make a Campaigner newsletter is to create a document within your newsletters folders as specified in the config.';
+$_lang['campaigner.newsletter.create.info'] .= '<br/>But you can also create a newsletter from another location. By checking the "copy" option a copy will be moved to the newsletter location.';
 
 $_lang['campaigner.newsletter.remove.title'] = 'Newsletter entfernen?';
 $_lang['campaigner.newsletter.remove.confirm'] = 'Wollen Sie diesen Newsletter wirklich entfernen? Dadurch werden alle Informationen und auch die angelegte Ressource entfernt!';
@@ -96,6 +97,15 @@ $_lang['campaigner.newsletter.error.noreceiver'] = 'Kein Empf&auml;nger f&uuml;r
 $_lang['campaigner.newsletter.batch_actions'] = 'Stapel-Aktionen';
 $_lang['campaigner.newsletter.batch_remove'] = 'Markierte entfernen';
 $_lang['campaigner.newsletter.batch_errors'] = 'Es traten Fehler beim Entfernen der Newsletter auf!';
+
+$_lang['campaigner.newsletter.editarticles'] = 'Artikel bearbeiten';
+$_lang['campaigner.newsletter.editarticles_info'] = 'Hier k&ouml;nnen die Artikel eingesehen werden, die Sie an diesen Newsletter beim Erstellen oder Bearbeiten der Ressource hinzugef&uuml;gt haben';
+// $_lang['campaigner.newsletter.editarticles_info'] .= '<br/><strong>UNDER CONSTRUCTION</strong>';
+$_lang['campaigner.newsletter.editarticles.goto'] = 'Artikel bearbeiten';
+
+$_lang['campaigner.newsletter.articles.pagetitle'] = 'Seitentitel';
+$_lang['campaigner.newsletter.articles.id'] = 'ID';
+$_lang['campaigner.newsletter.articles.section'] = 'Bereich';
 
 // autonewsletter
 $_lang['campaigner.newsletter.date_time'] = 'Start (Datum & Zeit)';
@@ -408,6 +418,7 @@ $_lang['campaigner.fields.required'] = 'Ben&oumltigt';
 $_lang['campaigner.fields.active'] = 'Aktiv';
 $_lang['campaigner.fields.values'] = 'Werte';
 $_lang['campaigner.fields.format'] = 'Format';
+$_lang['campaigner.fields.menuindex'] = 'Sortierung';
 $_lang['campaigner.fields.add'] = 'Neues Element';
 $_lang['campaigner.fields.update'] = 'Editieren';
 $_lang['campaigner.fields.remove'] = 'Entfernen';

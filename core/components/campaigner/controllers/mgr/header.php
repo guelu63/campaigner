@@ -15,6 +15,7 @@ $perms = array(
 	'campaigner.newsletter_edit',
 	'campaigner.newsletter_editprops',
 	'campaigner.newsletter_editgroups',
+	'campaigner.newsletter_editarticles',
 	'campaigner.newsletter_clean',
 	'campaigner.newsletter_clean_dehtml',
 	'campaigner.newsletter_clean_trash',

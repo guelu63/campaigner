@@ -13,13 +13,13 @@
 $isLimit    = !empty($_REQUEST['limit']);
 $start      = $modx->getOption('start',$_REQUEST,0);
 $limit      = $modx->getOption('limit',$_REQUEST,10);
-$sort       = $modx->getOption('sort',$_REQUEST,'id');
+$sort       = $modx->getOption('sort',$_REQUEST,'`Document`.`publishedon`');
 $dir        = $modx->getOption('dir',$_REQUEST,'DESC');
 $state      = $modx->getOption('state',$_REQUEST,null);
 $sent       = $modx->getOption('sent',$_REQUEST,null);
 $media      = $modx->getOption('media',$_REQUEST,null);
 $auto	    = $modx->getOption('auto',$_REQUEST,null);
-$sort = 'sent_date';
+// $sort = 'sent_date';
 
 /* query for newsletters */
 $c = $modx->newQuery('Newsletter');

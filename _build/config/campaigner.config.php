@@ -315,6 +315,15 @@ $components = array(
             'value' => '',
             'area' => 'site',
         ),
+        'campaigner.default_template' => array( // key
+            'key' => 'campaigner.default_template',
+            'name' => 'Campaigner Default Template',
+            'description' => 'Campaigner Default Template',
+            'namespace' => 'campaigner',
+            'xtype' => 'textfield',
+            'value' => '',
+            'area' => 'site',
+        ),
         // File
         'campaigner.attachment_tv' => array( // key
             'key' => 'campaigner.attachment_tv',
@@ -682,6 +691,7 @@ $components = array(
         'addUsers',
         'tables',
         'policy',
+        'fcs',
     ),
 
     /* (optional) Validators can abort the install after checking

@@ -36,13 +36,21 @@
  $campaigner = $modx->getService('campaigner', 'Campaigner', $modx->getOption('core_path'). 'components/campaigner/model/campaigner/');
 if (!($campaigner instanceof Campaigner)) return;
 
-echo 'after campaigner init';
-
 switch($modx->event->name) {
     default: return;
 
+    case 'OnBeforeDocFormSave':
+        if(in_array($resource->get('parent'), array(12,13)))
+            $_REQUEST['letter'] = 1;
+    break;
+
     // document saving
     case 'OnDocFormSave':
+        // if($_SESSION['test']) {
+        //     $modx->sendRedirect($modx->getOption('manager_url') . 'index.php?a=82');
+        //     return;
+        // }
+
         if($mode !== 'new') return; // only implemented for new resources yet
         $parents = array($resource->get('parent'));
 
@@ -84,7 +92,7 @@ switch($modx->event->name) {
             'bounced' => 0
         ));
         if($newsletter->save())
-            $modx->log(MODX_LOG_LEVEL_INFO, "NL SAVED");
+            $modx->log(MODX_LOG_LEVEL_ERROR, "NL SAVED");
 
         $groups = explode(',', $modx->getOption('campaigner.default_groups'));
         if(count($groups) > 0) {
@@ -97,11 +105,23 @@ switch($modx->event->name) {
                 $newsletterGroup->save();
             }
         }
-        if($prevkey) {
+        if($prevkey)
             $modx->switchContext($prevkey);
+
+        if($_REQUEST['letter']) {
+            $modx->log(MODX_LOG_LEVEL_ERROR, 'I will redirect');
+            $modx->sendRedirect($modx->getOption('manager_url') . 'index.php?a=82', array('type' => 'REDIRECT_META'));
+            return;
         }
     break;
 
+    // case 'OnManagerPageAfterRender':
+    //     if($_REQUEST['letter'] && $_REQUEST['letter'] === 1) {
+    //         $modx->log(MODX_LOG_LEVEL_ERROR, 'I will redirect');
+    //         return $modx->sendRedirect($modx->getOption('manager_url') . 'index.php?a=82');
+    //     }
+    // break;
+    
     // emptying the trash
     case 'OnBeforeEmptyTrash':
         $newsletters = $modx->getCollection('Newsletter', array('docid:IN' => $ids));
@@ -116,10 +136,18 @@ switch($modx->event->name) {
 
     case 'OnDocFormRender':
         $letter = $_REQUEST['letter'];
-        $modx->controller->setProperty('template', 2);
-        $modx->controller->setProperty('parent', 13);
         if(!$letter || $letter ==! 1)
             return;
-        
+        $parent = $modx->getObject('modResource', $modx->getOption('campaigner.newsletter_folder'));
+        $props = array(
+            'template'  => $modx->getOption('campaigner.default_template'),
+            // 'parent-cmb' => $parent->get('id'),
+            // 'parent'    => $parent->get('id'),
+            // 'parentname' => $parent->get('pagetitle'),
+            // 'parent_pagetitle' => $parent->get('pagetitle'),
+            // 'content'   => 'test',
+            );
+        if(!$modx->controller->setProperties($props))
+            $modx->log(MODX_LOG_LEVEL_ERROR, 'Properties set: ' . json_encode($props));
     break;
 }

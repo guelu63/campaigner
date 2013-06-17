@@ -4,7 +4,7 @@ Campaigner.grid.Fields = function(config) {
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url
         ,baseParams: { action: 'mgr/fields/getList' }
-        ,fields: ['id', 'name', 'label', 'type', 'required', 'active', 'values', 'format']
+        ,fields: ['id', 'name', 'label', 'type', 'required', 'active', 'values', 'format', 'menuindex']
         ,paging: true
         ,remoteSort: true
         ,enableDragDrop: true
@@ -23,21 +23,12 @@ Campaigner.grid.Fields = function(config) {
                         notifyDrop : function(dd, e, data){
 
                             var ds = grid.store;
-
                             // NOTE:
                             // you may need to make an ajax call
                             // here
                             // to send the new order
                             // and then reload the store
-                            console.log(ds);
-                            // MODx.Ajax.request({
-                            //     url: Campaigner.config.connector_url
-                            //     ,params: {
-                            //         action: 'mgr/fields/updateOrder'
-                            //         ,field: id
-                            //     }
-                            // })
-
+                            
                             // alternatively, you can handle the
                             // changes
                             // in the order of the row as
@@ -57,6 +48,18 @@ Campaigner.grid.Fields = function(config) {
                                     sm.clearSelections();
                                 }
                             }
+                            MODx.Ajax.request({
+                                url: Campaigner.config.connector_url
+                                ,params: {
+                                    action: 'mgr/fields/updateOrder'
+                                    ,fields: Ext.encode(ds.data.keys)
+                                }
+                                ,listeners: {
+                                    'success': {fn:function(r) {
+                                        grid.refresh();
+                                    },scope:this}
+                                }
+                            });
                         }
                     })
                     // load the grid store
@@ -77,27 +80,27 @@ Campaigner.grid.Fields = function(config) {
             header: _('campaigner.fields.name')
             ,dataIndex: 'name'
             ,sortable: true
-            ,width: 15
+            ,width: 10
         },{
             header: _('campaigner.fields.label')
             ,dataIndex: 'label'
             ,sortable: true
-            ,width: 15
+            ,width: 7
         },{
             header: _('campaigner.fields.type')
             ,dataIndex: 'type'
             ,sortable: true
-            ,width: 15
+            ,width: 7
         },{
             header: _('campaigner.fields.values')
             ,dataIndex: 'values'
             ,sortable: true
-            ,width: 15
+            ,width: 10
         },{
             header: _('campaigner.fields.format')
             ,dataIndex: 'format'
             ,sortable: true
-            ,width: 15
+            ,width: 5
         },{
             header: _('campaigner.fields.required')
             ,dataIndex: 'required'
@@ -120,6 +123,11 @@ Campaigner.grid.Fields = function(config) {
                 }
                 return '<img src="'+ Campaigner.config.base_url +'images/mgr/no.png" alt="' + _('campaigner.newsletter.unapproved') + '" />';
             }
+        },{
+            header: _('campaigner.fields.menuindex')
+            ,dataIndex: 'menuindex'
+            ,sortable: true
+            ,width: 5
         }]
          /* Top toolbar */  
         ,tbar : [{

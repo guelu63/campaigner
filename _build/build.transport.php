@@ -260,6 +260,48 @@ if (is_array($templates)) {
 unset ($templates,$template,$idx,$ct,$attributes);
 
 
+/* Package in FC-Profile */
+// $attributes = array (
+//     xPDOTransport::PRESERVE_KEYS => false,
+//     xPDOTransport::UNIQUE_KEY => array('name'),
+//     xPDOTransport::UPDATE_OBJECT => true,
+// );
+// $fcprofiles = include $sources['data'].'transport.fcprofile.php';
+// if (!is_array($fcprofiles)) { $modx->log(modX::LOG_LEVEL_FATAL,'Adding fcprofiles failed.'); }
+// foreach ($fcprofiles as $fcprofile) {
+//     $vehicle = $builder->createVehicle($fcprofile,$attributes);
+//     $builder->putVehicle($vehicle);
+// }
+// $modx->log(modX::LOG_LEVEL_INFO,'Packaged in '.count($fcprofiles).' Access fcprofile.'); flush();
+// unset($fcprofiles,$fcprofile,$attributes);
+
+
+/* Package in FC-Sets */
+// $fcsets = include dirname(__FILE__).'/data/transport.fcsets.php';
+// $attributes = array (
+//     xPDOTransport::PRESERVE_KEYS => false,
+//     xPDOTransport::UNIQUE_KEY => array('name'),
+//     xPDOTransport::UPDATE_OBJECT => true,
+//     xPDOTransport::RELATED_OBJECTS => true,
+//     xPDOTransport::RELATED_OBJECT_ATTRIBUTES => array (
+//         'Permissions' => array (
+//             xPDOTransport::PRESERVE_KEYS => false,
+//             xPDOTransport::UPDATE_OBJECT => true,
+//             xPDOTransport::UNIQUE_KEY => array ('template','name'),
+//         ),
+//     )
+// );
+// if (is_array($templates)) {
+//     foreach ($templates as $template) {
+//         $vehicle = $builder->createVehicle($template,$attributes);
+//         $builder->putVehicle($vehicle);
+//     }
+//     $modx->log(modX::LOG_LEVEL_INFO,'Packaged in '.count($templates).' Access Policy Templates.'); flush();
+// } else {
+//     $modx->log(modX::LOG_LEVEL_ERROR,'Could not package in Access Policy Templates.');
+// }
+// unset ($templates,$template,$idx,$ct,$attributes);
+
 
 
 /* Transport Contexts */
