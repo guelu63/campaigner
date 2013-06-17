@@ -577,9 +577,19 @@ $components = array(
         //     ),
         // ),
         'templateVars' => array(
-            'tvAttach' => array(
+            'tvCampaignerAttachments' => array(
                 'category' => 'campaigner',
                 'caption' => 'Attachments',
+            ),
+            'tvCampaignerData' => array(
+                'category' => 'campaigner',
+                'caption' => 'Data',
+                'type' => 'hidden',
+            ),
+            'tvCampaignerSent' => array(
+                'category' => 'campaigner',
+                'caption' => 'Sent',
+                'type' => 'hidden',
             ),
         ),
     ),

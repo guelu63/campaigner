@@ -605,7 +605,7 @@ class Campaigner
 
             /**
              * Get newsletter via cache resource
-             * @since 2013-04-11
+             * @since v1.0.0
              */
             $cacheOptions = array(
                 xPDO::OPT_CACHE_KEY => '',
@@ -704,9 +704,12 @@ class Campaigner
         }
 
         if($cnt > 0) {
-            /**
-            * Feed the manager log
-            */
+
+            // Set sent count
+            $newsletter->set('sent', $cnt);
+            $newsletter->save();
+
+            // Feed the manager log
             $l = $this->modx->newObject('modManagerLog');
             $data = array(
               'user'      => 41,
@@ -718,6 +721,17 @@ class Campaigner
 
             $l->fromArray($data);
             $l->save();
+
+            // Set tvCampaignerData
+            $tv = $this->modx->getObject('modTemplateVar',array('name'=>'tvCampaignerData'));
+            $tv->setValue($newsletter->get('docid'), json_encode($newsletter->toArray()));
+            $tv->save();
+
+            // Set tvCampaignerSent
+            $tv_sent = $this->modx->getObject('modTemplateVar',array('name'=>'tvCampaignerSent'));
+            $tv_sent->setValue($newsletter->get('docid'), 1);
+            $tv_sent->save();
+
         }
         //fclose($fileHandler);
        return;
