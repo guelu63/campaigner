@@ -1,4 +1,3 @@
-<?php
 /**
  * CampaignerResource plugin for campaigner extra
  *

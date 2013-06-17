@@ -163,7 +163,7 @@ $sources = array(
     'validators' => $root . '_build/validators/',
     'data' => $root . '_build/data/',
     'docs' => $root . 'core/components/' . PKG_NAME_LOWER . '/docs/',
-    'install_options' => $root . '_build/install.options/',
+    // 'install_options' => $root . '_build/install.options/',
     'packages' => $root . 'core/packages',
     /* no trailing slash */
 
@@ -306,60 +306,60 @@ unset ($templates,$template,$idx,$ct,$attributes);
 
 /* Transport Contexts */
 
-if ($hasContexts) {
-    $contexts = include $sources['data'] . 'transport.contexts.php';
-    if (!is_array($contexts)) {
-        $helper->sendLog(modX::LOG_LEVEL_ERROR, $modx->lexicon('mc_contexts_not_an_array'));
-    } else {
-        $attributes = array(
-            xPDOTransport::UNIQUE_KEY => 'key',
-            xPDOTransport::PRESERVE_KEYS => true,
-            xPDOTransport::UPDATE_OBJECT => false,
-        );
-        foreach ($contexts as $context) {
-            $vehicle = $builder->createVehicle($context, $attributes);
-            $builder->putVehicle($vehicle);
-        }
-        $helper->sendLog(modX::LOG_LEVEL_INFO, $modx->lexicon('mc_packaged')
-            . ' ' .
-            count($contexts) . ' ' . $modx->lexicon('mc_new_contexts')
-            . '.');
-        unset($contexts, $context, $attributes);
-    }
-}
+// if ($hasContexts) {
+//     $contexts = include $sources['data'] . 'transport.contexts.php';
+//     if (!is_array($contexts)) {
+//         $helper->sendLog(modX::LOG_LEVEL_ERROR, $modx->lexicon('mc_contexts_not_an_array'));
+//     } else {
+//         $attributes = array(
+//             xPDOTransport::UNIQUE_KEY => 'key',
+//             xPDOTransport::PRESERVE_KEYS => true,
+//             xPDOTransport::UPDATE_OBJECT => false,
+//         );
+//         foreach ($contexts as $context) {
+//             $vehicle = $builder->createVehicle($context, $attributes);
+//             $builder->putVehicle($vehicle);
+//         }
+//         $helper->sendLog(modX::LOG_LEVEL_INFO, $modx->lexicon('mc_packaged')
+//             . ' ' .
+//             count($contexts) . ' ' . $modx->lexicon('mc_new_contexts')
+//             . '.');
+//         unset($contexts, $context, $attributes);
+//     }
+// }
 
 
-/* Transport Resources */
+// /* Transport Resources */
 
-if ($hasResources) {
-    $resources = include $sources['data'] . 'transport.resources.php';
-    if (!is_array($resources)) {
-        $helper->sendLog(modX::LOG_LEVEL_ERROR, $modx->lexicon('mc_resources_not_an_array')
-            . '.');
-    } else {
-        $attributes = array(
-            xPDOTransport::PRESERVE_KEYS => false,
-            xPDOTransport::UPDATE_OBJECT => true,
-            xPDOTransport::UNIQUE_KEY => 'pagetitle',
-            xPDOTransport::RELATED_OBJECTS => true,
-            xPDOTransport::RELATED_OBJECT_ATTRIBUTES => array(
-                'ContentType' => array(
-                    xPDOTransport::PRESERVE_KEYS => false,
-                    xPDOTransport::UPDATE_OBJECT => true,
-                    xPDOTransport::UNIQUE_KEY => 'name',
-                ),
-            ),
-        );
-        foreach ($resources as $resource) {
-            $vehicle = $builder->createVehicle($resource, $attributes);
-            $builder->putVehicle($vehicle);
-        }
-        $helper->sendLog(modX::LOG_LEVEL_INFO, $modx->lexicon('mc_packaged')
-            . ' ' . count($resources) . ' ' . $modx->lexicon('mc_resources')
-            . '.');
-    }
-    unset($resources, $resource, $attributes);
-}
+// if ($hasResources) {
+//     $resources = include $sources['data'] . 'transport.resources.php';
+//     if (!is_array($resources)) {
+//         $helper->sendLog(modX::LOG_LEVEL_ERROR, $modx->lexicon('mc_resources_not_an_array')
+//             . '.');
+//     } else {
+//         $attributes = array(
+//             xPDOTransport::PRESERVE_KEYS => false,
+//             xPDOTransport::UPDATE_OBJECT => true,
+//             xPDOTransport::UNIQUE_KEY => 'pagetitle',
+//             xPDOTransport::RELATED_OBJECTS => true,
+//             xPDOTransport::RELATED_OBJECT_ATTRIBUTES => array(
+//                 'ContentType' => array(
+//                     xPDOTransport::PRESERVE_KEYS => false,
+//                     xPDOTransport::UPDATE_OBJECT => true,
+//                     xPDOTransport::UNIQUE_KEY => 'name',
+//                 ),
+//             ),
+//         );
+//         foreach ($resources as $resource) {
+//             $vehicle = $builder->createVehicle($resource, $attributes);
+//             $builder->putVehicle($vehicle);
+//         }
+//         $helper->sendLog(modX::LOG_LEVEL_INFO, $modx->lexicon('mc_packaged')
+//             . ' ' . count($resources) . ' ' . $modx->lexicon('mc_resources')
+//             . '.');
+//     }
+//     unset($resources, $resource, $attributes);
+// }
 
 /* load new system settings */
 if ($hasSettings) {

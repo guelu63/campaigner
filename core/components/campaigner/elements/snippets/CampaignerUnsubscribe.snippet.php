@@ -1,4 +1,3 @@
-<?php
 /**
  * CampaignerUnsubscribe snippet for campaigner extra
  *

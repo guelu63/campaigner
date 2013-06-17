@@ -3,7 +3,7 @@
 * Resolver to connect plugins to system events for campaigner extra
 *
 * Copyright 2013 by Subsolutions <http://www.subsolutions.at>
-* Created on 04-18-2013
+* Created on 06-17-2013
 *
  * campaigner is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
@@ -70,12 +70,18 @@ if ($object->xpdo) {
 
             $intersects = array (
                 0 =>  array (
+                  'pluginid' => 'CampaignerTracking',
+                  'event' => 'OnLoadWebDocument',
+                  'priority' => '0',
+                  'propertyset' => '0',
+                ),
+                1 =>  array (
                   'pluginid' => 'CampaignerResource',
                   'event' => 'OnBeforeEmptyTrash',
                   'priority' => '0',
                   'propertyset' => '0',
                 ),
-                1 =>  array (
+                2 =>  array (
                   'pluginid' => 'CampaignerResource',
                   'event' => 'OnDocFormSave',
                   'priority' => '0',
