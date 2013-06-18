@@ -38,7 +38,6 @@ class Campaigner
             'assetsUrl'      => $assetsUrl,
             'connectorUrl'   => $assetsUrl.'connector.php'
             ),$config);
-
         // package and lexicon
         $this->modx->addPackage('campaigner', $this->config['modelPath'], 'camp_');
         $this->modx->lexicon->load('campaigner:default');

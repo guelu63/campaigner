@@ -42,7 +42,13 @@ if(isset($_FILES)){
         }
         fclose($handle);
     }
+    // Import subscribers
+    // Test imports will stop after hitting the limit
+    $i = 0;
     foreach($lines as $line) {
+        if($_POST['test'] && $_POST['test'] > 0)
+            if($i >= $_POST['test'])
+                break;
     	$_data = array();
     	foreach($line as $key => $value) {
     		if(array_search($key, $fields) == 'groups')
@@ -57,11 +63,13 @@ if(isset($_FILES)){
 			// Generate subscriber key for new subscribers
     		$_data['key'] = $modx->campaigner->generate_key(array('email' => $_data['email']));
     		$_data['since'] = time();
+            $_data['import'] = 1;
     	}
     	if(is_null($subscriber) and !is_object($subscriber) and !$subscriber instanceof Subscriber)
     		return $modx->error->failure('Something went wrong');
     	$subscriber->fromArray($_data);
     	$subscriber->save();
+        $i++;
     }
 	if(!$_POST['save_file'])
 		if(!unlink($new_name))

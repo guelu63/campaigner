@@ -20,6 +20,7 @@ $xpdo_meta_map['Subscriber']= array (
     'city' => NULL,
     'state' => NULL,
     'country' => NULL,
+    'import' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -127,6 +128,14 @@ $xpdo_meta_map['Subscriber']= array (
       'dbtype' => 'varchar',
       'precision' => '255',
       'phptype' => 'string',
+      'null' => true,
+    ),
+    'import' =>
+    array(
+      'dbtype' => 'tinyint',
+      'precision' => '1',
+      'phptype' => 'integer',
+      'attributes' => 'unsigned',
       'null' => true,
     ),
   ),

@@ -92,7 +92,7 @@ $systemSettings[8]->fromArray(array(
 $systemSettings[9] = $modx->newObject('modSystemSetting');
 $systemSettings[9]->fromArray(array(
     'key' => 'campaigner.confirm_mail',
-    'value' => '',
+    'value' => '<p>Hallo [[+campaigner.firstname]] [[+campaigner.lastname]] <br /><br /> Danke für die Anmeldung bei unserem Newsletter. <br /><br /> Um die Anmeldung abzuschließen muss noch über folgenden Link bestätigt werden: <a href="http://www.bundesliga.at/[[+campaigner.confirm]]">Newsletter bestätigen</a> <br /><br /><br /> Vielen Dank</p>',
     'xtype' => 'textfield',
     'namespace' => 'campaigner',
     'area' => 'site',

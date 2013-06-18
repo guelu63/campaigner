@@ -22,6 +22,7 @@ if(!empty($_POST['id'])) {
 }
 $_POST['active'] = $_POST['active'] ? 1 : 0;
 $_POST['text']   = $_POST['text'] ? 1 : 0;
+$_POST['import']   = $_POST['import'] ? 1 : NULL;
 $_POST['key'] = md5(time() . substr($_SERVER['REQUEST_URI'], rand(1, 20)) . $_SERVER['REMOTE_ADDR']);
 
 $subscriber->fromArray($_POST);

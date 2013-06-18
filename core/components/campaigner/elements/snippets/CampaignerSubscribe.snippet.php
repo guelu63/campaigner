@@ -1,3 +1,4 @@
+<?php
 /**
  * CampaignerSubscribe snippet for campaigner extra
  *
@@ -41,7 +42,6 @@ if (!($campaigner instanceof Campaigner)) return 'nono';
 // $_POST['email'] = 'jan.heinzle@subsolutions.at';
 
 $post = $modx->request->getParameters(array(), 'POST');
-
 $groups = $post['groups'] ? $post['groups'] : false;
 $chunk  = $modx->getOption('chunk', $scriptProperties, 'CampaignerForm');
 $params = $post;
@@ -60,8 +60,13 @@ if($submit && ($modx->getOption('campaigner.default_groups') == 0) && !$groups)
   $params['error'][] = 'Wählen Sie mindestens eine Gruppe!';
 
 $post['groups'] = $modx->getOption('campaigner.default_groups');
+if($submit && count($params['error']) <= 0) {
+  echo 'test#1';
+  if(!$campaigner->subscribe($post))
+    return json_decode($campaigner->errormsg[$success]);
+}
 
-var_dump($params);
+// var_dump($params);
 
 $available_groups = $campaigner->getGroups();
 foreach($available_groups as $group) {
@@ -74,6 +79,18 @@ foreach($available_groups as $group) {
     );
   $params['groups_check'] .= $modx->getChunk('CampaignerCheckbox', $args);
 }
+// var_dump($campaigner->config);
+
+// Registering the JS which handles the AJAX request
+$url = $modx->makeUrl(401);
+$modx->regClientScript($campaigner->config['jsUrl'] . 'web/request.js');
+// $js .= 'CampaignerReq.init(["url", ' . $url . ', "controlId"]);';
+
+$js .= 'CAMPAIGNER.url = "' . $url . '"' . "\n";
+$js .= 'CAMPAIGNER.ajax = 1' . "\n";
+$js .= 'CAMPAIGNER.REQUEST.subscribe();' . "\n";
+$modx->regClientHTMLBlock('<script type="text/javascript">'.$js.'</script>');
+
 
 if($submit && count($params['error']) > 0) {
   $params['error'] = implode('<br/>', $params['error']);

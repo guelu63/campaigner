@@ -1,3 +1,4 @@
+<?php
 /**
  * CampaignerResource plugin for campaigner extra
  *
@@ -38,18 +39,30 @@ if (!($campaigner instanceof Campaigner)) return;
 switch($modx->event->name) {
     default: return;
 
-    case 'OnBeforeDocFormSave':
-        if(in_array($resource->get('parent'), array(12,13)))
-            $_REQUEST['letter'] = 1;
-    break;
+    // THE 'FOR THE REDIRECTION AFTER
+    // A NEWSLETTER HAS BEEN CREATED'-QUEST PART 2
+    // case 'OnManagerPageBeforeRender':
+    //     if($_REQUEST['letter'] === 1) {
+    //         $modx->sendRedirect($modx->getOption('manager_url') . 'index.php?a=82');
+    //         return;
+    //     }
+    //     return;
+    // break;
+    // case 'OnBeforeDocFormSave':
+    //     if(in_array($resource->get('parent'), array(12,13)))
+    //         $_REQUEST['letter'] = 1;
+    // break;
 
-    // document saving
+    // case 'OnManagerPageAfterRender':
+    //     if($_REQUEST['letter'] && $_REQUEST['letter'] === 1) {
+    //         $modx->log(MODX_LOG_LEVEL_ERROR, 'I will redirect');
+    //         return $modx->sendRedirect($modx->getOption('manager_url') . 'index.php?a=82');
+    //     }
+    // break;
+
+    // Create newsletter objects
     case 'OnDocFormSave':
-        // if($_SESSION['test']) {
-        //     $modx->sendRedirect($modx->getOption('manager_url') . 'index.php?a=82');
-        //     return;
-        // }
-
+        
         if($mode !== 'new') return; // only implemented for new resources yet
         $parents = array($resource->get('parent'));
 
@@ -106,20 +119,7 @@ switch($modx->event->name) {
         }
         if($prevkey)
             $modx->switchContext($prevkey);
-
-        if($_REQUEST['letter']) {
-            $modx->log(MODX_LOG_LEVEL_ERROR, 'I will redirect');
-            $modx->sendRedirect($modx->getOption('manager_url') . 'index.php?a=82', array('type' => 'REDIRECT_META'));
-            return;
-        }
     break;
-
-    // case 'OnManagerPageAfterRender':
-    //     if($_REQUEST['letter'] && $_REQUEST['letter'] === 1) {
-    //         $modx->log(MODX_LOG_LEVEL_ERROR, 'I will redirect');
-    //         return $modx->sendRedirect($modx->getOption('manager_url') . 'index.php?a=82');
-    //     }
-    // break;
     
     // emptying the trash
     case 'OnBeforeEmptyTrash':
@@ -133,10 +133,65 @@ switch($modx->event->name) {
         }
     break;
 
+    // case 'OnDocFormRender':
+    //     if($_REQUEST['letter'] && (int) $_REQUEST['letter'] === 1) {
+            
+    // break;
+
     case 'OnDocFormRender':
         $letter = $_REQUEST['letter'];
         if(!$letter || $letter ==! 1)
             return;
+            $camp_url = $modx->getOption('manager_url') . 'index.php?a=82';
+            $js =<<<JS
+            <script type="text/javascript">
+            Ext.onReady(function () {
+                var resource_panel = Ext.getCmp('modx-panel-resource');
+                // resource_panel.addListener('success', function() { console.log('test')})
+                // return false;
+                console.log(resource_panel);
+
+                resource_panel = function(config) {
+                    Ext.applyIf(config, {
+                        listeners: {
+                            'setup': {fn:this.setup,scope:this}
+                            ,'success': {fn:this.success,scope:this}
+                            ,'failure': {fn:this.failure,scope:this}
+                            ,'beforeSubmit': {fn:this.beforeSubmit,scope:this}
+                        }
+                    });
+                }
+
+                Ext.extend(resource_panel, MODx.FormPanel, {
+                    click: function() {
+                        alert('test');
+                    }
+                    ,success: function(o) {
+                        alert('test');
+                        location.href = '$camp_url';
+                        this.getForm().setValues(o.result.object);
+                        var stay = Ext.state.Manager.get('modx.stay.'+MODx.request.a,'stay');
+                        switch (stay) {
+                            case 'new':
+                            location.href = '$camp_url';
+                            break;
+                            case 'stay':
+                            location.href = '$camp_url';
+                            break;
+                            default:
+                            location.href = '$camp_url';
+                        };
+                    }
+                });
+
+                // Ext.get('modx-panel-resource').on('click', function(e, t, o){
+                //     alert('o.test');
+                // }, null, {test:'hello'});
+            });
+            </script>
+JS;
+        $modx->regClientStartupHTMLBlock($js);
+
         $parent = $modx->getObject('modResource', $modx->getOption('campaigner.newsletter_folder'));
         $props = array(
             'template'  => $modx->getOption('campaigner.default_template'),

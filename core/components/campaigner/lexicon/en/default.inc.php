@@ -142,6 +142,7 @@ $_lang['campaigner.group.remove.title'] = 'Gruppe entfernen?';
 $_lang['campaigner.group.remove.confirm'] = 'Diese Gruppe wirklich entfernen?';
 $_lang['campaigner.group.removed'] = 'Gruppe wurde entfernt.';
 $_lang['campaigner.group.update'] = 'Gruppe bearbeiten';
+$_lang['campaigner.group.subscriber_assigned'] = 'Zugeordnet';
 $_lang['campaigner.group.assign_subscriber'] = 'Abonnenten zuweisen';
 $_lang['campaigner.group.assign_subscriber_info'] = 'Weisen Sie mehere Abonnenten einer Gruppe durch Anhaken zu.';
 $_lang['campaigner.group.assign_subscriber_info'] .= '<br/>Wenn bei einem bereits angehakten Abonnenten die Markierung entfernt wird, wird dieser aus der Gruppe entfernt.';
@@ -170,6 +171,7 @@ $_lang['campaigner.subscriber.tab.fields'] = 'Felder';
 
 $_lang['campaigner.subscriber.address'] = 'Anrede';
 $_lang['campaigner.subscriber.title'] = 'Titel';
+$_lang['campaigner.subscriber.name'] = 'Name';
 $_lang['campaigner.subscriber.firstname'] = 'Vorname';
 $_lang['campaigner.subscriber.lastname'] = 'Nachname';
 $_lang['campaigner.subscriber.active'] = 'aktiv';
@@ -198,6 +200,7 @@ $_lang['campaigner.subscriber.zip'] = 'PLZ';
 $_lang['campaigner.subscriber.city'] = 'Ort';
 $_lang['campaigner.subscriber.state'] = 'Bundesland';
 $_lang['campaigner.subscriber.country'] = 'Land';
+$_lang['campaigner.subscriber.imported'] = 'Importiert';
 
 $_lang['campaigner.subscriber.fields'] = 'Felder';
 
@@ -229,12 +232,15 @@ $_lang['campaigner.subscriber.import.select_file'] = 'Datei ausw&auml;hlen';
 $_lang['campaigner.subscriber.import.save_file'] = 'Datei speichern';
 $_lang['campaigner.subscriber.import.delimiter'] = 'Feldbegrenzer';
 $_lang['campaigner.subscriber.import.fieldset_text'] = 'Feldabgleich';
+$_lang['campaigner.subscriber.import.address'] = 'Anrede';
+$_lang['campaigner.subscriber.import.title'] = 'Titel';
 $_lang['campaigner.subscriber.import.firstname'] = 'Vorname';
 $_lang['campaigner.subscriber.import.lastname'] = 'Nachname';
 $_lang['campaigner.subscriber.import.email'] = 'E-Mail';
 $_lang['campaigner.subscriber.import.active'] = 'Active';
 $_lang['campaigner.subscriber.import.groups'] = 'Gruppen';
 $_lang['campaigner.subscriber.import.default_group'] = 'bei Standard-Gruppe anmelden?';
+$_lang['campaigner.subscriber.import.test'] = 'Test-Import (Anzahl)';
 
 
 $_lang['campaigner.subscriber.batch_actions'] = 'Stapel-Aktionen';

@@ -331,7 +331,7 @@ Campaigner.grid.GroupSubscribers = function(config) {
     config = config || {};
     this.ident = config.ident || 'campaigner-'+Ext.id();
     var tt = new Ext.ux.grid.CheckColumn({
-        header: 'test'
+        header: _('campaigner.group.subscriber_assigned')
         ,dataIndex: 'assigned'
         ,width: 10
         ,sortable: false

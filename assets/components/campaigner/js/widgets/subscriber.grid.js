@@ -13,7 +13,7 @@ Campaigner.grid.Subscriber = function(config) {
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url
         ,baseParams: { action: 'mgr/subscriber/getList' }
-        ,fields: ['id', 'active', 'email', 'title', 'firstname', 'lastname', 'company', 'type', 'groups', 'key', 'since', 'address', 'street', 'zip', 'city', 'state', 'country']
+        ,fields: ['id', 'active', 'email', 'title', 'firstname', 'lastname', 'company', 'type', 'groups', 'key', 'since', 'address', 'street', 'zip', 'city', 'state', 'country', 'import']
         ,paging: true
         ,autosave: false
         ,remoteSort: true
@@ -40,7 +40,7 @@ Campaigner.grid.Subscriber = function(config) {
         //     ,width: 20
         // }
         ,{
-            header: _('campaigner.subscriber.firstname')
+            header: _('campaigner.subscriber.name')
             ,dataIndex: 'firstname'
             ,sortable: true
             ,width: 20
@@ -556,71 +556,105 @@ Campaigner.window.Import = function(config) {
             ,value: ';'
         }
         ,{
-            xtype:'fieldset',
-            checkboxToggle:true,
-            title: _('campaigner.subscriber.import.fieldset_text'),
-            autoHeight:true,
-            defaults: {width: 210},
-            defaultType: 'textfield',
-            collapsed: false,
-            items: [{
-                xtype: 'textfield'
-                ,anchor: '100%'
-                ,id: 'firstname'
-                ,name: 'import[firstname]'
-                ,fieldLabel: _('campaigner.subscriber.import.firstname')
-                ,value: 'Vorname'
-            }
-            ,{
-                xtype: 'textfield'
-                ,anchor: '100%'
-                ,id: 'lastname'
-                ,name: 'import[lastname]'
-                ,fieldLabel: _('campaigner.subscriber.import.lastname')
-                ,value: 'Nachname'
-            }
-            ,{
-                xtype: 'textfield'
-                ,anchor: '100%'
-                ,id: 'email'
-                ,name: 'import[email]'
-                ,fieldLabel: _('campaigner.subscriber.import.email')
-                ,value: 'Email'
-            }
-            ,{
-                xtype: 'textfield'
-                ,anchor: '100%'
-                ,id: 'active'
-                ,name: 'import[active]'
-                ,fieldLabel: _('campaigner.subscriber.import.active')
-                ,value: 'aktiv'
-            }
-            ,{
-                xtype: 'textfield'
-                ,anchor: '100%'
-                ,id: 'groups'
-                ,name: 'import[groups]'
-                ,fieldLabel: _('campaigner.subscriber.import.groups')
-                ,value: 'Gruppen'
+            xtype:'fieldset'
+            ,checkboxToggle:true
+            ,title: _('campaigner.subscriber.import.fieldset_text')
+            ,collapsed: false
+            ,items: [{
+                layout: 'column'
+                ,items: [{
+                    columnWidth: .5
+                    ,layout: 'form'
+                    ,items: [{
+                        xtype: 'textfield'
+                        ,anchor: '100%'
+                        ,id: 'address'
+                        ,name: 'import[address]'
+                        ,fieldLabel: _('campaigner.subscriber.import.address')
+                        ,value: 'Anrede'
+                    },{
+                        xtype: 'textfield'
+                        ,anchor: '100%'
+                        ,id: 'firstname'
+                        ,name: 'import[firstname]'
+                        ,fieldLabel: _('campaigner.subscriber.import.firstname')
+                        ,value: 'Vorname'
+                    },{
+                        xtype: 'textfield'
+                        ,anchor: '100%'
+                        ,id: 'email'
+                        ,name: 'import[email]'
+                        ,fieldLabel: _('campaigner.subscriber.import.email')
+                        ,value: 'Email'
+                    },{
+                        xtype: 'textfield'
+                        ,anchor: '100%'
+                        ,id: 'groups'
+                        ,name: 'import[groups]'
+                        ,fieldLabel: _('campaigner.subscriber.import.groups')
+                        ,value: 'Gruppen'
+                    }]
+                },{
+                    columnWidth: .5
+                    ,layout: 'form'
+                    ,items: [{
+                        xtype: 'textfield'
+                        ,anchor: '100%'
+                        ,id: 'title'
+                        ,name: 'import[title]'
+                        ,fieldLabel: _('campaigner.subscriber.import.title')
+                        ,value: 'Titel'
+                    },{
+                        xtype: 'textfield'
+                        ,anchor: '100%'
+                        ,id: 'lastname'
+                        ,name: 'import[lastname]'
+                        ,fieldLabel: _('campaigner.subscriber.import.lastname')
+                        ,value: 'Nachname'
+                    },{
+                        xtype: 'textfield'
+                        ,anchor: '100%'
+                        ,id: 'active'
+                        ,name: 'import[active]'
+                        ,fieldLabel: _('campaigner.subscriber.import.active')
+                        ,value: 'aktiv'
+                    }]
+                }]
             }]
         }
         ,{
-            xtype: 'checkbox'
-            ,id: 'default_group'
-            ,name: 'default_group'
-            ,labelSeparator: ''
-            ,hideLabel: true
-            ,boxLabel: _('campaigner.subscriber.import.default_group')
-            ,fieldLabel: _('campaigner.subscriber.import.default_group')
-        }
-        ,{
-            xtype: 'checkbox'
-            ,id: 'save_file'
-            ,name: 'save_file'
-            ,labelSeparator: ''
-            ,hideLabel: true
-            ,boxLabel: _('campaigner.subscriber.import.save_file')
-            ,fieldLabel: _('campaigner.subscriber.import.save_file')
+            layout: 'column'
+            ,items: [{
+                columnWidth: .5
+                ,layout: 'form'
+                ,items: [{
+                    xtype: 'checkbox'
+                    ,id: 'default_group'
+                    ,name: 'default_group'
+                    ,labelSeparator: ''
+                    ,hideLabel: true
+                    ,boxLabel: _('campaigner.subscriber.import.default_group')
+                    ,fieldLabel: _('campaigner.subscriber.import.default_group')
+                }]
+            },{
+                columnWidth: .5
+                ,layout: 'form'
+                ,items: [{
+                    xtype: 'checkbox'
+                    ,id: 'save_file'
+                    ,name: 'save_file'
+                    ,labelSeparator: ''
+                    ,hideLabel: true
+                    ,boxLabel: _('campaigner.subscriber.import.save_file')
+                    ,fieldLabel: _('campaigner.subscriber.import.save_file')
+                }]
+            }]
+        },{
+            xtype: 'textfield'
+            ,anchor: '100%'
+            ,id: 'test'
+            ,name: 'test'
+            ,fieldLabel: _('campaigner.subscriber.import.test')
         }]
     });
     Campaigner.window.Import.superclass.constructor.call(this,config);
@@ -797,6 +831,14 @@ Campaigner.window.Subscriber = function(config) {
                     ,labelSeparator: ''
                     ,hideLabel: true
                     ,boxLabel: _('campaigner.subscriber.astext')
+                },{
+                    xtype: 'checkbox'
+                    ,fieldLabel: _('campaigner.subscriber.imported')
+                    ,name: 'import'
+                    ,id: 'campaigner-'+this.ident+'-imported'
+                    ,labelSeparator: ''
+                    ,hideLabel: true
+                    ,boxLabel: _('campaigner.subscriber.imported')
                 }]
             },{
                 title: _('campaigner.subscriber.tab.address')
