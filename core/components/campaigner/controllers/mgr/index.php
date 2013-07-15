@@ -7,7 +7,7 @@ $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/campaigner.
 // }
 
 // Extend ExtJS
-$modx->regClientStartupScript($campaigner->config['jsUrl'].'/custom/fileuploadfield.js');
+// $modx->regClientStartupScript($campaigner->config['jsUrl'].'/custom/fileuploadfield.js');
 $modx->regClientStartupScript($modx->getOption('base_url') . 'manager/assets/modext/util/datetime.js');
 // $modx->regClientStartupScript($campaigner->config['jsUrl'].'/widgets/utilities.helper.js');
 

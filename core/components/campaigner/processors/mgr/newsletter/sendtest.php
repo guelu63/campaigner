@@ -80,6 +80,7 @@ if(!empty($_POST['email'])) {
     $mailer->set(modMail::MAIL_BODY_TEXT, $textual);
     $mailer->address('to', $_POST['email'] );
     
+    // $mailer->set(modMail::SMTPDebug, 2);
     // and send!
     if (!$mailer->send()) {
         $sent = false;

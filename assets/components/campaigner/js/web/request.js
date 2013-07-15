@@ -28,5 +28,13 @@
 		    });
             console.log('URL ' + CAMPAIGNER.url);
         }
+        ,checkmail: function() {
+            return $('#email').live('input', function() {
+            	// Here comes the request to check the email
+            	// Mark it red if already taken
+            	// Mark it green if not taken
+                // $(this).addClass('clicked');
+            });
+        },
     }
 })(jQuery);

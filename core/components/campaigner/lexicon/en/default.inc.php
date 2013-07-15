@@ -156,7 +156,7 @@ $_lang['campaigner.group.error.noname'] = 'Gruppenname muss angegeben werden.';
 $_lang['campaigner.group.error.nocolor'] = 'Die Gruppe muss eine Farbe haben.';
 $_lang['campaigner.group.error.invalidcolor'] = 'Bitte eine g&uuml;ltige Farbe angeben.';
 
-//subscribers
+// Subscribers
 $_lang['campaigner.subscribers'] = 'Abonnenten';
 $_lang['campaigner.subscriber'] = 'Abonnent';
 $_lang['campaigner.subscribers.info'] = 'Verwalten sie Abonnenten und deren Gruppen.';
@@ -164,88 +164,111 @@ $_lang['campaigner.subscribers.info'] = 'Verwalten sie Abonnenten und deren Grup
 $_lang['campaigner.subscriber.add'] = 'erstellen';
 $_lang['campaigner.subscriber.edit'] = 'bearbeiten';
 
-$_lang['campaigner.subscriber.tab.main'] = 'Generell';
-$_lang['campaigner.subscriber.tab.address'] = 'Adresse';
-$_lang['campaigner.subscriber.tab.groups'] = 'Gruppen';
-$_lang['campaigner.subscriber.tab.fields'] = 'Felder';
+	// Subscriber Create/Update Window
+	$_lang['campaigner.subscriber.tab.main'] = 'Generell';
+	$_lang['campaigner.subscriber.tab.address'] = 'Adresse';
+	$_lang['campaigner.subscriber.tab.groups'] = 'Gruppen';
+	$_lang['campaigner.subscriber.tab.fields'] = 'Felder';
 
-$_lang['campaigner.subscriber.address'] = 'Anrede';
-$_lang['campaigner.subscriber.title'] = 'Titel';
-$_lang['campaigner.subscriber.name'] = 'Name';
-$_lang['campaigner.subscriber.firstname'] = 'Vorname';
-$_lang['campaigner.subscriber.lastname'] = 'Nachname';
-$_lang['campaigner.subscriber.active'] = 'aktiv';
-$_lang['campaigner.subscriber.inactive'] = 'inaktiv';
-$_lang['campaigner.subscriber.activate'] = 'aktivieren';
-$_lang['campaigner.subscriber.deactivate'] = 'deaktivieren';
-$_lang['campaigner.subscriber.email'] = 'Email';
-$_lang['campaigner.subscriber.type'] = 'Email-Art';
-$_lang['campaigner.subscriber.groups'] = 'Gruppen';
-$_lang['campaigner.subscriber.add'] = 'Neuer Abonnent';
-$_lang['campaigner.subscriber.remove'] = 'Abonnent entfernen';
-$_lang['campaigner.subscriber.remove.title'] = 'Abonnent entfernen?';
-$_lang['campaigner.subscriber.remove.confirm'] = 'Diesen Abonnent wirklich f&uuml;r immer entfernen?';
-$_lang['campaigner.subscriber.astext'] = 'Newsletter als Text empfangen';
-$_lang['campaigner.subscriber.text'] = 'Text';
-$_lang['campaigner.subscriber.html'] = 'HTML';
-$_lang['campaigner.subscriber.edit'] = 'Abonnent bearbeiten';
-$_lang['campaigner.subscriber.show_statistics'] = 'Zeige Statistiken';
-$_lang['campaigner.subscriber.key'] = 'Schl&uuml;ssel';
-$_lang['campaigner.subscriber.since'] = 'Registriert seit';
+	$_lang['campaigner.subscriber.address'] = 'Anrede';
+	$_lang['campaigner.subscriber.title'] = 'Titel';
+	$_lang['campaigner.subscriber.name'] = 'Name';
+	$_lang['campaigner.subscriber.firstname'] = 'Vorname';
+	$_lang['campaigner.subscriber.lastname'] = 'Nachname';
+	$_lang['campaigner.subscriber.active'] = 'aktiv';
+	$_lang['campaigner.subscriber.inactive'] = 'inaktiv';
+	$_lang['campaigner.subscriber.activate'] = 'aktivieren';
+	$_lang['campaigner.subscriber.deactivate'] = 'deaktivieren';
+	$_lang['campaigner.subscriber.email'] = 'Email';
+	$_lang['campaigner.subscriber.type'] = 'Email-Art';
+	$_lang['campaigner.subscriber.groups'] = 'Gruppen';
+	$_lang['campaigner.subscriber.add'] = 'Neuer Abonnent';
+	$_lang['campaigner.subscriber.remove'] = 'Abonnent entfernen';
+	$_lang['campaigner.subscriber.remove.title'] = 'Abonnent entfernen?';
+	$_lang['campaigner.subscriber.remove.confirm'] = 'Diesen Abonnent wirklich f&uuml;r immer entfernen?';
+	$_lang['campaigner.subscriber.astext'] = 'Newsletter als Text empfangen';
+	$_lang['campaigner.subscriber.text'] = 'Text';
+	$_lang['campaigner.subscriber.html'] = 'HTML';
+	$_lang['campaigner.subscriber.edit'] = 'Abonnent bearbeiten';
+	$_lang['campaigner.subscriber.show_statistics'] = 'Zeige Statistiken';
+	$_lang['campaigner.subscriber.key'] = 'Schl&uuml;ssel';
+	$_lang['campaigner.subscriber.since'] = 'Registriert seit';
 
-$_lang['campaigner.subscriber.additional'] = 'Weitere Angaben';
-$_lang['campaigner.subscriber.company'] = 'Firma';
-$_lang['campaigner.subscriber.street'] = 'Strasse';
-$_lang['campaigner.subscriber.zip'] = 'PLZ';
-$_lang['campaigner.subscriber.city'] = 'Ort';
-$_lang['campaigner.subscriber.state'] = 'Bundesland';
-$_lang['campaigner.subscriber.country'] = 'Land';
-$_lang['campaigner.subscriber.imported'] = 'Importiert';
+	$_lang['campaigner.subscriber.additional'] = 'Weitere Angaben';
+	$_lang['campaigner.subscriber.company'] = 'Firma';
+	$_lang['campaigner.subscriber.street'] = 'Strasse';
+	$_lang['campaigner.subscriber.zip'] = 'PLZ';
+	$_lang['campaigner.subscriber.city'] = 'Ort';
+	$_lang['campaigner.subscriber.state'] = 'Bundesland';
+	$_lang['campaigner.subscriber.country'] = 'Land';
+	$_lang['campaigner.subscriber.imported'] = 'Importiert';
 
-$_lang['campaigner.subscriber.fields'] = 'Felder';
+	$_lang['campaigner.subscriber.fields'] = 'Felder';
 
 $_lang['campaigner.subscriber.saved'] = 'Abonnent gespeichert';
 $_lang['campaigner.subscriber.removed'] = 'Abonnent entfernt';
 
-$_lang['campaigner.subscriber.filter.type'] = 'Art filtern...';
-$_lang['campaigner.subscriber.filter.group'] = 'Gruppen filtern...';
-$_lang['campaigner.subscriber.filter.active'] = 'Aktive filtern...';
-
+// Error-Handling
 $_lang['campaigner.subscriber.error.noemail'] = 'Es muss eine g&uuml;ltige Email-Adresse angegeben werden';
 $_lang['campaigner.subscriber.error.notfound'] = 'Abonnent wurde nicht gefunden';
-
 $_lang['campaigner.subscribe.error.emailtaken'] = 'Diese Email-Adresse wird bereits verwendet.';
 $_lang['campaigner.subscribe.error.noemail'] = 'Es muss eine g&uuml;ltige Email-Adresse angegeben werden.';
 $_lang['campaigner.subscribe.error.nogroup'] = 'Bitte w&auml;hlen sie eine Gruppe.';
 $_lang['campaigner.subscribe.success'] = 'Newsletter erfolgreich abonniert.';
 
-$_lang['campaigner.subscriber.exports'] = 'Import/Export';
-$_lang['campaigner.subscribers.exportcsv'] = 'CSV exportieren';
-$_lang['campaigner.subscribers.exportxml'] = 'XML exportieren';
-$_lang['campaigner.subscribers.importcsv'] = 'CSV importieren';
+	// Toolbar
+	$_lang['campaigner.subscriber.filter.type'] = 'Art filtern...';
+	$_lang['campaigner.subscriber.filter.group'] = 'Gruppen filtern...';
+	$_lang['campaigner.subscriber.filter.active'] = 'Aktive filtern...';
+	$_lang['campaigner.subscriber.batch_actions'] = 'Stapel-Aktionen';
+	$_lang['campaigner.subscribers.batch_deactivate'] = 'Markierte deaktivieren';
+	$_lang['campaigner.subscribers.batch_remove'] = 'Markierte entfernen';
+	$_lang['campaigner.subscriber.exports'] = 'Import/Export';
+	$_lang['campaigner.subscribers.exportcsv'] = 'CSV exportieren';
+	$_lang['campaigner.subscribers.exportxml'] = 'XML exportieren';
+	$_lang['campaigner.subscribers.importcsv'] = 'CSV importieren';
+	$_lang['campaigner.subscriber.search'] = 'Abonnenten suchen';
 
-$_lang['campaigner.subscriber.search'] = 'Abonnenten suchen';
+	// Import subscribers
+	$_lang['campaigner.subscriber.import'] = 'Abonnenten importieren';
+	$_lang['campaigner.subscriber.import.button_text'] = 'Importieren';
+	$_lang['campaigner.subscriber.import.select_file'] = 'Datei ausw&auml;hlen';
+	$_lang['campaigner.subscriber.import.save_file'] = 'Datei speichern';
+	$_lang['campaigner.subscriber.import.delimiter'] = 'Feldbegrenzer';
+	$_lang['campaigner.subscriber.import.fieldset_text'] = 'Feldabgleich';
+	$_lang['campaigner.subscriber.import.address'] = 'Anrede';
+	$_lang['campaigner.subscriber.import.title'] = 'Titel';
+	$_lang['campaigner.subscriber.import.firstname'] = 'Vorname';
+	$_lang['campaigner.subscriber.import.lastname'] = 'Nachname';
+	$_lang['campaigner.subscriber.import.email'] = 'E-Mail';
+	$_lang['campaigner.subscriber.import.active'] = 'Active';
+	$_lang['campaigner.subscriber.import.groups'] = 'Gruppen';
+	$_lang['campaigner.subscriber.import.default_group'] = 'bei Standard-Gruppe anmelden?';
+	$_lang['campaigner.subscriber.import.test'] = 'Test-Import (Anzahl)';
 
-// Import subscribers
-$_lang['campaigner.subscriber.import.button_text'] = 'Importieren';
-$_lang['campaigner.subscriber.import.select_file'] = 'Datei ausw&auml;hlen';
-$_lang['campaigner.subscriber.import.save_file'] = 'Datei speichern';
-$_lang['campaigner.subscriber.import.delimiter'] = 'Feldbegrenzer';
-$_lang['campaigner.subscriber.import.fieldset_text'] = 'Feldabgleich';
-$_lang['campaigner.subscriber.import.address'] = 'Anrede';
-$_lang['campaigner.subscriber.import.title'] = 'Titel';
-$_lang['campaigner.subscriber.import.firstname'] = 'Vorname';
-$_lang['campaigner.subscriber.import.lastname'] = 'Nachname';
-$_lang['campaigner.subscriber.import.email'] = 'E-Mail';
-$_lang['campaigner.subscriber.import.active'] = 'Active';
-$_lang['campaigner.subscriber.import.groups'] = 'Gruppen';
-$_lang['campaigner.subscriber.import.default_group'] = 'bei Standard-Gruppe anmelden?';
-$_lang['campaigner.subscriber.import.test'] = 'Test-Import (Anzahl)';
+		// Descriptions
+		$_lang['campaigner.subscriber.import.select_file.description'] = 'W&auml;hlen Sie eine g&uuml;ltige Datei aus.';
 
+		// Analyze subscriber import
+		$_lang['campaigner.subscriber.import.analyze'] = 'Analysiere Datei';
+		$_lang['campaigner.subscriber.import.analyze.wrong_format'] = 'Falsches Dateiformat';
+		$_lang['campaigner.subscriber.import.analyze.cannot_read'] = 'Datei nicht lesbar';
+		$_lang['campaigner.subscriber.import.analyze.valid'] = 'Datei ist g&uuml;ltig';
+		$_lang['campaigner.subscriber.import.analyze.controls'] = 'Kontroll-Zeichen';
+		$_lang['campaigner.subscriber.import.analyze.header'] = 'Kopfzeile';
+		$_lang['campaigner.subscriber.import.analyze.line'] = 'Zeile';
 
-$_lang['campaigner.subscriber.batch_actions'] = 'Stapel-Aktionen';
-$_lang['campaigner.subscribers.batch_deactivate'] = 'Markierte deaktivieren';
-$_lang['campaigner.subscribers.batch_remove'] = 'Markierte entfernen';
+	// Subscriber Statistics Window
+	$_lang['campaigner.statistics.link'] = 'Link';
+	$_lang['campaigner.statistics.hit_type'] = 'Art';
+	$_lang['campaigner.statistics.client'] = 'Client';
+	$_lang['campaigner.statistics.ip'] = 'IP-Adresse';
+	$_lang['campaigner.statistics.view_total'] = 'Total';
+	$_lang['campaigner.statistics.opens'] = 'Ansichten';
+	$_lang['campaigner.statistics.image'] = 'Ansicht';
+	$_lang['campaigner.statistics.clicks'] = 'Klicks';
+	$_lang['campaigner.statistics.click'] = 'Klick';
+	$_lang['campaigner.statistics.facebook'] = 'Facebook';
 
 // Unsubscribe process
 $_lang['campaigner.unsubscribe.error.nosubscriber'] = 'Abonnent wurde nicht gefunden.';
@@ -382,6 +405,12 @@ $_lang['campaigner.statistics.open_info'] = 'Von welchen Empf&auml;ngern wurde d
 $_lang['campaigner.statistics.hits_info'] = 'Daten &uuml;ber die Klicks eines Newsletter aufgeschl&uuml;sselt nach Link';
 $_lang['campaigner.statistics.bounces_info'] = '';
 $_lang['campaigner.statistics.unsubcribers_info'] = 'Abmeldungen, die durch diesen Newsletter aufgerufen wurden / durchgef&uuml;hrt wurden';
+
+$_lang['campaigner.statistics.type.click'] = 'Klick';
+$_lang['campaigner.statistics.type.open'] = 'Ansicht';
+$_lang['campaigner.statistics.type.facebook'] = 'Facebook';
+$_lang['campaigner.statistics.type.twitter'] = 'Twitter';
+$_lang['campaigner.statistics.type.google'] = 'Google +';
 
 $_lang['campaigner.statistics.reason'] = 'Grund';
 $_lang['campaigner.statistics.via'] = 'Via';

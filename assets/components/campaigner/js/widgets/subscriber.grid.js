@@ -1,3 +1,4 @@
+// MODx.require('Ext.chart.*');
 Campaigner.grid.Subscriber = function(config) {
     config = config || {};
     this.sm = new Ext.grid.CheckboxSelectionModel();
@@ -332,16 +333,30 @@ Ext.extend(Campaigner.grid.Subscriber,MODx.grid.Grid,{
         });
     }
     ,importCsv: function(e) {
-        var w = MODx.load({
-            xtype: 'campaigner-window-import'
-            ,listeners: {
-                'success': {fn:this.refresh,scope:this}
-            }
-        });
+
+        if (!this.updateImportWindow) {
+            this.updateImportWindow = MODx.load({
+                xtype: 'campaigner-window-import'
+                ,listeners: {
+                    'success': {fn:this.refresh,scope:this}
+                }
+            });
+        } else {
+            this.updateImportWindow.setValues();
+        }
+        this.updateImportWindow.show(e.target);
+
+        // var w = MODx.load({
+        //     xtype: 'campaigner-window-import'
+        //     ,listeners: {
+        //         'success': {fn:this.refresh,scope:this}
+        //     }
+        // });
+        // w.reset();
         // this.updateWindow.setValues(vals);
         // this.updateWindow.show(e.target);
         // this.on('show',function() { this.fp.getForm().reset(); },this);
-        w.show(e.target);
+        // w.show(e.target);
     }
     ,filterActive: function(tf,newValue,oldValue) {
         var nv = newValue;
@@ -518,6 +533,7 @@ Campaigner.window.Import = function(config) {
     config = config || {};
     Ext.applyIf(config,{
         title: _('campaigner.subscriber.import')
+        ,closeAction: 'hide'
         ,width: 500
         ,height: 500
         ,padding: '10px'
@@ -527,26 +543,21 @@ Campaigner.window.Import = function(config) {
             action: 'mgr/subscriber/make_import'
         }
         ,fileUpload: true
-
         ,fields: [{
-            // xtype: 'modx-formpanel'
-            // ,id: 'import-form'
-            // ,fileUpload: true
-            // ,items: [{
-            xtype: 'fileuploadfield',
-            id: 'form-file',
-            name: 'file',
-            // buttonOnly: true,
-            buttonText: _('campaigner.subscriber.import.select_file'),
-            // listeners: {
-            //     'fileselected': {fn:function(file) {
-            //         var w = Ext.getCmp('my-window-id');
-            //         w.submit(true);
-            //         // Ext.get('import-form').getForm().submit();
-            //         this.analyzeImport(file)
-            //     }, scope: this}
-            // }
-            // }]
+            xtype: 'modx-combo-browser'
+            ,anchor: '100%'
+            ,description: _('campaigner.subscriber.import.select_file.description')
+            ,openTo: 'assets/components/campaigner/imports/'
+            ,allowedFileTypes: 'csv,xml'
+            ,hideFiles: true
+            ,id: 'form-file'
+            ,name: 'file'
+            ,fieldLabel: _('campaigner.subscriber.import.select_file')
+            ,listeners: {
+                'select': {fn: function(data) {
+                    this.analyzeImport(data.fullRelativeUrl);
+                },scope:this}
+            }
         }
         ,{
             xtype: 'textfield'
@@ -659,21 +670,66 @@ Campaigner.window.Import = function(config) {
     });
     Campaigner.window.Import.superclass.constructor.call(this,config);
 }
-Ext.extend(Campaigner.window.Import,MODx.Window);
 
 Ext.extend(Campaigner.window.Import,MODx.Window,{
     analyzeImport: function(file) {
+        // var success = false;
         MODx.Ajax.request({
             url: Campaigner.config.connector_url
             ,params: {
                 action: 'mgr/subscriber/analyze_import'
-                ,file: file.value
+                ,file: file
             }
             ,listeners: {
                 'success': {fn:function(r) {
-                    this.refresh();
+                    this.returnMsg(r);
+                },scope:this}
+                ,'failure': {fn:function(r) {
+                    this.returnMsg(r);
                 },scope:this}
             }
+        });
+        // console.log(success);
+        // return success;
+    }
+    ,returnMsg: function(response) {
+
+        // p = response.object;
+        // for (var key in p) {
+        //     if (p.hasOwnProperty(key)) {
+        //         alert(key + " -> " + p[key]);
+        //     }
+        // }
+        console.log(response.object);
+        var tpl = new Ext.XTemplate(
+            '<tpl for=".">',
+                '<p>{key}</p>',
+                '<span>{value}',
+            '</tpl>'
+        );
+
+        // Ext.widget('panel', {
+        //     renderTo: Ext.get('campaigner-subscriber-import-status')
+        //     // 4 is the number of indentation spaces
+        //     ,tpl: '<pre>{[JSON.stringify(values, null, 4)]}</pre>'
+        //     ,height: 400
+        //     ,data: response.object // sample data
+        // });
+
+        // var content = Ext.DataView({
+        //     // itemSelector : 'div.basket-fileblock',    //Required
+        //     // style : 'overflow:auto',
+        //     // multiSelect : true,
+        //     store : response.object
+        //     ,tpl : tpl
+        //     ,renderTo: Ext.get('campaigner-subscriber-import-status')
+        // });
+        // console.log(content);
+        MODx.msg.status({
+            id: 'campaigner-subscriber-import-status'
+            ,title: _('campaigner.subscriber.import.analyze')
+            ,message: response.message + '<br/></br/>' + tpl.apply(Ext.encode(response.object))
+            ,delay: 5
         });
     }
 });
@@ -686,40 +742,373 @@ Ext.reg('campaigner-window-import',Campaigner.window.Import);
  */
 Campaigner.window.SubscriberStatistics = function(config) {
     config = config || {};
-    // console.log(config.record);
+    Ext.chart.Chart.CHART_URL = 'http://dev.sencha.com/deploy/ext-3.4.0/resources/charts.swf';
+    var stats = new Ext.data.JsonStore({
+        proxy: new Ext.data.HttpProxy({
+            url: Campaigner.config.connector_url
+            ,method:'POST'
+            // ,action: 'mgr/subscriber/getcumulatedstats'
+        })
+        ,baseParams: {
+            action: 'mgr/subscriber/getcumulatedstats'
+            ,subscriber: config.record.id
+        }
+        // ,reader: new Ext.data.JsonReader({
+        ,root: 'results'
+            // ,fields: [ {name: 'view_total'},{name: 'views_unique'}, {name: 'clicks_total'}, {name: 'clicks_unique'}]
+        ,fields: ['opens', 'clicks', 'newsletter']
+        // ,totalProperty: 'total'
+        ,idProperty: 'id'
+        ,remoteSort: true
+        // })
+    });
+    stats.load();
+
     Ext.applyIf(config,{
         title: _('campaigner.statistics_details') + ' - ' + config.record.email
         ,width: 850
         ,height: 500
-        ,url: Campaigner.config.connectorUrl
-        ,baseParams: {
-            action: 'mgr/subscriber/statistics'
-        }
+        // ,url: Campaigner.config.connectorUrl
+        // ,baseParams: {
+        //     action: 'mgr/subscriber/statistics'
+        // }
         ,items: [{
-            title: 'Column Layout - Percentage Only',
-            layout:'column',
-            items: [{
-                    // title: 'Column 1',
-                    columnWidth: .33
-                },{
-                    // title: 'Column 2',
-                    columnWidth: .33
-                },{
-                    // title: 'Column 3',
-                    columnWidth: .33
-                }]
+            xtype: 'stackedbarchart',
+            height: 300,
+            store: stats,
+            yField: 'newsletter',
+            xAxis: new Ext.chart.NumericAxis({
+                stackingEnabled: true,
+                // labelRenderer: Ext.util.Format.usMoney
+            }),
+            series: [{
+                xField: 'clicks',
+                displayName: _('campaigner.statistics.clicks')
             },{
-                // xtype: 'campaigner-grid-subscriber-statistics'
-                // ,fieldLabel: _('campaigner.statistics_details')
-                id: 'campaigner-grid-subscriber-statistics'
-                ,scope: this
-                ,preventRender: true
+                xField: 'opens',
+                displayName: _('campaigner.statistics.opens')
+            }]
+            ,tipRenderer : function(chart, record){
+                return Ext.util.Format.number(record.data.visits, '0,0') + ' visits in ' + record.data.name;
+            }
+            ,minorTickSteps: 1
+            ,majorTickSteps: 1
+            // xtype: 'linechart'
+            // ,store: stats
+            // ,xField: 'newsletter'
+            // ,yField: 'opens'
+            // ,tipRenderer : function(chart, record){
+            //     return record.data.opens + ' ' + _('campaigner.statistics.opens') + record.data.newsletter;
+            // }
+        },{
+            xtype: 'campaigner-grid-subscriber-statistics'
+            // ,fieldLabel: _('campaigner.statistics_details')
+            ,id: 'campaigner-grid-subscriber-statistics'
+            ,scope: this
+            ,bodyStyle: 'padding: 10px'
+            ,preventRender: true
+            // ,baseParams: {
+            //     action: 'mgr/subscriber/getsinglestats'
+            //     ,subscriber: config.record.id
+            // }
         }]
     });
     Campaigner.window.SubscriberStatistics.superclass.constructor.call(this,config);
 }
-Ext.extend(Campaigner.window.SubscriberStatistics,MODx.Window);
+Ext.extend(Campaigner.window.SubscriberStatistics,MODx.Window
+    ,{
+        constructor: function(cfg) {
+            this.initConfig(cfg);
+        }
+    }
+);
 Ext.reg('campaigner-window-subscriber-statistics',Campaigner.window.SubscriberStatistics);
+
+Campaigner.grid.SubscriberStatistics = function(config) {
+    config = config || {};
+
+    var types = new Ext.data.JsonStore({
+        proxy: new Ext.data.HttpProxy({
+            url: Campaigner.config.connector_url
+            ,method:'POST'
+            // ,action: 'mgr/subscriber/getcumulatedstats'
+        })
+        ,baseParams: {
+            action: 'mgr/statistics/getclicktypes'
+        }
+        // ,reader: new Ext.data.JsonReader({
+        ,root: 'results'
+            // ,fields: [ {name: 'view_total'},{name: 'views_unique'}, {name: 'clicks_total'}, {name: 'clicks_unique'}]
+        ,fields: [
+            {name: 'name', type: 'string'},
+            {name: 'value', type: 'string'}
+        ]
+        // ,totalProperty: 'total'
+        ,idProperty: 'id'
+        ,remoteSort: true
+        // })
+    });
+    types.load();
+    
+    // types.add({name: _('campaigner.all'), 'value': ''});
+    // this.sm = new Ext.grid.CheckboxSelectionModel();
+    Ext.applyIf(config,{
+        // id: 'campaigner-grid-subscriber-statistics'
+        url: Campaigner.config.connectorUrl
+        ,baseParams: {
+            action: 'mgr/subscriber/getsinglestats'
+            ,subscriber: config.scope.record.id
+        }
+        ,viewConfig: {
+            forceFit: true,
+            enableRowBody: true,
+            autoScroll: true,
+            emptyText: _('campaigner.grid.no_data')
+        }
+        ,primaryKey: 'id'
+        // ,sm: this.sm
+        ,fields: ['id','link', 'hit_date', 'view_total', 'client', 'ip', 'newsletter', 'hit_type']
+        ,paging: true
+        ,pageSize: 10
+        ,trackMouseOver:true
+        ,remoteSort: true
+        ,columns: [{
+            header: _('campaigner.statistics.link')
+            ,dataIndex: 'link'
+            ,sortable: true
+            ,width: 15
+        },{
+            header: _('campaigner.newsletter')
+            ,dataIndex: 'newsletter'
+            ,sortable: true
+            ,width: 15
+        },{
+            header: _('campaigner.statistics.hit_type')
+            ,dataIndex: 'hit_type'
+            ,sortable: true
+            ,width: 15
+            ,renderer: this._renderHittype
+        },{
+            header: _('campaigner.statistics.hit_date')
+            ,dataIndex: 'hit_date'
+            ,sortable: true
+            ,width: 15
+            ,renderer: Ext.util.Format.dateRenderer('d.m.Y H:i')
+        },{
+            header: _('campaigner.statistics.view_total')
+            ,dataIndex: 'view_total'
+            ,sortable: true
+            ,width: 5
+        },{
+            header: _('campaigner.statistics.client')
+            ,dataIndex: 'client'
+            ,sortable: true
+            ,width: 25
+        },{
+            header: _('campaigner.statistics.ip')
+            ,dataIndex: 'ip'
+            ,sortable: true
+            ,width: 15
+        }],
+        tbar : [{
+            xtype: 'modx-combo'
+            ,name: 'hittype'
+            ,id: 'campaigner-filter-hittype'
+            ,triggerAction: 'all'
+            ,lastQuery: ''
+            ,emptyText: _('campaigner.all')
+            ,hiddenName: 'hittype'
+            ,displayField: 'name'
+            ,valueField: 'value'
+            // ,store: [
+            //     ['-', _('campaigner.all')],
+            //     ['click', _('campaigner.statistics.type.click')],
+            //     ['image', _('campaigner.statistics.type.open')],
+            //     ['facebook', _('campaigner.statistics.type.facebook')],
+            //     ['twitter', _('campaigner.statistics.type.twitter')],
+            //     ['google', _('campaigner.statistics.type.google')],
+            // ]
+            ,store: types
+            ,submitValue: false
+            ,listeners: {
+                'change': {fn: this.filterHitType, scope: this}
+                ,'render': {fn: function(cmp) {
+                    new Ext.KeyMap(cmp.getEl(), {
+                        key: Ext.EventObject.ENTER
+                        ,fn: function() {
+                            this.fireEvent('change',this.getValue());
+                            this.blur();
+                            return true;
+                        }
+                        ,scope: cmp
+                    });
+                },scope:this}
+            }
+        }
+        ,{
+            xtype: 'datefield'
+            ,name: 'date_from'
+            ,id: 'campaigner-filter-date-from'
+            ,triggerAction: 'all'
+            ,lastQuery: ''
+            ,hiddenName: 'date_from'
+            ,submitValue: false
+            ,format: 'Y-m-d'
+            ,listeners: {
+                'change': {fn: this.filterDateFrom, scope: this}
+                ,'render': {fn: function(cmp) {
+                    new Ext.KeyMap(cmp.getEl(), {
+                        key: Ext.EventObject.ENTER
+                        ,fn: function() {
+                            this.fireEvent('change',this.getValue());
+                            this.blur();
+                            return true;
+                        }
+                        ,scope: cmp
+                    });
+                },scope:this}
+            }
+        }
+        ,{
+            xtype: 'datefield'
+            ,name: 'date_to'
+            ,id: 'campaigner-filter-date-to'
+            ,triggerAction: 'all'
+            ,lastQuery: ''
+            ,hiddenName: 'date_to'
+            ,submitValue: false
+            ,format: 'Y-m-d'
+            ,listeners: {
+                'change': {fn: this.filterDateTo, scope: this}
+                ,'render': {fn: function(cmp) {
+                    new Ext.KeyMap(cmp.getEl(), {
+                        key: Ext.EventObject.ENTER
+                        ,fn: function() {
+                            this.fireEvent('change',this.getValue());
+                            this.blur();
+                            return true;
+                        }
+                        ,scope: cmp
+                    });
+                },scope:this}
+            }
+        }, '->'
+        ,{
+            xtype: 'textfield'
+            ,name: 'search-details'
+            ,id: 'campaigner-filter-search'
+            ,emptyText: _('search')+'...'
+            ,listeners: {
+                'change': {fn: this.filterDetails, scope: this}
+                ,'render': {fn: function(cmp) {
+                    new Ext.KeyMap(cmp.getEl(), {
+                        key: Ext.EventObject.ENTER
+                        ,fn: function() {
+                            this.fireEvent('change',this.getValue());
+                            this.blur();
+                            return true;}
+                        ,scope: cmp
+                    });
+                },scope:this}
+            }
+        }
+        ,{
+            xtype: 'button'
+            ,text: _('campaigner.statistics.export')
+            ,disabled: !MODx.perm.statistics_opens_export
+            ,handler: this.exportData
+        }]
+    });
+    Campaigner.grid.SubscriberStatistics.superclass.constructor.call(this,config);
+}
+Ext.extend(Campaigner.grid.SubscriberStatistics,MODx.grid.Grid
+    ,{
+        constructor: function(cfg) {
+            this.initConfig(cfg);
+        }
+        ,_renderHittype: function(value, p, rec) {
+            return _('campaigner.statistics.' + value);
+        }
+        ,filterHitType: function(tf,newValue,oldValue) {
+            var nv = newValue;
+            var s = this.getStore();
+            console.log(s);
+            if(nv == '-') {
+                delete s.baseParams.hittype;
+            } else {
+                s.baseParams.hittype = nv;
+            }
+            this.getBottomToolbar().changePage(1);
+            this.refresh();
+            return true;
+        }
+        ,filterDateFrom: function(tf,newValue,oldValue) {
+            var nv = newValue;
+            var s = this.getStore();
+            console.log(s);
+            if(nv == '-') {
+                delete s.baseParams.date_from;
+            } else {
+                s.baseParams.date_from = Ext.util.Format.date(nv, 'Y-m-d H:i:s');
+            }
+            this.getBottomToolbar().changePage(1);
+            this.refresh();
+            return true;
+        }
+        ,filterDateTo: function(tf,newValue,oldValue) {
+            var nv = newValue;
+            var s = this.getStore();
+            if(nv == '-') {
+                delete s.baseParams.date_to;
+            } else {
+                s.baseParams.date_to = Ext.util.Format.date(nv, 'Y-m-d H:i:s');;
+            }
+            this.getBottomToolbar().changePage(1);
+            this.refresh();
+            return true;
+        }
+    }
+
+);
+Ext.reg('campaigner-grid-subscriber-statistics', Campaigner.grid.SubscriberStatistics);
+
+// Ext.onReady(function() {
+//     var stats = new Ext.data.Store({
+//         proxy: new Ext.data.HttpProxy({url: Campaigner.config.connector_url, method:'POST'})
+//         ,baseParams: {
+//             action: 'mgr/subscriber/getcumulatedstats'
+//         }
+//         ,reader: new Ext.data.JsonReader({
+//             root: 'results'
+//             ,fields: [ {name: 'views_total'},{name: 'views_unique'}, {name: 'clicks_total'}, {name: 'clicks_unique'}]
+//         })
+//     });
+//     // this.sub_stats_store.load();
+
+//     var chart = new Ext.chart.Chart({
+//         style: 'background:#fff'
+//         ,animate: true
+//         ,shadow: true
+//         ,store: stats
+//         ,axes: [{
+//             type: 'Numeric',
+//             position: 'left',
+//             fields: ['data1'],
+//             label: {
+//                 renderer: Ext.util.Format.numberRenderer('0,0')
+//             },
+//             title: 'Number of Hits',
+//             grid: true,
+//             minimum: 0
+//         }, {
+//             type: 'Category',
+//             position: 'bottom',
+//             fields: ['name'],
+//             title: 'Month of the Year'
+//         }]
+//     });
+//     chart.render('body');
+// });
 
 Campaigner.window.Subscriber = function(config) {
     config = config || {};

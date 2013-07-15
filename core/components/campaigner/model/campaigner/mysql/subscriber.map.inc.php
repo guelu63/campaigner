@@ -190,5 +190,13 @@ $xpdo_meta_map['Subscriber']= array (
       'cardinality' => 'many',
       'owner' => 'local',
     ),
+    'SubscriberHits' => 
+    array (
+      'class' => 'SubscriberHits',
+      'local' => 'id',
+      'foreign' => 'subscriber',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
   ),
 );
