@@ -616,8 +616,8 @@ class Campaigner
             if ( (boolean) $this->modx->getOption('campaigner.tracking_enabled', '', FALSE) )
                 $this->makeUrl('trackingImage', $newsletter->get('id'), 'image');
 
-            $message = $this->makeTrackingUrls($content, $newsletter);
             $message = $this->processNewsletter($message, $subscriber, $tags);
+            $message = $this->makeTrackingUrls($content, $newsletter, $subscriber);
             
 			// $message = $this->processNewsletter($newsletter->get('content'), $subscriber, $tags);
             $textual = $this->textify($message);
@@ -816,7 +816,6 @@ class Campaigner
             return $newsletter;
         $this->modx->parser->processElementTags('', $newsletter, true, false, '[[', ']]', array(), $maxIterations);
         $this->modx->parser->processElementTags('', $newsletter, true, true, '[[', ']]', array(), $maxIterations);
-
         //$newsletter = $this->parsePathes($newsletter);
         return $newsletter;
     }
@@ -1133,7 +1132,7 @@ class Campaigner
      * @param  object $newsletter Newsletter object
      * @return string             Prepared HTML
      */
-    public function makeTrackingUrls ($html, $newsletter) {
+    public function makeTrackingUrls ($html, $newsletter, $subscriber) {
         // 1. get all existing tracking URLs for current newsletter:
         $this->getTrackingUrls($newsletter->get('id'));
         
@@ -1164,7 +1163,7 @@ class Campaigner
                 continue;
             }
             // now reconstruct the link_str:
-            $tracking_email .= '<a '.$before.' href="'.$this->makeUrl($href, $newsletter->get('id')).'"'.$after;
+            $tracking_email .= '<a '.$before.' href="'.$this->makeUrl($href, $newsletter->get('id'), 'click', $subscriber).'"'.$after;
         }
         if ( empty($tracking_email) ) {
             $tracking_email = $html;
@@ -1179,7 +1178,7 @@ class Campaigner
      * @param  string $type         [description]
      * @return [type]               [description]
      */
-    public function makeUrl ($url,$newsletterID, $type='click') {
+    public function makeUrl ($url,$newsletterID, $type='click', $subscriber) {
         if ( $type == 'image' ) {
             $this->getTrackingUrls($newsletterID);
         }
@@ -1197,9 +1196,9 @@ class Campaigner
             }
         }
         if ( $type == 'image' ) {
-            $url = $this->modx->getOption('site_url').$this->modx->getOption('assets_url').'components/groupeletters/?t='.base_convert($this->created_urls[$url],10,36).'|[[+campaigner.key]]&amp;';
+            $url = $this->modx->getOption('site_url').$this->modx->getOption('assets_url').'components/groupeletters/?t='.base_convert($this->created_urls[$url],10,36).'|'. $subscriber->get('key') .'&amp;';
         } else {
-            $url = $this->modx->makeUrl($this->modx->getOption('campaigner.tracking_page', '', 1),'', array('t' => base_convert($this->created_urls[$url],10,36).'|[[+campaigner.key]]'), 'full');
+            $url = $this->modx->makeUrl($this->modx->getOption('campaigner.tracking_page', '', 1),'', array('t' => base_convert($this->created_urls[$url],10,36).'|' . $subscriber->get('key')), 'full');
         }
         // $url = str_replace(array('%5B%5B%2B','%5B%5B&#43;', '%5B%5B', '%5D%5D'), array('[[+', '[[+', '[[', ']]'), $url);
         return str_replace('https://', 'http://', $url);
@@ -1226,7 +1225,6 @@ class Campaigner
      */
     public function logAction($type='click') {
         $t = $key = $link_id = 0;
-
         // Nothing set => Return
         if ( !isset($_REQUEST['t']) && $type == 'click' )
             return;
@@ -1335,17 +1333,11 @@ class Campaigner
                     $c->where(array('Newsletter.id' => $link->get('newsletter')));
                     $c->where(array('Autonewsletter.id' => $link->get('newsletter')), xPDOQuery::SQL_OR);
                     $newsletter = $this->modx->getObject('modResource', $c);
-
-                    if ( strpos($url, '?') === FALSE ) {
-                        $url .= '?';
-                    } else {
-                        $url .= '&';
-                    }
-                    if(is_object($newsletter))
-                        $url .= 'campaign='.urlencode(str_replace(' ', '-', $newsletter->get('pagetitle')));
-                    echo 'URL ' . $url;
-
-                    // $this->modx->sendRedirect($url);
+                    // $url .= strpos($url, '?') === FALSE ? '?' : '&';
+                    // if(is_object($newsletter))
+                    //     $url .= 'campaign='.urlencode(str_replace(' ', '-', $newsletter->get('pagetitle')));
+                    // echo 'URL ' . $url;
+                    $this->modx->sendRedirect($url);
                 }
             }
         }

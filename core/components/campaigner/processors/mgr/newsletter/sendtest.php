@@ -63,11 +63,8 @@ if(!empty($_POST['email'])) {
     $tags = $modx->campaigner->getNewsletterTags($newsletter);
     
     // the messages
-    $message = $modx->campaigner->makeTrackingUrls($message, $newsletter);
     $message = $modx->campaigner->processNewsletter($message, $subscriber, $tags);
-    
-    // echo $message;
-    // die();
+    $message = $modx->campaigner->makeTrackingUrls($message, $newsletter, $subscriber);
     $textual = $modx->campaigner->textify($message);
     // die();
     // set properties
