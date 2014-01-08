@@ -19,7 +19,7 @@ class campaignerConnectorRequest extends modConnectorResponse
         $path = $this->ditsnews->config['processorsPath'].strtolower($action).'.php';
         $processorOutput = false;
         if (file_exists($path)) {
-            $this->modx->lexicon->load('ditsnews:default');
+            $this->modx->lexicon->load('campaigner:default');
             $modx =& $this->modx;
             $ditsnews =& $this->ditsnews;
 

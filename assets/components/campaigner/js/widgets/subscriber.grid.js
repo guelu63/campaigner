@@ -99,9 +99,9 @@ Campaigner.grid.Subscriber = function(config) {
                 },{
                     text: _('campaigner.subscribers.batch_remove')
                     ,hidden: !MODx.perm.subscriber_remove_batch
-                    // ,listeners: {
-                    //     'click': {fn: this.exportXml, scope: this}
-                    // }
+                    ,listeners: {
+                        'click': {fn: this.removeSubscriber, scope: this}
+                    }
                 }]
             }
         }, {
@@ -190,39 +190,19 @@ Campaigner.grid.Subscriber = function(config) {
                 },scope:this}
             }
         }, {
-            xtype: 'textfield'
-            ,name: 'search'
-            ,id: 'campaigner-filter-search'
-            ,emptyText: _('search')+'...'
-            ,listeners: {
-                'change': {fn: this.filterSearch, scope: this}
-                ,'render': {fn: function(cmp) {
-                    new Ext.KeyMap(cmp.getEl(), {
-                        key: Ext.EventObject.ENTER
-                        ,fn: function() {
-                            this.fireEvent('change',this.getValue());
-                            this.blur();
-                            return true;
-                        }, scope: cmp
-                    });
-                },scope:this}
-            }
-        }, '->' , {
-            xtype: 'button'
-            ,id: 'campaigner-subscriber-add'
-            ,text: _('campaigner.subscriber.add')
-            ,hidden: !MODx.perm.subscriber_create
-            ,listeners: {
-                'click': {fn: this.addSubscriber, scope: this}
-            }
-            ,hidden: !MODx.perm.subscriber_create
+            xtype: 'tbfill'
         }, {
             xtype: 'splitbutton'
-            ,text: _('campaigner.subscriber.exports')
-            ,hidden: !MODx.perm.subscriber_export || !MODx.perm.subscriber_import || !MODx.perm.subscriber_export_csv || !MODx.perm.subscriber_export_xml
+            ,text: _('campaigner.subscriber.actions')
+            ,hidden: !MODx.perm.subscriber_create || !MODx.perm.subscriber_export || !MODx.perm.subscriber_import || !MODx.perm.subscriber_export_csv || !MODx.perm.subscriber_export_xml
             ,menu: {
-                items: [
-                {
+                items: [{
+                    text: _('campaigner.subscriber.add')
+                    ,hidden: !MODx.perm.subscriber_create
+                    ,listeners: {
+                        'click': {fn: this.addSubscriber, scope: this}
+                    }
+                },{
                     text: _('campaigner.subscribers.exportcsv')
                     ,hidden: !MODx.perm.subscriber_export_csv
                     ,listeners: {
@@ -240,7 +220,39 @@ Campaigner.grid.Subscriber = function(config) {
                     ,listeners: {
                         'click': {fn: this.importCsv, scope: this}
                     }
+                },{
+                    text: _('campaigner.subscribers.createsegment')
+                    // ,hidden: !MODx.perm.subscriber_segment
+                    ,listeners: {
+                        'click': {fn: this.createSegment, scope: this}
+                    }
                 }]
+            }
+        }, {
+            xtype: 'textfield'
+            ,name: 'search'
+            ,id: 'campaigner-filter-search'
+            ,emptyText: _('campaigner.subscriber.search') + '...'
+            ,listeners: {
+                'change': {fn:this.filterSearch,scope:this}
+                ,'render': {fn: function(cmp) {
+                    new Ext.KeyMap(cmp.getEl(), {
+                        key: Ext.EventObject.ENTER
+                        ,fn: this.blur
+                        ,scope: cmp
+                    });
+                },scope:this}
+                // ,'render': {fn: function(cmp) {
+                //     new Ext.KeyMap(cmp.getEl(), {
+                //         key: Ext.EventObject.ENTER
+                //         ,fn: function() {
+                //             this.fireEvent('change',this);
+                //             this.blur;
+                //             // return;
+                //         }
+                //         ,scope: cmp
+                //     });
+                // },scope:this}
             }
         }]
     });
@@ -272,6 +284,22 @@ Ext.extend(Campaigner.grid.Subscriber,MODx.grid.Grid,{
     ,_renderName: function(value, p, rec) {
         // console.log(rec);
         return rec.data.firstname + ' ' + rec.data.lastname;
+    }
+    ,createSegment: function() {
+        var keys = this.getStore().data.keys;
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/subscriber/createsegment'
+                ,keys: Ext.encode(keys)
+            }
+            // ,method: 'remote'
+            ,listeners: {
+                'success': {fn:function(r) {
+                    
+                },scope:this}
+            }
+        });
     }
     ,exportCsv: function() {
         var params = '';
@@ -452,13 +480,16 @@ Ext.extend(Campaigner.grid.Subscriber,MODx.grid.Grid,{
         });
     }
     ,removeSubscriber: function() {
+        var cs = this.getSelectedAsList();
+        if (cs === false) {return false;}
+
         MODx.msg.confirm({
             title: _('campaigner.subscriber.remove.title')
             ,text: _('campaigner.subscriber.remove.confirm')
             ,url: Campaigner.config.connector_url
             ,params: {
                 action: 'mgr/subscriber/remove'
-                ,id: this.menu.record.id
+                ,marked: cs
             }
             ,listeners: {
                 'success': {fn:function(r) {
@@ -565,8 +596,7 @@ Campaigner.window.Import = function(config) {
             ,name: 'delimiter'
             ,fieldLabel: _('campaigner.subscriber.import.delimiter')
             ,value: ';'
-        }
-        ,{
+        },{
             xtype:'fieldset'
             ,checkboxToggle:true
             ,title: _('campaigner.subscriber.import.fieldset_text')
@@ -597,14 +627,16 @@ Campaigner.window.Import = function(config) {
                         ,name: 'import[email]'
                         ,fieldLabel: _('campaigner.subscriber.import.email')
                         ,value: 'Email'
-                    },{
-                        xtype: 'textfield'
-                        ,anchor: '100%'
-                        ,id: 'groups'
-                        ,name: 'import[groups]'
-                        ,fieldLabel: _('campaigner.subscriber.import.groups')
-                        ,value: 'Gruppen'
-                    }]
+                    }
+                    // ,{
+                    //     xtype: 'textfield'
+                    //     ,anchor: '100%'
+                    //     ,id: 'groups'
+                    //     ,name: 'import[groups]'
+                    //     ,fieldLabel: _('campaigner.subscriber.import.groups')
+                    //     ,value: 'Gruppen'
+                    // }
+                    ]
                 },{
                     columnWidth: .5
                     ,layout: 'form'
@@ -632,41 +664,59 @@ Campaigner.window.Import = function(config) {
                     }]
                 }]
             }]
+        },{
+            xtype: 'checkbox'
+            ,id: 'auto_activate'
+            ,name: 'auto_activate'
+            ,labelSeparator: ''
+            ,hideLabel: true
+            ,boxLabel: _('campaigner.subscriber.import.auto_activate')
+            ,fieldLabel: _('campaigner.subscriber.import.auto_activate')
+        },{
+            xtype: 'modx-combo'
+            ,name: 'group'
+            ,displayField: 'name'
+            ,valueField: 'id'
+            ,anchor: '100%'
+            ,fieldLabel: _('campaigner.subscriber.import.default_group')
+            ,store: new Ext.data.JsonStore({
+                url: Campaigner.config.connector_url
+                ,baseParams: {
+                    action : 'mgr/group/getlist'
+                }
+                ,fields: ['id','name']
+                ,root: 'results'
+
+                // ,data: item.values
+            })
+            ,mode: 'remote'
+            // ,fieldLabel: _('campaigner.subscriber.import.save_file')
         }
         ,{
-            layout: 'column'
-            ,items: [{
-                columnWidth: .5
-                ,layout: 'form'
-                ,items: [{
-                    xtype: 'checkbox'
-                    ,id: 'default_group'
-                    ,name: 'default_group'
-                    ,labelSeparator: ''
-                    ,hideLabel: true
-                    ,boxLabel: _('campaigner.subscriber.import.default_group')
-                    ,fieldLabel: _('campaigner.subscriber.import.default_group')
-                }]
-            },{
-                columnWidth: .5
-                ,layout: 'form'
-                ,items: [{
-                    xtype: 'checkbox'
-                    ,id: 'save_file'
-                    ,name: 'save_file'
-                    ,labelSeparator: ''
-                    ,hideLabel: true
-                    ,boxLabel: _('campaigner.subscriber.import.save_file')
-                    ,fieldLabel: _('campaigner.subscriber.import.save_file')
-                }]
-            }]
-        },{
             xtype: 'textfield'
             ,anchor: '100%'
             ,id: 'test'
             ,name: 'test'
             ,fieldLabel: _('campaigner.subscriber.import.test')
+        },{
+            xtype: 'checkbox'
+            ,id: 'save_file'
+            ,name: 'save_file'
+            ,labelSeparator: ''
+            ,hideLabel: true
+            ,boxLabel: _('campaigner.subscriber.import.save_file')
+            ,fieldLabel: _('campaigner.subscriber.import.save_file')
         }]
+        ,listeners: {
+            'success': {fn:this.onSuccess,scope:this}
+        }
+        // ,success: {fn:function(r) {
+        //     alert('test');
+        //     this.returnMsg(r);
+        // },scope:this}
+        // ,failure: {fn:function(r) {
+        //     this.returnMsg(r);
+        // },scope:this}
     });
     Campaigner.window.Import.superclass.constructor.call(this,config);
 }
@@ -683,6 +733,7 @@ Ext.extend(Campaigner.window.Import,MODx.Window,{
             ,listeners: {
                 'success': {fn:function(r) {
                     this.returnMsg(r);
+                    this.onAnalyzeSuccess(r);
                 },scope:this}
                 ,'failure': {fn:function(r) {
                     this.returnMsg(r);
@@ -692,45 +743,27 @@ Ext.extend(Campaigner.window.Import,MODx.Window,{
         // console.log(success);
         // return success;
     }
+    ,onAnalyzeSuccess: function(data) {
+        this.setValues({
+            delimiter: data.object.controls[0]
+        });
+    }
+    ,onSuccess: function(response) {
+        this.returnMsg(response);
+    }
     ,returnMsg: function(response) {
-
-        // p = response.object;
-        // for (var key in p) {
-        //     if (p.hasOwnProperty(key)) {
-        //         alert(key + " -> " + p[key]);
-        //     }
-        // }
-        console.log(response.object);
         var tpl = new Ext.XTemplate(
             '<tpl for=".">',
-                '<p>{key}</p>',
-                '<span>{value}',
+                '<p><strong>Spalte: </strong>{name}</p>',
             '</tpl>'
         );
-
-        // Ext.widget('panel', {
-        //     renderTo: Ext.get('campaigner-subscriber-import-status')
-        //     // 4 is the number of indentation spaces
-        //     ,tpl: '<pre>{[JSON.stringify(values, null, 4)]}</pre>'
-        //     ,height: 400
-        //     ,data: response.object // sample data
-        // });
-
-        // var content = Ext.DataView({
-        //     // itemSelector : 'div.basket-fileblock',    //Required
-        //     // style : 'overflow:auto',
-        //     // multiSelect : true,
-        //     store : response.object
-        //     ,tpl : tpl
-        //     ,renderTo: Ext.get('campaigner-subscriber-import-status')
-        // });
-        // console.log(content);
         MODx.msg.status({
             id: 'campaigner-subscriber-import-status'
             ,title: _('campaigner.subscriber.import.analyze')
-            ,message: response.message + '<br/></br/>' + tpl.apply(Ext.encode(response.object))
-            ,delay: 5
+            ,message: response.message + '<br/></br/>' + _('campaigner.subscriber.import.detected_columns') + '<br/>' + tpl.apply(response.object.header)
+            ,dontHide: true     // Hide on click (check out 'manager/assets/modext/core/modx.js')
         });
+        return;
     }
 });
 
@@ -1072,47 +1105,11 @@ Ext.extend(Campaigner.grid.SubscriberStatistics,MODx.grid.Grid
 );
 Ext.reg('campaigner-grid-subscriber-statistics', Campaigner.grid.SubscriberStatistics);
 
-// Ext.onReady(function() {
-//     var stats = new Ext.data.Store({
-//         proxy: new Ext.data.HttpProxy({url: Campaigner.config.connector_url, method:'POST'})
-//         ,baseParams: {
-//             action: 'mgr/subscriber/getcumulatedstats'
-//         }
-//         ,reader: new Ext.data.JsonReader({
-//             root: 'results'
-//             ,fields: [ {name: 'views_total'},{name: 'views_unique'}, {name: 'clicks_total'}, {name: 'clicks_unique'}]
-//         })
-//     });
-//     // this.sub_stats_store.load();
-
-//     var chart = new Ext.chart.Chart({
-//         style: 'background:#fff'
-//         ,animate: true
-//         ,shadow: true
-//         ,store: stats
-//         ,axes: [{
-//             type: 'Numeric',
-//             position: 'left',
-//             fields: ['data1'],
-//             label: {
-//                 renderer: Ext.util.Format.numberRenderer('0,0')
-//             },
-//             title: 'Number of Hits',
-//             grid: true,
-//             minimum: 0
-//         }, {
-//             type: 'Category',
-//             position: 'bottom',
-//             fields: ['name'],
-//             title: 'Month of the Year'
-//         }]
-//     });
-//     chart.render('body');
-// });
-
 Campaigner.window.Subscriber = function(config) {
     config = config || {};
     this.ident = config.ident || 'campaigner-'+Ext.id();
+    config.tab_id = this.ident;
+
     this.gpstore = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({url: Campaigner.config.connector_url, method:'POST'})
         ,baseParams: { action: 'mgr/group/getlist' }
@@ -1124,7 +1121,6 @@ Campaigner.window.Subscriber = function(config) {
     Ext.applyIf(config,{
         title: config.hasOwnProperty('record') ? _('campaigner.subscriber.edit') : _('campaigner.subscriber.add')
         ,id: this.ident
-        ,height: 400
         ,width: 475
         ,url: Campaigner.config.connector_url
         ,action: 'mgr/subscriber/save'
@@ -1135,7 +1131,6 @@ Campaigner.window.Subscriber = function(config) {
         }
         ,fields: [{
             xtype: 'modx-tabs',
-            autoHeight: true,
             deferredRender: false,
             forceLayout: true,
             width: '98%',
@@ -1143,14 +1138,17 @@ Campaigner.window.Subscriber = function(config) {
             border: true,
             defaults: {
                 border: false,
-                autoHeight: true,
+                // autoHeight: true,
                 bodyStyle: 'padding: 5px 8px 5px 5px;',
                 layout: 'form',
+                height: 400,
+                autoScroll: true,
                 deferredRender: false,
                 forceLayout: true
             },
             items: [{
                 title: _('campaigner.subscriber.tab.main')
+                ,id: 'campaigner-subscriber-tab-main-'+this.ident
                 ,items: [{
                     xtype: 'textfield'
                     ,anchor: '100%'
@@ -1158,6 +1156,41 @@ Campaigner.window.Subscriber = function(config) {
                     ,hidden: true
                     ,name: 'id'
                     ,id: this.ident +'-id'
+                },{
+                    xtype: 'textfield'
+                    ,vtype: 'email'
+                    ,anchor: '100%'
+                    ,fieldLabel: _('campaigner.subscriber.email')
+                    ,name: 'email'
+                    ,id: 'campaigner-'+this.ident+'-email'
+                    ,enableKeyEvents: true
+                    ,listeners: {
+                        'blur': function(t, e) {
+                            var t = t;
+                            // console.log(config.record.id);
+                            if(config.record.id)
+                                return;
+                            MODx.Ajax.request({
+                                url: Campaigner.config.connector_url
+                                ,params: {
+                                    action: 'mgr/subscriber/checkmail'
+                                    ,email: t.getValue()
+                                }
+                                ,listeners: {
+                                    'success': { fn: function(response) {
+                                        this.el.dom.style.borderColor = '#00ff00';
+                                    }, scope: this }
+                                    ,'failure': { fn: function(response) {
+                                        this.markInvalid(_('campaigner.subscribe.error.emailtaken'));
+                                        // Disable the form when email is not verified
+                                        // console.log(this);
+                                        // Campaigner.window.Subscriber.getForm().applyToFields({disabled:true});
+                                        this.el.dom.style.borderColor = '#ff0000';
+                                    }, scope: this }
+                                }
+                            })
+                        }
+                    }
                 },{
                     xtype: 'textfield'
                     ,anchor: '100%'
@@ -1182,13 +1215,6 @@ Campaigner.window.Subscriber = function(config) {
                     ,fieldLabel: _('campaigner.subscriber.lastname')
                     ,name: 'lastname'
                     ,id: 'campaigner-'+this.ident+'-lastname'
-                },{
-                    xtype: 'textfield'
-                    ,vtype: 'email'
-                    ,anchor: '100%'
-                    ,fieldLabel: _('campaigner.subscriber.email')
-                    ,name: 'email'
-                    ,id: 'campaigner-'+this.ident+'-email'
                 },{
                     xtype: 'textfield'
                     ,anchor: '100%'
@@ -1231,6 +1257,7 @@ Campaigner.window.Subscriber = function(config) {
                 }]
             },{
                 title: _('campaigner.subscriber.tab.address')
+                ,id: 'campaigner-subscriber-tab-address-'+this.ident
                 ,items: [{
                     xtype: 'textfield'
                     ,anchor: '100%'
@@ -1271,13 +1298,13 @@ Campaigner.window.Subscriber = function(config) {
             }
             ,{
                 title: _('campaigner.subscriber.tab.groups')
-                ,id: 'campaigner-subscriber-'+this.ident+'-groups'
+                ,id: 'campaigner-subscriber-tab-groups-'+this.ident
                 ,xtype: 'campaigner-subscriber-groups'
                 ,scope: this
             }
             ,{
                 title: _('campaigner.subscriber.tab.fields')
-                ,id: 'campaigner-subscriber-'+this.ident+'-fields'
+                ,id: 'campaigner-subscriber-tab-fields-'+this.ident
                 ,xtype: 'campaigner-subscriber-fields'
                 ,scope: this
             }]
@@ -1355,6 +1382,7 @@ Ext.reg('campaigner-subscriber-groups', Campaigner.panel.SubscriberGroups);
 Campaigner.panel.SubscriberFields = function (config) {
     config = config || {};
     this.ident = config.ident || 'campaigner-'+Ext.id();
+    var tab_id = config.scope.config.tab_id;
     var id = null;
     var record = config.scope.record;
 
@@ -1370,20 +1398,21 @@ Campaigner.panel.SubscriberFields = function (config) {
                 var fields = Ext.decode(response.responseText);
                 var checked = false;
                 fields = response.object;
-
+                var moveData = [];
                 if(fields.length > 0) {
                     Ext.each(fields, function(item, key) {
                         var config = {
                             xtype: item.type
                             ,name: 'fields[' + item.id + ']'
-                            ,id: 'campaigner-'+this.ident+'-field-' + item.name
+                            ,id: this.ident+'-field-' + item.name
                             ,fieldLabel: item.label
                             ,anchor: '100%'
                         };
                         switch(item.type) {
                             case "textfield":
                                 config = Ext.apply({
-                                    value: item.value
+                                    anchor: '100%'
+                                    ,value: item.value
                                 }, config);
                             break;
 
@@ -1412,7 +1441,7 @@ Campaigner.panel.SubscriberFields = function (config) {
                                 }, config);
                             break;
 
-                            case "datefield":
+                            case "xdatetime":
                                 config = Ext.apply({
                                     dateFormat: item.format
                                     ,timeFormat: 'H:i'
@@ -1464,10 +1493,31 @@ Campaigner.panel.SubscriberFields = function (config) {
                         // if(item.values)
                         //     values = item.values;
                         // console.log(item.values);
-                        this.add(config);
+                        // console.log(this.ident+'-field-' + item.name);
+                        // console.log(item.tab);
+                        
+                        // Check if we need to move some fields from on tab to another
+                        // if(item.tab) {
+                        //     moveData.push({
+                        //         field: this.ident+'-field-' + item.name
+                        //         ,tab: item.tab + '-' + tab_id
+                        //         ,pos: item.tabindex
+                        //     });
+                        // }
+                        if(item.tab) {
+                            var tab = Ext.getCmp(item.tab + '-' + tab_id);
+                            tab.insert(item.tabindex, config);
+                            
+                        } else {
+                            this.add(config);
+                        }
                     }, this);
                 }
                 this.doLayout(false, true);
+                
+                // Do the field movement
+                // this.moveField(moveData);
+            
             }, scope: this }
         }
     });
@@ -1476,6 +1526,35 @@ Campaigner.panel.SubscriberFields = function (config) {
 Ext.extend(Campaigner.panel.SubscriberFields, Ext.Container, {
     constructor: function(cfg) {
         this.initConfig(cfg);
+    }
+    ,moveField: function(data) {
+        for (var i=0;i<data.length;i++) {
+            var field = data[i]['field'];
+            var tab = data[i]['tab'];
+            var pos = data[i]['pos'];
+            var tr = Ext.get(field).up('.x-form-item');
+
+            if (!tr) { return; }
+
+            var fp = Ext.getCmp(tab);
+            if (!fp) { return; }
+            
+            fp.insert(pos, {
+                html: ''
+                ,width: '100%'
+                ,anchor: '100%'
+                ,id: field + '-mv'
+                // ,cls: 'modx-tv-out'
+            });
+            fp.doLayout();
+            // For some reason we need to activate the tab to move to
+            // else Ext won't find the element
+            fp.ownerCt.activate(tab);
+            var o = Ext.get(field + '-mv');
+            o.replaceWith(tr);
+            // Reset again
+            fp.ownerCt.activate(0);
+        }
     }
 });
 Ext.reg('campaigner-subscriber-fields', Campaigner.panel.SubscriberFields);

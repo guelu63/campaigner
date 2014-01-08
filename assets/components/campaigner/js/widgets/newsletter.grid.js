@@ -3,10 +3,11 @@ Campaigner.grid.Newsletter = function(config) {
     this.sm = new Ext.grid.CheckboxSelectionModel();
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url
+        ,layoutConfig:{ deferredRender:true }
         ,baseParams: {
             action: 'mgr/newsletter/getList'
         }
-        ,fields: ['id', 'docid', 'state', 'sent_date', 'auto', 'nl_count', 'total', 'sent', 'bounced', 'sender', 'sender_email', 'subject', 'date', 'groups', 'priority']
+        ,fields: ['id', 'docid', 'state', 'sent_date', 'auto', 'nl_count', 'total', 'sent', 'bounced', 'sender', 'sender_email', 'subject', 'date', 'groups', 'priority', 'subscribers']
         ,paging: true
         // ,grouping: true
         // ,groupBy: 'auto'
@@ -36,7 +37,7 @@ Campaigner.grid.Newsletter = function(config) {
             ,dataIndex: 'subject'
             ,sortable: true
             ,width: 30
-            ,renderer: this._renderNewsletter
+            // ,renderer: this._renderNewsletter
         },{
             header: _('campaigner.newsletter.auto')
             ,dataIndex: 'auto'
@@ -61,14 +62,19 @@ Campaigner.grid.Newsletter = function(config) {
             header: _('campaigner.newsletter.state')
             ,dataIndex: 'state'
             ,sortable: true
-            ,width: 10
+            ,width: 5
             ,renderer: this._renderState
         },{
             header: _('campaigner.newsletter.groups')
             ,dataIndex: 'groups'
             ,sortable: true
-            ,width: 20
+            ,width: 10
             ,renderer: this._renderGroups
+        },{
+            header: _('campaigner.newsletter.subscribers')
+            ,dataIndex: 'subscribers'
+            ,sortable: true
+            ,width: 5
         }
         // ,{
         //     header: _('campaigner.newsletter.priority')
@@ -85,12 +91,12 @@ Campaigner.grid.Newsletter = function(config) {
             header: _('campaigner.newsletter.total')
             ,dataIndex: 'total'
             ,sortable: true
-            ,width: 8
+            ,width: 5
         },{
             header: _('campaigner.newsletter.sent')
             ,dataIndex: 'sent'
             ,sortable: true
-            ,width: 8
+            ,width: 5
             ,renderer: this._renderCount
         },{
             header: _('campaigner.newsletter.bounced')
@@ -178,34 +184,37 @@ Campaigner.grid.Newsletter = function(config) {
             ,listeners: {
               'click': {fn: this.toggleAuto, scope: this}
             }
-        },'->',{
-            xtype: 'button'
-            ,id: 'campaigner-newsletter-create'
-            ,text: _('campaigner.newsletter.add')
-            ,listeners: {
-                'click': {fn: this.createLetter, scope: this}
-            }
-        }
-        ,{
+        }, '->', {
             xtype: 'splitbutton'
-            ,hidden: !MODx.perm.newsletter_clean
-            ,text: 'Alles bereinigen'
-            ,handler: this.cleanerMedia.createDelegate(this, [{cleaner: 1}])
+            ,text: _('campaigner.newsletter.actions')
             // ,tooltip: {text:'This is a an example QuickTip for a toolbar item', title:'Tip Title'}
             // Menus can be built/referenced by using nested menu config objects
             ,menu : {
                 items: [{
-                    text: 'Entrümpeln'
+                    id: 'campaigner-newsletter-create'
+                    ,text: _('campaigner.newsletter.add')
+                    ,handler: this.createLetter
+                    ,scope: this
+                    // ,listeners: {
+                    //     'click': {fn: this.createLetter, scope: this}
+                    // }
+                },{
+                    text: _('campaigner.newsletter.actions.clean_all')
+                    ,hidden: !MODx.perm.newsletter_clean
+                    ,handler: this.cleanerMedia.createDelegate(this, [{cleaner: 1}])
+                    ,scope: this
+                },{
+                    text: _('campaigner.newsletter.actions.clear_trash')
                     ,handler: this.cleanerMedia.createDelegate(this, [{cleaner: 'trash'}], true)
                     ,scope: this
                     ,hidden: !MODx.perm.newsletter_clean_trash
                 }, {
-                    text: 'Archivieren'
+                    text: _('campaigner.newsletter.actions.archive')
                     ,handler: this.cleanerMedia.createDelegate(this, [{cleaner: 'archiver'}], true)
                     ,scope : this
                     ,hidden: !MODx.perm.newsletter_clean_archive
                 }, '-', {
-                    text: 'HTML aus Content entfernen'
+                    text: _('campaigner.newsletter.actions.clean_html')
                     ,handler: this.cleanerMedia.createDelegate(this, [{cleaner: 'dehtml'}], true)
                     ,scope : this
                     ,hidden: !MODx.perm.newsletter_clean_dehtml
@@ -217,7 +226,10 @@ Campaigner.grid.Newsletter = function(config) {
 };
 
 Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
-    filterState: function(tf,newValue,oldValue) {
+    activate: function() {
+        // Ext.getCmp('card-container').getLayout().setActiveItem('campaigner-panel-newsletter-base');
+    }
+    ,filterState: function(tf,newValue,oldValue) {
         var nv = newValue;
         var s = this.getStore();
         if(nv == '-') {
@@ -386,8 +398,12 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
         return;
     }
     ,editNewsletter: function() {
-        window.location.href = '?a=30&id='+ this.menu.record.docid + '&letter=1';
-        return;
+        var cs = this.getSelectedAsList();
+        if (cs === false) {return false;}
+        // this.config.newsletter = cs;
+        var edit_panel = Ext.getCmp('campaigner-panel-newsletter-editarticles');
+        edit_panel.config.newsletter = cs;
+        edit_panel.activate();
     }
     ,editProperties: function(e) {
         var w = MODx.load({
@@ -465,21 +481,28 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
             // }
         });
     }
-    ,editArticles: function(e) {
-        var w = MODx.load({
-            xtype: 'campaigner-window-newsletter-editarticles'
-            ,params: {
-                docid: this.menu.record.docid
-            }
-            ,listeners: {
-                'success': {fn:this.refresh,scope:this}
-            }
-        });
-        w.setValues(this.menu.record);
-        w.show(e);
-        var grid_articles = Ext.getCmp('campaigner-newsletter-grid-articles');
-        grid_articles.store.load({params:{nlid: this.menu.record.id || 0, docid: this.menu.record.docid || 0}});
-        return;
+    ,editArticles: function(btn, e) {
+        var cs = this.getSelectedAsList();
+        if (cs === false) {return false;}
+        // this.config.newsletter = cs;
+        var edit_panel = Ext.getCmp('campaigner-panel-newsletter-editarticles');
+        edit_panel.config.newsletter = cs;
+        edit_panel.activate();
+        // Ext.getCmp('modx-layout').hideLeftbar(true, false);
+        // var w = MODx.load({
+        //     xtype: 'campaigner-window-newsletter-editarticles'
+        //     ,params: {
+        //         docid: this.menu.record.docid
+        //     }
+        //     ,listeners: {
+        //         'success': {fn:this.refresh,scope:this}
+        //     }
+        // });
+        // w.setValues(this.menu.record);
+        // w.show(e);
+        // var grid_articles = Ext.getCmp('campaigner-newsletter-grid-articles');
+        // grid_articles.store.load({params:{nlid: this.menu.record.id || 0, docid: this.menu.record.docid || 0}});
+        // return;
     }
     ,getMenu: function() {
         var m = [];
@@ -515,12 +538,12 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
                     m.push('-');
                 }
             // }
-            if(MODx.perm.newsletter_editarticles) {
-                m.push({
-                    text: _('campaigner.newsletter.editarticles')
-                    ,handler: this.editArticles
-                });
-            }
+            // if(MODx.perm.newsletter_editarticles) {
+            //     m.push({
+            //         text: _('campaigner.newsletter.editarticles')
+            //         ,handler: this.editArticles
+            //     });
+            // }
 
             if(MODx.perm.newsletter_edit) {
                 m.push({
@@ -567,140 +590,7 @@ Ext.extend(Campaigner.grid.Newsletter,MODx.grid.Grid,{
 });
 Ext.reg('campaigner-grid-newsletter',Campaigner.grid.Newsletter);
 
-Campaigner.window.NewsletterEditArticles = function(config) {
-    config = config || {};
-    this.ident = config.ident || 'campaigner-'+Ext.id();
-    Ext.applyIf(config, {
-        title: _('campaigner.newsletter.editarticles')
-        ,id: this.ident
-        ,height: 500
-        ,width: 500
-        ,items: [{
-            html: '<p>'+_('campaigner.newsletter.editarticles_info')+'</p>'
-            ,border: false
-            ,style: 'padding: 10px'
-        }
-        ,{
-            xtype: 'button'
-            ,text: _('campaigner.newsletter.editarticles.goto')
-            ,listeners: {
-                'click': {fn: this.editLetter, scope: this}
-            }
-            ,style: 'margin: 0 0 0 10px'
-        }
-        ,{
-            xtype: 'campaigner-newsletter-grid-articles'
-            // ,fieldLabel: _('campaigner.statistics_details')
-            ,id: 'campaigner-newsletter-grid-articles'
-            ,scope: this
-            ,preventRender: true
-            ,style: 'padding: 10px'
-        }
-        ]
-    });
-    Campaigner.window.NewsletterEditArticles.superclass.constructor.call(this,config);
-}
-Ext.extend(Campaigner.window.NewsletterEditArticles, MODx.Window
-    ,{
-        constructor: function(cfg) {
-            this.initConfig(cfg);
-        }
-        ,editLetter: function(btn, e) {
-            // console.log(MODx.config.manager_url + 'index.php?a=30&id='+ this.config.params.docid +'&letter=1');
-            location.href = MODx.config.manager_url + 'index.php?a=30&id='+ this.config.params.docid +'&letter=1';
-            return;
-        }
-    }
-);
-Ext.reg('campaigner-window-newsletter-editarticles', Campaigner.window.NewsletterEditArticles);
 
-Campaigner.grid.NewsletterGridArticles = function(config) {
-    config = config || {};
-    this.ident = config.ident || 'campaigner-'+Ext.id();
-    // this.sm = new Ext.grid.CheckboxSelectionModel();
-    Ext.applyIf(config,{
-        id: 'campaigner-newsletter-grid-articles'
-        ,url: Campaigner.config.connector_url
-        ,baseParams: {
-            action: 'mgr/newsletter/getarticles'
-        }
-        ,fields: ['id', 'pagetitle', 'section']
-        ,paging: true
-        ,pageSize: 10
-        ,grouping: true
-        ,groupBy: 'section'
-        // ,view: new Ext.grid.GroupingView({
-        //     forceFit:true
-        //     ,showGroupName:true
-        //     ,groupTextTpl: '{[values.rs[0].data["section"]}'
-        // })
-        // ,groupRenderer: function(value, p, rec) {
-        //     // console.log(rec);
-        //     return rec.data.section;
-        // }
-        ,collapseFirst: false
-        ,autosave: false
-        ,remoteSort: true
-        ,primaryKey: 'id'
-        // ,sm: this.sm
-        ,columns: [
-            // this.sm,
-        {
-            header: _('campaigner.newsletter.articles.id')
-            ,dataIndex: 'id'
-            ,sortable: true
-            ,width: 10
-        }
-        ,{
-            header: _('campaigner.newsletter.articles.pagetitle')
-            ,dataIndex: 'pagetitle'
-            ,sortable: true
-            ,width: 40
-        }
-        ,{
-            header: _('campaigner.newsletter.articles.section')
-            ,dataIndex: 'section'
-            ,hidden: true
-        }]
-        /**, tbar: [{
-            xtype: 'textfield'
-            ,name: 'search'
-            ,id: 'campaigner-filter-search-group-subscribers'
-            ,emptyText: _('campaigner.subscriber.search')+'...'
-            ,listeners: {
-                'change': {fn: this.filterSearch, scope: this}
-                ,'render': {fn: function(cmp) {
-                    new Ext.KeyMap(cmp.getEl(), {
-                        key: Ext.EventObject.ENTER
-                        ,fn: function() {
-                            this.fireEvent('change',this.getValue());
-                            this.blur();
-                            return true;
-                        }, scope: cmp
-                    });
-                },scope:this}
-            }
-        }]*/
-    });
-    // this.view = new Ext.grid.GroupingView({
-    //     emptyText: config.emptyText || _('ext_emptymsg')
-    //     ,forceFit: true
-    //     ,autoFill: true
-    //     ,showPreview: true
-    //     ,enableRowBody: true
-    //     ,scrollOffset: 0
-    //     ,groupTextTpl: '<div>{section}</div>'
-    // });
-    Campaigner.grid.NewsletterGridArticles.superclass.constructor.call(this,config);
-}
-Ext.extend(Campaigner.grid.NewsletterGridArticles, MODx.grid.Grid
-    ,{
-        constructor: function(cfg) {
-            this.initConfig(cfg);
-        }
-    }
-);
-Ext.reg('campaigner-newsletter-grid-articles', Campaigner.grid.NewsletterGridArticles);
 
 
 Campaigner.window.Newsletter = function(config) {
@@ -881,6 +771,16 @@ Campaigner.window.NewsletterTest = function(config) {
         }
         ,{
             xtype: 'checkbox'
+            ,fieldLabel: _('campaigner.newsletter.sendtest.textify')
+            ,name: 'textify'
+            ,id: this.ident+'-textify'
+            ,inputValue: 1
+            ,labelSeparator: ''
+            ,hideLabel: true
+            ,boxLabel: _('campaigner.newsletter.sendtest.textify')
+        }
+        ,{
+            xtype: 'checkbox'
             ,fieldLabel: _('campaigner.newsletter.sendtest.personalize')
             ,name: 'personalize'
             ,id: this.ident+'-personalize'
@@ -961,7 +861,6 @@ Campaigner.window.NewsletterPreview = function(config) {
     Ext.applyIf(config,{
         title: _('campaigner.newsletter.preview')
         ,id: this.ident
-        ,height: 600
         ,width: 750
         ,url: Campaigner.config.connector_url
         ,action: 'mgr/newsletter/sendtest'
@@ -1046,9 +945,19 @@ Campaigner.window.NewsletterPreview = function(config) {
             tag: 'div'
             ,border: true
             ,id: this.ident+'-preview'
-            ,style: 'height:500px;overflow:auto;padding:10px 0;border:1px solid #ccc'
+            ,height: Ext.getBody().getViewSize().height * 0.6
+            ,autoScroll: true
+            ,style: 'margin:10px 0;border:1px solid #ccc'
             ,html: '<div id="'+this.ident+'-preview-box"></div>'
         }]
+        // ,listeners: {
+        //     'afterrender': { fn: function() {
+        //         if (this.getHeight() > this.maxHeight) {
+        //             this.setHeight(this.maxHeight) * 0.8;
+        //         }
+        //         this.center();
+        //     }, scope: this}
+        // }
         // ,buttons: [{
         //     text: _('close')
         //     ,scope: this

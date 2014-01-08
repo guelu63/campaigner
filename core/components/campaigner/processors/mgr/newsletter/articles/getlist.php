@@ -1,7 +1,12 @@
 <?php
 /**
- * Get articles of the specified newsletter
- * @todo Enhance!!!
+ * Processor: Get articles of the specified newsletter
+ *
+ * Processor to parse and analyze MIGx values and recreate them
+ * in a ExtJS grid view
+ * 
+ * @todo Move (drag and drop) functionality
+ * @todo Remove element
  */
 
 $start = $modx->getOption('start',$scriptProperties,0);
@@ -16,15 +21,26 @@ foreach($tv as $section) {
 	$js_de = json_decode(str_replace($pattern, '', $section['resource_ids']), true);
 	// var_dump($js_de);
 	foreach($js_de as $article) {
-		$sections[$article['resource']] = $section['section'];
-		$ids[] = $article['resource'];
+		preg_match('/.*\(?:([^\)]+)\)?$/', $article['resource'], $match);
+		$sections[$match[1]] = $section['section'];
+		$ids[] = $match[1];
+		// $sections[$article['_this.value']] = $section['section'];
+		// $ids[] = $article['_this.value'];
 	}
 }
 
 $c = $modx->newQuery('modResource');
 $c->limit($limit,$start);
 $c->where(array('id:IN' => $ids));
-$c->sortby('FIELD(modResource.id, '.implode(',',$ids).' )', 'DESC');
+
+// Get the custom sort order
+$sql .= "CASE id\n";
+foreach($ids as $k => $v){
+    $sql .= 'WHEN ' . $v . ' THEN ' . $k . "\n";
+}
+$sql .= 'END ';
+$c->sortby($sql);
+
 $resources = $modx->getCollection('modResource', $c);
 
 foreach($resources as $resource) {

@@ -1,0 +1,29 @@
+= Google Maps Panel
+
+This is a panel that displays a Google Map.
+
+== Compatibility
+
+There are versions of this extension that work with Google Maps V2 or V3, along with versions that are compatible with ExtJS 3 or 4
+
+* Ext.ux.GMapPanel.js - Google Maps V2 & ExtJS 3
+* Ext.ux.GMapPanel3.js - Google Maps V3 & ExtJS 3
+* Ext.ux.GMapPanelStatic.js - Google Static Maps & ExtJS 3/Sencha Touch (experimental)
+* GMapPanel3.js - Google Maps V3 & ExtJS 4
+* GMapPanelStatic.js - Google Static Maps & ExtJS 4 (experimental)
+
+
+== Examples for ExtJS 3.x
+* Tabs - link:ExtJS.ux.GMapPanel/tree/master/examples/tabs - Google Maps V3
+* Advanced Re-center Map - link:ExtJS.ux.GMapPanel/tree/master/examples/advanced - Google Maps V3
+* Charts - link:ExtJS.ux.GMapPanel/tree/master/examples/charts - Google Maps V3
+* Full Screen - link:ExtJS.ux.GMapPanel/tree/master/examples/fullscreen - Google Maps V3
+* Window Basic - link:ExtJS.ux.GMapPanel/tree/master/examples/window - Google Maps V2
+* Sky Map - link:ExtJS.ux.GMapPanel/tree/master/examples/advanced - Google Maps V2
+
+== Examples for ExtJS 4.x
+* Window Basic Ext4 - link:ExtJS.ux.GMapPanel/tree/master/examples/window - Google Maps V3
+* Window Static - link:ExtJS.ux.GMapPanel/tree/master/examples/window - Google Static Maps
+
+== Examples for Sencha Touch
+* None yet - coming soon

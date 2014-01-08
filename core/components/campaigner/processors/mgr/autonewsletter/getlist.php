@@ -50,8 +50,8 @@ $list = array();
 foreach ($newsletters as $newsletter) {
     $newsletter = $newsletter->toArray();
     
-    $newsletter['last'] = $newsletter['last'] ? date('D, d.m.Y', $newsletter['last']) : null;
-    $newsletter['start'] = date('D, d.m.Y', $newsletter['start']);
+    $newsletter['last'] = $newsletter['last'] ? date('Y-m-d H:i:s', $newsletter['last']) : null;
+    $newsletter['start'] = date('Y-m-d H:i:s', $newsletter['start']);
         
     $groups = explode(';', $newsletter['groups']);
     $grpArray = array();

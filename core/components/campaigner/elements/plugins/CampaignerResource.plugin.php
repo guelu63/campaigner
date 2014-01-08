@@ -33,8 +33,7 @@
  *
  * @package campaigner
  **/
- $campaigner = $modx->getService('campaigner', 'Campaigner', $modx->getOption('core_path'). 'components/campaigner/model/campaigner/');
-if (!($campaigner instanceof Campaigner)) return;
+ 
 
 switch($modx->event->name) {
     default: return;
@@ -62,7 +61,10 @@ switch($modx->event->name) {
 
     // Create newsletter objects
     case 'OnDocFormSave':
-        
+        if(!$campaigner)
+            $campaigner = $modx->getService('campaigner', 'Campaigner', $modx->getOption('core_path'). 'components/campaigner/model/campaigner/');
+            if (!($campaigner instanceof Campaigner))
+                return;
         if($mode !== 'new') return; // only implemented for new resources yet
         $parents = array($resource->get('parent'));
 
@@ -123,6 +125,11 @@ switch($modx->event->name) {
     
     // emptying the trash
     case 'OnBeforeEmptyTrash':
+        if(!$campaigner)
+            $campaigner = $modx->getService('campaigner', 'Campaigner', $modx->getOption('core_path'). 'components/campaigner/model/campaigner/');
+            if (!($campaigner instanceof Campaigner))
+                return;
+
         $newsletters = $modx->getCollection('Newsletter', array('docid:IN' => $ids));
         foreach($newsletters as $newsletter) {
             $newsletter->remove();
@@ -139,69 +146,70 @@ switch($modx->event->name) {
     // break;
 
     case 'OnDocFormRender':
+        $campaignerTv = $resource->getTVValue('tvCampaignerData');
         $letter = $_REQUEST['letter'];
-        if(!$letter || $letter ==! 1)
+        if(!empty($campaignerTv))
+            $isNl = 1;
+        if((!$letter || $letter ==! 1) && !$isNl)
             return;
-            $camp_url = $modx->getOption('manager_url') . 'index.php?a=82';
-            $js =<<<JS
-            <script type="text/javascript">
-            Ext.onReady(function () {
-                var resource_panel = Ext.getCmp('modx-panel-resource');
-                // resource_panel.addListener('success', function() { console.log('test')})
-                // return false;
-                console.log(resource_panel);
-
-                resource_panel = function(config) {
-                    Ext.applyIf(config, {
-                        listeners: {
-                            'setup': {fn:this.setup,scope:this}
-                            ,'success': {fn:this.success,scope:this}
-                            ,'failure': {fn:this.failure,scope:this}
-                            ,'beforeSubmit': {fn:this.beforeSubmit,scope:this}
-                        }
-                    });
+        
+        $camp_url = $modx->getOption('manager_url') . 'index.php?a=82';
+        $js =<<<JS
+        <script type="text/javascript">
+        Ext.onReady(function () {
+            var modab = Ext.getCmp("modx-action-buttons");
+            modab.add('-');
+            modab.add({
+                xtype: 'button'
+                ,text: 'Zur Newsletter-Komponente'
+                ,id: 'modx-abtn-to-campaigner'
+                ,handler: function() {
+                    MODx.loadPage(82)
                 }
-
-                Ext.extend(resource_panel, MODx.FormPanel, {
-                    click: function() {
-                        alert('test');
-                    }
-                    ,success: function(o) {
-                        alert('test');
-                        location.href = '$camp_url';
-                        this.getForm().setValues(o.result.object);
-                        var stay = Ext.state.Manager.get('modx.stay.'+MODx.request.a,'stay');
-                        switch (stay) {
-                            case 'new':
-                            location.href = '$camp_url';
-                            break;
-                            case 'stay':
-                            location.href = '$camp_url';
-                            break;
-                            default:
-                            location.href = '$camp_url';
-                        };
-                    }
-                });
-
-                // Ext.get('modx-panel-resource').on('click', function(e, t, o){
-                //     alert('o.test');
-                // }, null, {test:'hello'});
             });
-            </script>
+            modab.doLayout();
+        });
+        </script>
+JS;
+        $modx->regClientStartupHTMLBlock($js);
+
+        $js =<<<JS
+        <script type="text/javascript">
+            Ext.onReady(function () {
+                var tp = Ext.getCmp('modx-leftbar-tabpanel');
+                tp.activate('modx-resource-tree');
+
+                var t = Ext.getCmp('modx-resource-tree');
+                t.on('expandnode', function(n) {
+                    var nl_ctx = t.getNodeById('web_0');
+                    nl_ctx.expand();
+                    var nl = 'web_13';
+                    t.expandPath(nl_ctx.getPath());
+                    var nl_par = t.getNodeById(nl);
+                    t.expandPath(nl_par.getPath());
+                });
+            })
+        </script>
 JS;
         $modx->regClientStartupHTMLBlock($js);
 
         $parent = $modx->getObject('modResource', $modx->getOption('campaigner.newsletter_folder'));
         $props = array(
-            'template'  => $modx->getOption('campaigner.default_template'),
-            // 'parent-cmb' => $parent->get('id'),
+            'template'      => $modx->getOption('campaigner.default_template'),
+            // 'parent-cmb'    => $parent->get('pagetitle') . ' (' . $parent->get('id') . ')',
+            'published'     => 1,
+            'pagetitle'     => 'Test',
             // 'parent'    => $parent->get('id'),
             // 'parentname' => $parent->get('pagetitle'),
             // 'parent_pagetitle' => $parent->get('pagetitle'),
             // 'content'   => 'test',
             );
+        $resourceArray['pagetitle'] = 'test';
+        $placeholders['pagetitle'] = 'test';
+        $scriptProperties['pagetitle'] = 'test';
+        // $resource->set('parent-cmb', $parent->get('pagetitle') . ' (' . $parent->get('id') . ')');
         if(!$modx->controller->setProperties($props))
             $modx->log(MODX_LOG_LEVEL_ERROR, 'Properties set: ' . json_encode($props));
     break;
 }
+return;

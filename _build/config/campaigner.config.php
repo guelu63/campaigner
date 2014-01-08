@@ -122,6 +122,16 @@ $components = array(
         ),
 
         // System
+        'campaigner.newsletter.autosend' => array( // key
+            'key' => 'campaigner.newsletter.autosend',
+            'name' => 'Campaigner Newsletter Autosend',
+            'description' => 'Campaigner Newsletter Autosend',
+            'namespace' => 'campaigner',
+            'xtype' => 'combo-boolean',
+            'value' => false,
+            'area' => 'system',
+        ),
+
         'campaigner.mail_smtp_auth' => array( // key
             'key' => 'campaigner.mail_smtp_auth',
             'name' => 'Campaigner SMTP Authentication',
@@ -269,6 +279,24 @@ $components = array(
             'value' => true,
             'area' => 'system',
         ),
+        'campgaigner.system_mails' => array( // key
+            'key' => 'campgaigner.system_mails',
+            'name' => 'Campaigner System Mails',
+            'description' => 'Campaigner System Mails',
+            'namespace' => 'campaigner',
+            'xtype' => 'combo-boolean',
+            'value' => true,
+            'area' => 'system',
+        ),
+        'campgaigner.system_mails.addresses' => array( // key
+            'key' => 'campgaigner.system_mails.addresses',
+            'name' => 'Campaigner System Mails Addresses',
+            'description' => 'Campaigner System Mails Addresses',
+            'namespace' => 'campaigner',
+            'xtype' => 'textfield',
+            'value' => '',
+            'area' => 'system',
+        ),
         //Structure
         'campaigner.autonewsletter_folder' => array( // key
             'key' => 'campaigner.autonewsletter_folder',
@@ -352,6 +380,17 @@ $components = array(
             'xtype' => 'textfield',
             'value' => '',
             'area' => 'language',
+        ),
+
+        // Automatic
+        'campaigner.autofill' => array( // key
+            'key' => 'campaigner.autofill',
+            'name' => 'Campaigner Autofill',
+            'description' => 'Campaigner Autofill',
+            'namespace' => 'campaigner',
+            'xtype' => 'combo-boolean',
+            'value' => false,
+            'area' => 'automatic',
         ),
     ),
 

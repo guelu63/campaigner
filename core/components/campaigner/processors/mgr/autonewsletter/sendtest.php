@@ -57,14 +57,14 @@ if(!empty($_POST['email'])) {
     $mailer->setHTML(true);
     
     // check for personalization
-    if($_POST['personalize'])
+    // if($_POST['personalize'])
         $subscriber = $modx->getObject('Subscriber', array('email' => $_POST['email']));
     
     $tags = $modx->campaigner->getNewsletterTags($newsletter);
 
     // the messages
+    $message = $modx->campaigner->makeTrackingUrls($message, $newsletter, $subscriber); 
     $message = $modx->campaigner->processNewsletter($message, $subscriber, $tags);
-    $message = $modx->campaigner->makeTrackingUrls($message, $newsletter, $subscriber);
     
     // echo $message;
     // die();

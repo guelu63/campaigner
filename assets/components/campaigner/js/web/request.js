@@ -7,9 +7,9 @@
     CAMPAIGNER.REQUEST = {
         subscribe: function()
         {
-            $(".letterForm").submit(function() {
+            $(".letterForm").submit(function(e) {
             	var data = $(".letterForm").serializeArray();
-            	var ajax = {name: 'ajax', value: CAMPAIGNER.ajax};
+                var ajax = {name: 'ajax', value: CAMPAIGNER.ajax};
             	data.push(ajax);
 			    $.ajax({
 			        type: "POST",

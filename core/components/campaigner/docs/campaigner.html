@@ -1,0 +1,814 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+  padding: 30px; }
+
+body > *:first-child {
+  margin-top: 0 !important; }
+body > *:last-child {
+  margin-bottom: 0 !important; }
+
+a {
+  color: #4183C4; }
+a.absent {
+  color: #cc0000; }
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative; }
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
+  text-decoration: none; }
+
+h1 tt, h1 code {
+  font-size: inherit; }
+
+h2 tt, h2 code {
+  font-size: inherit; }
+
+h3 tt, h3 code {
+  font-size: inherit; }
+
+h4 tt, h4 code {
+  font-size: inherit; }
+
+h5 tt, h5 code {
+  font-size: inherit; }
+
+h6 tt, h6 code {
+  font-size: inherit; }
+
+h1 {
+  font-size: 28px;
+  color: black; }
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #cccccc;
+  color: black; }
+
+h3 {
+  font-size: 18px; }
+
+h4 {
+  font-size: 16px; }
+
+h5 {
+  font-size: 14px; }
+
+h6 {
+  color: #777777;
+  font-size: 14px; }
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0; }
+
+hr {
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
+  border: 0 none;
+  color: #cccccc;
+  height: 4px;
+  padding: 0;
+}
+
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+  body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0; }
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0; }
+
+li p.first {
+  display: inline-block; }
+li {
+  margin: 0; }
+ul, ol {
+  padding-left: 30px; }
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
+dl {
+  padding: 0; }
+  dl dt {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0;
+    margin: 15px 0 5px; }
+    dl dt:first-child {
+      padding: 0; }
+    dl dt > :first-child {
+      margin-top: 0; }
+    dl dt > :last-child {
+      margin-bottom: 0; }
+  dl dd {
+    margin: 0 0 15px;
+    padding: 0 15px; }
+    dl dd > :first-child {
+      margin-top: 0; }
+    dl dd > :last-child {
+      margin-bottom: 0; }
+
+blockquote {
+  border-left: 4px solid #dddddd;
+  padding: 0 15px;
+  color: #777777; }
+  blockquote > :first-child {
+    margin-top: 0; }
+  blockquote > :last-child {
+    margin-bottom: 0; }
+
+table {
+  padding: 0;border-collapse: collapse; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8; }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+img {
+  max-width: 100%; }
+
+span.frame {
+  display: block;
+  overflow: hidden; }
+  span.frame > span {
+    border: 1px solid #dddddd;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin: 13px 0 0;
+    padding: 7px;
+    width: auto; }
+  span.frame span img {
+    display: block;
+    float: left; }
+  span.frame span span {
+    clear: both;
+    color: #333333;
+    display: block;
+    padding: 5px 0 0; }
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-center > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: center; }
+  span.align-center span img {
+    margin: 0 auto;
+    text-align: center; }
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px 0 0;
+    text-align: right; }
+  span.align-right span img {
+    margin: 0;
+    text-align: right; }
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+  span.float-left span {
+    margin: 13px 0 0; }
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+  span.float-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: right; }
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+
+.highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+  pre code, pre tt {
+    background-color: transparent;
+    border: none; }
+
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:0 auto;
+    }
+}
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+}
+</style>
+<title>Campaigner</title>
+<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax:{inlineMath:[['$$$','$$$']]}});</script><script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<h1>Campaigner</h1>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_tabs.png" alt="tabs" /></p>
+
+<h2><span id="newsletter">Newsletter</span></h2>
+
+<p><em>Newsletter, die in dafür vorgesehenen MODx-Containern <sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup>, wie in den <a href="#settings">System-Einstellungen</a> eingestellt, erstellt werden, werden automatisch in die Newsletter-Komponente übernommen. Zudem werden bereits versendete Auto-Newsletter Instanzen hier abgelegt um ein Archiv zur Verfügung stellen zu können</em></p>
+
+<h3>Handhabung</h3>
+
+<ul>
+<li>Erstellen der Ressource als normale Ressource
+
+<ul>
+<li>Einstellen der geplanten Versandzeit durch das Veröffentlichungsdatum</li>
+<li>Anhängen von Attachments</li>
+</ul>
+</li>
+<li>Automatische Übernahme in die Komponente</li>
+<li>Definieren der Gruppe(n) an welche der Newsletter versendet werden soll</li>
+<li>Voransicht anzeigen lassen</li>
+<li>Versand an Test-Abonnenten zur Kontrolle</li>
+</ul>
+
+
+<h3>Funktionen</h3>
+
+<ul>
+<li>Vorschau
+
+<ul>
+<li>Voransicht des Newsletters ohne prozessierte Tags (z.B.: [[+campaigner.firstname]])</li>
+<li>Voransicht des Newsletters für einen Abonnenten. Dadurch werden oben genannte Tags prozessiert (z.B.: aus [[+campaigner.firstname]] wird 'Andreas')</li>
+<li>Text-Mail anzeigen</li>
+</ul>
+</li>
+<li>Test-Versand
+
+<ul>
+<li>Versand an einen einzelnen Abonnenten oder externe E-Mail Adresse
+
+<ul>
+<li>Optionale Personalisierung</li>
+</ul>
+</li>
+<li>Versand an eine Gruppe von Abonnenten
+
+<ul>
+<li>Optionale Personalisierung</li>
+</ul>
+</li>
+<li>Hinzufügen einer Nachricht (z.B.: 'Mit der Bitte um Kontrolldurchsicht')</li>
+</ul>
+</li>
+<li>Auslösung
+
+<ul>
+<li>Ein geplanter Newsletter kann auf Wunsch sofort ausgelöst werden</li>
+</ul>
+</li>
+<li>Eigenschaften
+
+<ul>
+<li>Sender - Der Name des Versenders</li>
+<li>Sender-Email - Die Absender-Email</li>
+<li>Priorität - Wie wichtig ist dieser Newsletter?</li>
+<li>Status - Welchen Status hat dieser Newsletter?</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>Verfügbare Tags</h3>
+
+<p><em>Es stehen sogenannte Tags zur Verfügung die es ermöglichen Informationen über den Newsletter (z.B. Gesamtanzahl) im Newsletter zu hinterlegen</em></p>
+
+<p><strong>Derzeit verfügbare Tags</strong></p>
+
+<pre><code>Total [[+campaigner.total]]
+Sender [[+campaigner.sender]]
+Sender-Email [[+campaigner.sender_email]]
+Date [[+campaigner.date]]
+Send date [[+campaigner.send_date]]
+</code></pre>
+
+<h2><span id="auto-newsletter">Auto-Newsletter</span></h2>
+
+<p><em>Auto-Newsletter sind Newsletter die in periodischen Abständen automatisch generiert und, wenn erlaubt, versendet werden. Die Erlaubnis des automatischen Versands wird über eine <a href="#settings">Systemeinstellung</a> vorgenommen.</em></p>
+
+<h3>Handhabung</h3>
+
+<p>Die Handhabung der Auto-Newsletter unterscheidet sich geringfügig von der "normalen" Newslettern. Zusätzlich gibt es die Möglichkeit die Frequenz der Generierung zu bestimmen.</p>
+
+<h3>Funktionen</h3>
+
+<ul>
+<li>Vorschau
+
+<ul>
+<li>Voransicht des Newsletters</li>
+</ul>
+</li>
+<li>Eigenschaften
+
+<ul>
+<li>zusätzlich zu den Eigenschaften des "normalen" Newsletters</li>
+<li>Start - Datum und Zeit</li>
+<li>Zuletzt - Zuletzt stattgefundener Versand des Newsletters</li>
+<li>Zyklus - Wert der Wiederholung</li>
+<li>Faktor - Faktor der Wiederholung</li>
+<li>Beschreibung - Beschreibung eines Newsletters</li>
+</ul>
+</li>
+<li>Plan anstossen - Den Autonewsletter anstossen</li>
+<li>Plan einsehen - Die geplanten Versendungen dieses Auto-Newsletters ()</li>
+</ul>
+
+
+<h2>Technik Newsletter &amp; Autonewsletter</h2>
+
+<h3>Autonewsletter-Scheduling</h3>
+
+<p>Autonewsletter werden wenn nötig automatisch geplant und abgewickelt (siehe <em>campaigner.newsletter.autosend</em> <a href="#settings">System-Einstellungen</a>). Dies dient der Chronologie und ermöglicht ein einfaches Versenden der Newsletter. Ein geplanter Autonewsletter erstellt bei Bedarf eine neue Newsletter-Instanz. Der Bedarfsfall ist in der unten angeführten SQL-Query aufgezeigt.</p>
+
+<pre><code>$c = $this-&gt;modx-&gt;newQuery('Autonewsletter');
+$c-&gt;where('`Autonewsletter`.`state` = 1 AND UNIX_TIMESTAMP() &gt; (GREATEST((`Autonewsletter`.`start`), COALESCE(`Autonewsletter`.`last`, 0)) + `Autonewsletter`.`frequency` + TIME_TO_SEC(`Autonewsletter`.`time`))');
+</code></pre>
+
+<h3>Warteschlange-Erstellung</h3>
+
+<p>Wenn ein Newsletter zum Versand freigegeben wird, erstellt Campaigner automatisch die Liste der Abonnenten die diesen Newsletter erhalten sollen. Unten angeführt die SQL-Query sowie die Tabellen-Struktur zwecks Verständnis.</p>
+
+<pre><code>$c-&gt;where('`Newsletter`.`state` = 1');
+$c-&gt;where('((sent_date IS NULL AND `modDocument`.`publishedon` &lt; UNIX_TIMESTAMP() AND `modDocument`.`publishedon` &gt; 0) OR (`modDocument`.`pub_date` &lt; UNIX_TIMESTAMP() AND `modDocument`.`publishedon` &lt; `modDocument`.`pub_date` AND `modDocument`.`pub_date` &gt; 0))');
+</code></pre>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_sql_queue.png" alt="sql_queue" /></p>
+
+<h3>Caching</h3>
+
+<p>Um die Performance des Versandes zu erhöhen, wird ein Newsletter vorab prozessiert, lediglich die Abonnenten-Tags werden dabei nicht durch den Parser da diese pro Abonnent angepasst werden müssen.</p>
+
+<pre><code>$cacheOptions = array(
+    xPDO::OPT_CACHE_KEY =&gt; '',
+    xPDO::OPT_CACHE_HANDLER =&gt; 'xPDOFileCache',
+    xPDO::OPT_CACHE_EXPIRES =&gt; 0,
+);
+$cacheElementKey = 'newsletter/' . $document-&gt;get('id');
+$this-&gt;modx-&gt;cacheManager-&gt;set($cacheElementKey, $composedNewsletter, 0, $cacheOptions);
+</code></pre>
+
+<h3>Prozessieren</h3>
+
+<p>Beim Prozessieren werden je nach Stapelgrösse (siehe <em>campaigner.batchsize</em> <a href="#settings">System-Einstellugen</a>) unversendete Elemente durch eine Schleife abgearbeitet. Dabei wird auf das vorab erstellte Cache-File des Newsletters zugegriffen und die Abonnenten-Tags eingearbeitet.</p>
+
+<pre><code>$c-&gt;where('`Queue`.`state`=0 OR `Queue`.`state`=8');
+$c-&gt;leftJoin('Subscriber');
+$c-&gt;select('`Queue`.*, `Queue`.`key` AS queue_key, `Subscriber`.`firstname`, `Subscriber`.`lastname`, `Subscriber`.`email`, `Subscriber`.`text`, `Subscriber`.`key`, `Subscriber`.`address`, `Subscriber`.`title`');
+$c-&gt;sortby('`Queue`.`priority`');
+</code></pre>
+
+<h2><span id="groups">Gruppen</span></h2>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_groups.png" alt="groups" /></p>
+
+<p><em>Gruppen dienen dazu Abonnenten einzuteilen und werden von Newsletter-Prozessen verwendet um die []Warteschlange](#queue) zu erstellen. Je nach <a href="#settings">System-Einstellung</a> können sich Anwender für ein oder meherere Gruppen anmelden. Dabei kann grundsätzlich jeder Abonnent unendlich vielen Gruppen angehören.</em></p>
+
+<h3>Funktionen</h3>
+
+<ul>
+<li>Gruppe erstellen
+
+<ul>
+<li>Erstellen von Gruppen und anschliessendem zuweisen von Abonnenten</li>
+<li>Eine Gruppe hat 4 Parameter:
+
+<ul>
+<li>Name</li>
+<li>Allgemein (Öffentlich)</li>
+<li>Farbe</li>
+<li>Priorität</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Gruppe bearbeiten - gleiche Funktionalität wie "Gruppe erstellen"</li>
+<li>Gruppe entfernen - Eine Gruppe unwiderrruflich löschen</li>
+<li>Abonnenten zuweisen
+
+<ul>
+<li>Funktion zum einfacheren Zuweisen mehrerer Abonnenten zu einer Gruppe</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>Abonnenten</h2>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_subscriber.png" alt="subscriber" /></p>
+
+<p><em>Abonnenten sind die Empfänger von Newslettern. Diese werden entweder durch die eigene Anmeldung an den Newsletter erstellt oder können durch Import in das System eingepflegt werden. Je mehr Informationen über einen Abonnenten vorhanden sind, umso spezifischer können Newsletter gestaltet werden</em></p>
+
+<h3>Handhabung</h3>
+
+<ul>
+<li>Selbstanmeldung
+
+<ul>
+<li>Der User meldet sich über ein auf der Website positioniertes Formular für den Newsletter an</li>
+<li>Durch das "Opt-In" System wird ihm zunächst ein Mail mit Aktivierungslink zugesendet, welcher geklickt werden muss um den Abonnenten zu aktivieren. (dies kann von Benutzern mit ausreichenden Rechten auch händisch durchgeführt werden)</li>
+</ul>
+</li>
+<li>Selbstabmeldung
+
+<ul>
+<li>Laut Gesetz muss in jedem versendeten Newsletter ein Link zur Abmeldung zur Verfügung stehen. Durch Klick auf diesen Link wird der Abonnent auf eine Seite geleitet die ihm dies ermöglicht und auch ein Grund zur Abmeldung kann angegeben werden.</li>
+<li>Benutzer mit ausreichenden Berechtigungen können Abonnenten auch händisch aus dem System entfernen oder deaktivieren.</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>Funktionen</h3>
+
+<ul>
+<li>Erstellen/Bearbeiten
+
+<ul>
+<li>Bei der Erstellung/Bearbeitung eines Abonnenten gibt es benötigte Felder und optionale Felder</li>
+<li>Das einzig <strong>benötigte</strong> Feld ist die <strong>E-Mail Adresse</strong></li>
+<li>Das Erstellungs-/Bearbeitungsfenster eines Abonnenten teilt sich in 4 Tabs auf:
+
+<ul>
+<li>Generell - Grundlegende beschreibende Daten</li>
+<li>Adresse - Adressdaten wie Strasse, PLZ, Ort, Land</li>
+<li>Gruppen - angehörige Gruppen</li>
+<li>Felder - benutzerdefinierte Felder (systemabhängig, siehe <a href="#fields">Felder</a>)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Statistiken
+
+<ul>
+<li>Abonnenten-Statistiken zum Öffnungs-, Klickverhalten. Gesamthaft und pro Newsletter angewendet</li>
+</ul>
+</li>
+<li>Deaktivieren - Abonnenten deaktivieren (erhält keine Newsletter mehr, bleibt aber im System erhalten)</li>
+<li>Entfernen - Abonnenten unwiderrruflich aus dem System entfernen</li>
+</ul>
+
+
+<h3>Verfügbare Tags</h3>
+
+<p><em>Es stehen sogenannte Tags zur Verfügung die es ermöglichen Informationen über den Abonnenten (z.B. Name, Adresse) im Newsletter zu hinterlegen und dadurch den Newsletter zu personalisieren</em></p>
+
+<p><strong>Auszug der verfügbaren Tags:</strong></p>
+
+<pre><code>Email [[+campaigner.email]]
+Firstname [[+campaigner.firstname]]
+Lastname [[+campaigner.lastname]]
+Address [[+campaigner.address]]
+Salutation [[+campaigner.salutation]]
+Unsubscribe [[+campaigner.unsubscribe]]
+Is Text [[+campaigner.istext]]
+Key [[+campaigner.key]]
+Tracking image [[+campaigner.tracking_image]]
+</code></pre>
+
+<p><strong>zusätzlich können Abonnenten mit benutzerdefinierten Feldern versehen werden (siehe <a href="#fields">Felder</a>)</strong></p>
+
+<h2><span id="bounces">Bouncing</span></h2>
+
+<p><em>Bounces sind vom Empfänger oder Empfänger-Server abgelehnte Mails. Hier können diese aufgelistet und nötfalls manuell bearbeitet werden.</em></p>
+
+<h3>Handhabung</h3>
+
+<h3>Funktionen</h3>
+
+<ul>
+<li>Bounces abholen - Analysiert das Postfach der Reply-To (Antwortadresse) auf vorhandene Bounce-Emails und erstellt anhand der darin gefundenen Codes entweder Hardbounce- oder Softbounce-Elemente.</li>
+<li>Tabs:
+
+<ul>
+<li>Hardbounces sind Antworten von Mailservern wenn z.B. ein Mail-Account nicht gefunden wird.</li>
+<li>Softbounces sind Antworten von Mailservern wenn z.B. ein Mail-Account voll ist.</li>
+<li>Resends sind Elemente an sich ein Softbounce sind und deren Versand erneut versucht wird.</li>
+<li>Weitere Informationen: <a href="http://de.wikipedia.org/wiki/Bounce_Message">siehe Bounces</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h2><span id="queue">Warteschlange</span></h2>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_queue.png" alt="queue" /></p>
+
+<p><em>In der Warteschlange sind alle jemals erfassten Mails erfasst. Je nach Filter können Elemente der unterschiedlichen Stati angezeigt als auch weiterverarbeitet werden</em></p>
+
+<h3>Handhabung</h3>
+
+<h3>Funtionen</h3>
+
+<ul>
+<li>Aktionen
+
+<ul>
+<li>Warteschlange abarbeiten - Alle in der Warteschlange befindlichen <strong>unversendeten</strong> Elemente werden sofort versendet</li>
+<li>Tests entfernen - Alle als Test markierte Elemente werden entfernt</li>
+<li><del>Log-Window anzeigen - Eine MODx-Console gibt in Echtzeit den Mail-Versand wieder. (in Entwicklung, 2013-10-29)</del></li>
+</ul>
+</li>
+<li>Stapel-Aktionen
+
+<ul>
+<li>Markierte entfernen - Alle derzeit angehakten Elemente werden unwiderruflich entfernt</li>
+<li>Markierte senden - Alle derzeit angehakten Elemente werden sofort versendet</li>
+<li>Status bearbeiten - Bei allen derzeit angehakten Elemente wird der Status auf die darauf folgende Auswahl verändert</li>
+</ul>
+</li>
+<li>Filter
+
+<ul>
+<li>0 - Unversendete Nachrichten</li>
+<li>1 - Erfolgreich versendete Nachrichten</li>
+<li>3 - Zum Versand markiert (diese werden gerade versendet)</li>
+<li>5 - Abgebrochene Elemente</li>
+<li>6 - Fehlerhafte Elemente (Spalte <em>Fehler</em> von Relevanz)</li>
+<li>8 - Zum Neuversand vorgemerkt</li>
+</ul>
+</li>
+</ul>
+
+
+<h2><span id="statistics">Statistiken</span></h2>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_stats.png" alt="stats" /></p>
+
+<p><em>Statistken bieten eine Darstellung von gesammelten Daten zum Userverhalten.</em></p>
+
+<p><strong> Gesammelt werden </strong></p>
+
+<ul>
+<li>Newsletter-Öffnungen (abhängig davon ob der verwendete Mail-Client <sup id="fnref:2"><a href="#fn:2" rel="footnote">2</a></sup> Bilder anzeigt)</li>
+<li>Klicks
+
+<ul>
+<li>normaler Link,</li>
+<li>Facebook, Twitter oder andere soziale Netzwerke, die im <a href="#social-sharing">Social Sharing</a> hinterlegt sind,</li>
+</ul>
+</li>
+<li>Bounces</li>
+<li>Abmeldungen (abhängig davon ob der verwendete Client Bilder anzeigt)</li>
+</ul>
+
+
+<h3>Handhabung</h3>
+
+<p>Um die Statistiken der Newsletter einzusehen navigiert man in der Komponente zu dem Tab <em>Statisitken</em>. Durch die rechte Aktionstaste der Maus/Trackpad können die Statistik-Details eingesehen werden.</p>
+
+<h3>Funktionen</h3>
+
+<ul>
+<li>Statistik-Details - Erweiterte Detailansicht zu den Statistiken eines Newsletters</li>
+<li>Statistiken exportieren - CSV-Export der Statistiken</li>
+</ul>
+
+
+<h4>Statistik-Details</h4>
+
+<p>Die Statistiken eines Newsletters sind in 4 Tabs aufgeteilt:</p>
+
+<ul>
+<li>Geöffnet - Wieviele Newsletter wurden geöffnet (Voraussetzung ist der Erhalt von HTML-Mails als auch die Darstellung von Bildern im Mail-Client. Durch ein 1x1 Pixel grosses Bild wird ein Öffnen der Mail eruiert)</li>
+<li>Klicks - Jeder Link (exkl. Abmeldung) wird für jeden Abonnnenten spezifisch erfasst
+
+<ul>
+<li><em>Soziale Netzwerke werden extra erfasst</em></li>
+</ul>
+</li>
+<li>Bounces - Daten über die Bounce-Rate des versendeten Newsletters</li>
+<li>Abmeldungen - Anzahl und Auflistung der über diesen Newsletter generierten Abmeldungen</li>
+</ul>
+
+
+<h2><span id="social-sharing">Social-Sharing</span></h2>
+
+<p><em>Social-Sharing bietet die Möglichkeit einerseits Share-Links für einzelne Artikel zu implementieren, andererseits z.B. auf die eigene Seite in einem "Sozialen Netzwerk" hinzuweisen. In der Dokumentation findet sich ein Beispiel beider Implementationen.</em></p>
+
+<h3>Handhabung &amp; Implementierung</h3>
+
+<p>Es steht das Snippet <em>CampaignerSharing</em> zur Verfügung welches es ermöglicht alle aktiven Social-Sharing-Elemente einfach einzubinden.</p>
+
+<p><strong>Einbindung des Snippets:</strong></p>
+
+<pre><code>[[!CampaignerSharing? &amp;url=`[[~[[+id]]? scheme=`full`]]`]]
+</code></pre>
+
+<h3>Funktionen</h3>
+
+<ul>
+<li>Erstellen/Bearbeiten - siehe <a href="#screen_socialsharing">Screen</a>
+
+<ul>
+<li>Name - Beschreibender Name des Elements</li>
+<li>URL - Der URI wobei mit dem Platzhalter [[+url]], der übergebene Link mitgegeben wird (z.B.: http://www.facebook.com/share.php?u=[[+url]])</li>
+<li>Icon - Das Icon des Dienstes</li>
+<li>Linktext - Der anzuzeigende Linktext</li>
+<li>Suchmuster - Dient zur Erfassung in den <a href="#statistics">Statistiken</a> um Links auf soziale Netzwerke identifizieren zu können</li>
+<li>Aktiv - Status des Elements (inaktive werden nicht implementiert bzw stehen nicht zur Verfügung)</li>
+</ul>
+</li>
+<li>Entfernen - Löschen des Elements</li>
+<li>Aktivieren/Deaktivieren (nicht implementiert)</li>
+</ul>
+
+
+<h2><span id="fields">Felder</span></h2>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_fields.png" alt="fields" /></p>
+
+<p><em>Felder dienen dazu Daten von Abonnenten noch spezifischer erfassen zu können und nach den projektbezogenen Bedürfnissen zu erweitern.</em></p>
+
+<h3>Handhabung</h3>
+
+<p>Um ein Feld hinzuzufügen oder die bestehenden zu bearbeiten navigiert man in der Komponente zu dem Tab <strong>Felder</strong>. Über die Schaltfläche <em>Neues Element</em> lässt sich ein neues Feld hinzufügen. Um bereits bestehende Felder zu bearbeiten wird die rechte Aktionstaste der Maus/Trackpad verwendet.</p>
+
+<h3>Funktionen</h3>
+
+<ul>
+<li>Erstellen/Bearbeiten - siehe <a href="#screen_fieldswindow">Screen</a>
+
+<ul>
+<li>Name - Schlüssel des Feldes, wird zur Identifizierung des Feldes benötigt und muss eindeutig sein</li>
+<li>Label - Der Titel des Feldes</li>
+<li>Typ - Ein ExtJS XType; Folgende Typen werden derzeit (2013-10-29) unterstützt:
+
+<ul>
+<li>textfield</li>
+<li>modx-combo</li>
+<li>textarea</li>
+<li>datefield</li>
+</ul>
+</li>
+<li>Werte - derzeit nur bei <em>modx-combo</em> möglich</li>
+<li>Format - derzeit nur bei <em>datefield</em> möglich</li>
+<li>Benötigt - Ist dieses Feld unbedingt auszufüllen?</li>
+<li>Aktiv - Ist dieses Feld aktiv?</li>
+<li>Tab - In welchem Tab des Abonnenten-Fenster soll dieses Feld angezeigt werden? Derzeit verfügbar (2013-10-29):
+
+<ul>
+<li>campaigner-subscriber-tab-main</li>
+<li>campaigner-subscriber-tab-address</li>
+<li>campaigner-subscriber-tab-groups</li>
+<li>campaigner-subscriber-tab-fields</li>
+</ul>
+</li>
+<li>Positionierung - An welcher Position soll dieses Feld angezeigt werden? (Index-Werte beginnend mit 0, 1, 2, ...)</li>
+</ul>
+</li>
+<li>Entfernen - Löschen des Elements</li>
+<li>Drag 'n' Drop - Felder können via Drag 'n' Drop in ihrere Positionierung verändert werden. Diese Positionierung betrifft aber nur Felder die im Feld-Tab (<em>campaigner-subscriber-tab-fields</em>) angezeigt werden!</li>
+</ul>
+
+
+<h2><span id="permissions">Rechte-Management</span></h2>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_permissions_combined.png" alt="perms" /></p>
+
+<h2><span id="settings">Systemeinstellungen</span></h2>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_settings_combined.png" alt="settings" /></p>
+
+<h2><span id="screens">Weitere Screenshots</span></h2>
+
+<h3><span id="screen_socialsharing">Social-Sharing</span></h3>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_socialsharing_edit.png" alt="sharing" /></p>
+
+<h3><span id="screen_subscriber_edit">Abonnenten bearbeiten</span></h3>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_subscriber_edit.png" alt="subscriber_edit" /></p>
+
+<h3><span id="screen_group_edit">Gruppe bearbeiten</span></h3>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_group_edit.png" alt="group_edit" /></p>
+
+<h3><span id="screen_fields_edit">Felder bearbeiten</span></h3>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_field_edit.png" alt="field_edit" /></p>
+
+<h3><span id="screen_sendtest">Test-Versand</span></h3>
+
+<p><img src="https://googledrive.com/host/0ByBGzCLq1WRAZThncExuWmR0WTA/campaigner_sendtest.png" alt="send_test" /></p>
+<div class="footnotes">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>MODx - Modernes CMS/CMF <a href="http://www.modx.com">www.modx.com</a><a href="#fnref:1" rev="footnote">&#8617;</a></p></li>
+<li id="fn:2">
+<p>z.B. Outlook, Thunderbird, GMail, Mail (OS X), &hellip;<a href="#fnref:2" rev="footnote">&#8617;</a></p></li>
+</ol>
+</div>
+
+</body>
+</html>

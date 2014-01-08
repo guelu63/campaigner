@@ -15,6 +15,7 @@ Campaigner.panel.Main = function(config) {
             border: true,
             items: [{
                 title: _('campaigner.newsletter'),
+                hidden: !MODx.perm.tab_newsletter,
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-newsletter',
                 items: [{
@@ -28,6 +29,7 @@ Campaigner.panel.Main = function(config) {
                 }]
             }, {
                 title: _('campaigner.autonewsletter'),
+                hidden: !MODx.perm.tab_autonewsletter,
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-autonewsletter',
                 items: [{
@@ -41,6 +43,7 @@ Campaigner.panel.Main = function(config) {
                 }]
             },{
                 title: _('campaigner.groups'),
+                hidden: !MODx.perm.tab_groups,
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-groups',
                 items: [{
@@ -54,6 +57,7 @@ Campaigner.panel.Main = function(config) {
                 }]
             },{
                 title: _('campaigner.subscribers'),
+                hidden: !MODx.perm.tab_subscriber,
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-subscriber',
                 items: [{
@@ -67,6 +71,7 @@ Campaigner.panel.Main = function(config) {
                 }]
             },{
                 title: _('campaigner.bounce'),
+                hidden: !MODx.perm.tab_bounces,
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-bounce',
                 items: [{
@@ -121,6 +126,7 @@ Campaigner.panel.Main = function(config) {
                 }]
             },{
                 title: _('campaigner.queue'),
+                hidden: !MODx.perm.tab_queue,
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-queue',
                 items: [{
@@ -134,6 +140,7 @@ Campaigner.panel.Main = function(config) {
                 }]
             },{
                 title: _('campaigner.statistics'),
+                hidden: !MODx.perm.tab_statistics,
                 defaults: { autoHeight: true },
                 id: 'campaigner-tab-statistics',
                 items: [{

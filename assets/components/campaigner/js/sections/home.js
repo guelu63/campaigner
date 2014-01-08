@@ -1,4 +1,22 @@
 Ext.onReady(function() {
+
+    // var token = window.location.hash.substr(1);
+
+    // if ( token ) {
+    //     var tab = tabPanel.get(token);
+
+    //     if ( ! tab ) {
+    //         // Create tab or error as necessary.
+    //         tab = new Ext.Panel({
+    //             itemId: token,
+    //             title: 'Tab: '+ token
+    //         });
+
+    //         tabPanel.add(tab);
+    //     }
+
+    //     tabPanel.setActiveTab(tab);
+    // }
     MODx.load({ xtype: 'campaigner-page-home'});
 });
 

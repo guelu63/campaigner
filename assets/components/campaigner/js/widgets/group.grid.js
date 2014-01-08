@@ -73,12 +73,17 @@ Campaigner.grid.Group = function(config) {
                 },scope:this}
             }
         }, '->', {
-            xtype: 'button'
-            ,id: 'campaigner-group-add'
+            xtype: 'splitbutton'
             ,text: _('campaigner.group.add')
-            ,disabled: !MODx.perm.group_create
-            ,listeners: {
-                'click': {fn: this.addGroup, scope: this}
+            ,hidden: !MODx.perm.group_create
+            ,handler: this.addGroup.createDelegate(this, [0], true)
+            ,menu : {
+                items: [{
+                    text: _('campaigner.group.add_segment')
+                    ,handler: this.addGroup.createDelegate(this, [1], true)
+                    ,scope : this
+                    ,hidden: !MODx.perm.queue_remove_batch
+                }]
             }
         }]
     });
@@ -110,13 +115,18 @@ Ext.extend(Campaigner.grid.Group,MODx.grid.Grid,{
         this.refresh();
         return true;
     }
-    ,addGroup: function(e) {
-    	var w = MODx.load({
-            xtype: 'campaigner-window-group'
-            ,listeners: {
-                'success': {fn:this.refresh,scope:this}
-            }
-        });
+    ,addGroup: function(btn, e, segment) {
+        if(!w) {
+        	var w = MODx.load({
+                xtype: 'campaigner-window-' + (segment ? 'segment' : 'group')
+                ,blankValues: true
+                ,listeners: {
+                    'success': {fn:this.refresh,scope:this}
+                }
+            });
+        } else {
+            w.reset();
+        }
         w.show(e.target);
     }
     ,editGroup: function(e) {
@@ -269,11 +279,402 @@ Campaigner.window.Group = function(config) {
             ,hiddenName: 'priority'
         }]
     });
-Campaigner.window.Group.superclass.constructor.call(this,config);
+    Campaigner.window.Group.superclass.constructor.call(this,config);
 };
 Ext.extend(Campaigner.window.Group,MODx.Window);
 Ext.reg('campaigner-window-group',Campaigner.window.Group);
-    
+
+
+Campaigner.window.Segment = function(config) {
+    config = config || {};
+    this.ident = config.ident || 'campaigner-'+Ext.id();
+    Ext.applyIf(config,{
+        title: _('campaigner.segment') + ' ' + (config.record ? config.record.name : '')
+        ,id: 'campaigner-segment-window'
+        ,height: 600
+        ,width: 750
+        ,url: Campaigner.config.connector_url
+        ,action: 'mgr/group/segment/save'
+        ,fields: [{
+            xtype: 'hidden'
+            ,name: 'id'
+            ,id: 'campaigner-'+this.ident +'-id'
+        },{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.group.name')
+            ,name: 'name'
+            ,anchor: '100%'
+            ,allowBlank: false
+            ,id: 'campaigner-'+this.ident+'-name'
+        },{
+            xtype: 'container'
+            ,layout: 'column'
+            ,items: [{
+                xtype: 'checkbox'
+                ,hideLabel: true
+                ,boxLabel: _('campaigner.group.public')
+                ,fieldLabel: _('campaigner.group.public')
+                ,name: 'public'
+                ,value: 1
+                ,id: 'campaigner-'+this.ident+'-public'
+                ,columnWidth: .33
+            },{
+                xtype: 'colorfield'
+                ,fieldLabel: _('campaigner.group.color')
+                ,name: 'color'
+                ,id: 'campaigner-'+this.ident+'-color'
+                ,showHexValue:true
+                ,hiddenName: 'color'
+                ,columnWidth: .33
+                ,allowBlank: false
+                ,wheelImage: this.wheelImage
+                ,gradientImage: this.gradientImage,
+            },{
+                xtype: 'combo'
+                ,fieldLabel: _('campaigner.group.priority')
+                ,name: 'campaigner'
+                ,id: 'campaigner-'+this.ident+'-priority'
+                ,width: 200
+                ,emptyText: '5'
+                ,fields: [
+                'id',
+                'display'
+                ]
+                ,store: [
+                [1, 'Sehr wichtig'],
+                [2, 'Schon wichtig'],
+                [3, 'Wichtig'],
+                [4, 'Geht so'],
+                [5, 'Unwichtig']
+                ]
+                ,valueField: 'id'
+                ,displayField: 'display'
+                ,triggerAction: 'all'
+                ,forceSelection: true
+                ,lastQuery: ''
+                ,triggerAction: 'all'
+                ,hiddenName: 'priority'
+                ,columnWidth: .33
+            }]
+        },{
+            xtype: 'fieldset'
+            ,id: 'campaigner-segement-filtersets'
+            ,checkboxToggle:true
+            ,title: _('campaigner.segment.filters')
+            ,collapsed: false
+            ,items: [{
+                xtype: 'campaigner-form-filterfields'
+            }]
+        },{
+            xtype: 'button'
+            ,text: _('campaigner.segment.add_filter')
+            ,handler: this.addFilterSet
+        },{
+            xtype: 'container'
+            ,height: 200
+            ,autoScroll: true
+            ,id: 'campaigner-segment-filter-result'
+        },{
+            xtype: 'hidden'
+            ,name: 'subscribers'
+            ,id: 'campaigner-segment-subscribers'
+        }]
+    });
+    Campaigner.window.Segment.superclass.constructor.call(this,config);
+};
+Ext.extend(Campaigner.window.Segment,MODx.Window, {
+    addFilterSet: function(b, e) {
+        if(!cnt)
+            var cnt = 1;
+        var sets = Ext.getCmp('campaigner-segement-filtersets');
+        sets.add({
+            xtype: 'campaigner-form-filterfields'
+            ,params: {
+                cnt: cnt + 1
+            }
+        });
+        sets.doLayout();
+    }
+});
+Ext.reg('campaigner-window-segment',Campaigner.window.Segment);
+
+
+Campaigner.panel.FilterFields = function(config) {
+    config = config || {};
+    var cnt = 1;
+    if(config.params)
+        cnt = config.params.cnt;
+    // console.log(config);
+    Ext.applyIf(config,{
+        layout: 'column'
+        ,id: 'campaigner-segment-filter-fields-' + cnt
+        ,style: {
+            paddingBottom: '10px'
+        }
+        ,items: [{
+            xtype: 'campaigner-combo-filterkeys'
+            ,name: 'key'
+            ,columnWidth: .2
+            ,listeners: {
+                'select': {fn: this.triggerFilter, scope: this}
+                // ,'change': {fn this.triggerFilter, scope: this}
+            }
+        },{
+            xtype: 'campaigner-combo-filteroperators'
+            ,name: 'operator'
+            ,columnWidth: .2
+            ,listeners: {
+                'select': {fn: this.triggerFilter, scope: this}
+                // ,'change': {fn this.triggerFilter, scope: this}
+            }
+        },{
+            xtype: 'textfield'
+            ,columnWidth: .2
+            ,id: 'campaigner-combo-filtervalue'
+            ,name: 'value'
+            ,enableKeyEvents: true
+            ,listeners: {
+                'keyup': {fn: this.triggerFilter, scope: this}
+                // ,'change': {fn this.triggerFilter, scope: this}
+            }
+        },{
+            xtype: 'campaigner-combo-filterconditions'
+            ,name: 'condition'
+            ,columnWidth: .2
+            ,listeners: {
+                'select': {fn: this.triggerFilter, scope: this}
+                // ,'change': {fn this.triggerFilter, scope: this}
+            }
+        },{
+            xtype: 'button'
+            ,columnWidth: .1
+            ,text: '&times;'
+            ,listeners: {
+                'click': {fn: this.removeFilter, scope: this}
+            }
+        }]
+
+    });
+    Campaigner.panel.FilterFields.superclass.constructor.call(this,config);
+};
+Ext.extend(Campaigner.panel.FilterFields, Ext.Container, {
+    removeFilter: function(btn, e) {
+        btn.findParentByType('campaigner-form-filterfields').destroy();
+        this.triggerFilter();
+    }
+    ,triggerFilter: function() {
+        var win = Ext.getCmp('campaigner-segment-window');
+        MODx.Ajax.request({
+            url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/group/filterresult'
+                ,data: Ext.util.JSON.encode(win.fp.getForm().getValues())
+            }
+            ,listeners: {
+                'success':{fn:function(response) {
+                    var subs_checks = [];
+                    Ext.each(response.object.data, function(subscriber, index) {
+                        subs_checks.push({
+                            boxLabel: subscriber.firstname + ' ' + subscriber.lastname
+                             // + '<br/>' + subscriber.email
+                            ,name: 'subscriber[]'
+                            ,style: {
+                                border: '1px solid #cccccc'
+                            }
+                            ,checked: true
+                        });
+                    });
+                    console.log(response.object.data);
+                    var subs_ids = [];
+                    // Ext.each(response.object.data, function(subscriber, index) {
+                    //     subs_ids.push(subscriber.id);
+                    // });
+
+                    // var subs_field = Ext.getCmp('campaigner-segment-subscribers');
+                    // subs_field.setValue(subs_ids);
+
+                    var result_container = Ext.getCmp('campaigner-segment-filter-result')
+                    result_container.removeAll();
+                    result_container.add({
+                        xtype: 'checkboxgroup'
+                        ,columns: 3
+                        ,items: subs_checks
+                    });
+                    // var store = new Ext.data.ArrayStore({
+                    //     fields: ['id', 'firstname', 'lastname', 'email', 'since']
+                    //     // ,reader: new Ext.data.JsonReader({
+                    //     //     root: 'dataIndexta' 
+                    //     // })
+                    // });
+                    // console.log(response.object);
+                    // store.loadData(response.object.data);
+                    // // console.log(store);
+                    
+                    
+                    // var res_el = result_container.getEl();
+
+                    // // res_el.dom.style.backgroundColor = '#99ff99';
+                    // res_el.dom.style.padding = '10px';
+                    // res_el.dom.style.marginTop = '10px';
+
+                    // result_container.removeAll();
+                    // result_container.add({
+                    //     xtype: 'campaigner-segment-grid-subscribers'
+                    //     ,id: 'campaigner-segment-grid-subscribers'
+                    //     ,store: store
+                    //     // ,mode: 'local'
+                    //     // ,store: store
+                    //     // ,preventRender: true
+                    //     // ,listeners: {
+                    //     //     'afterrender': {fn: function(g) {
+                    //     //         g.refresh();
+                    //     //     }, scope: this}
+                    //     // }
+                    // });
+
+                    result_container.doLayout();
+                    // Ext.getCmp('campaigner-segment-grid-subscribers').getStore().loadData(response.object.data);
+                    // var grid = Ext.getCmp('campaigner-segment-grid-subscribers');
+                    // console.log(grid.getView());
+                    // grid.getView().refresh();
+                }, scope:this}
+            }
+        });
+        // this.getBottomToolbar().changePage(1);
+        // this.refresh();
+        // return true;
+    }
+});
+Ext.reg('campaigner-form-filterfields', Campaigner.panel.FilterFields);
+
+Campaigner.grid.SegmentSubscribers = function(config) {
+    config = config || {};
+    this.sm = new Ext.grid.CheckboxSelectionModel();
+    Ext.applyIf(config,{
+        fields: ['id', 'firstname', 'lastname', 'email', 'since']
+        // ,paging: true
+        // ,preventRender: true
+        // ,autosave: false
+        // ,remoteSort: true
+        ,primaryKey: 'id'
+        ,columns: [{
+            header: _('campaigner.subscriber.email')
+            ,dataIndex: 'email'
+            ,sortable: true
+            ,width: 40
+        },{
+            header: _('campaigner.subscriber.name')
+            ,dataIndex: 'lastname'
+            ,sortable: true
+            ,width: 20
+            // ,renderer: this._renderName
+        }]
+    });
+    Campaigner.grid.SegmentSubscribers.superclass.constructor.call(this,config);
+}
+Ext.extend(Campaigner.grid.SegmentSubscribers,MODx.grid.LocalGrid, {
+    _renderName: function(value, p, rec) {
+        // console.log(rec);
+        return rec.data.firstname + ' ' + rec.data.lastname;
+    }
+});
+Ext.reg('campaigner-segment-grid-subscribers', Campaigner.grid.SegmentSubscribers);
+
+
+Campaigner.combo.FilterKeys = function(config) {
+    config = config || {};
+    Ext.applyIf(config,{
+        url: Campaigner.config.connector_url
+        ,baseParams: {
+            action: 'mgr/group/filterkeys'
+        }
+        ,fields: ['key', 'value']
+        ,displayField: 'key'
+        ,valueField: 'value'
+        ,emptyText: 'Feld'
+        // ,listeners: {
+        //     'select': {fn: this.triggerFilter, scope: this}
+        // }
+    });
+    Campaigner.combo.FilterKeys.superclass.constructor.call(this,config);
+}
+Ext.extend(Campaigner.combo.FilterKeys,MODx.combo.ComboBox, {
+});
+Ext.reg('campaigner-combo-filterkeys', Campaigner.combo.FilterKeys);
+
+
+/**
+    <optgroup label="Numeric">
+        <option value="=">=</option>
+        <option value="!=">!=</option>
+        <option value="&gt;">&gt;</option>
+        <option value="&lt;">&lt;</option>
+        <option value="&gt;=">&gt;=</option>
+        <option value="&lt;=">&lt;=</option>
+    </optgroup>
+    <optgroup label="String">
+        <option value="BEGINS">Begins with</option>
+        <option value="END">Ends with</option>
+        <option value="CONTAINS">Contains</option>
+        <option value="NOTCONTAINS">Does not contain</option>
+        <option value="LIKE">LIKE</option>
+        <option value="NOT LIKE">NOT LIKE</option>
+        <option value="REGEXP">REGEXP</option>
+        <option value="NOT REGEXP">NOT REGEXP</option>
+    </optgroup>
+    <optgroup label="Other">
+        <option value="IS NULL">IS NULL</option>
+        <option value="IS NOT NULL">IS NOT NULL</option>
+    </optgroup>
+</select>
+*/
+
+Campaigner.combo.FilterOperators = function(config) {
+    config = config || {};
+    Ext.applyIf(config,{
+        mode: 'local'
+        ,fields: ['key', 'value']
+        ,displayField: 'value'
+        ,valueField: 'key'
+        ,emptyText: 'Operator'
+        ,store: [
+            ['=', '=']
+            ,['!=', '!=']
+            ,['>', '>']
+            ,['<', '<']
+            ,['>=', '>=']
+            ,['<=', '<=']
+            ,['LIKE', 'LIKE']
+            ,['NOT LIKE', 'NOT LIKE']
+            ,['IS NULL', 'IS NULL']
+            ,['IS NOT NULL', 'IS NOT NULL']
+        ]
+    });
+    Campaigner.combo.FilterOperators.superclass.constructor.call(this,config);
+}
+Ext.extend(Campaigner.combo.FilterOperators,MODx.combo.ComboBox);
+Ext.reg('campaigner-combo-filteroperators', Campaigner.combo.FilterOperators);
+
+Campaigner.combo.FilterConditions = function(config) {
+    config = config || {};
+    Ext.applyIf(config, {
+        mode: 'local'
+        ,fields: ['key', 'value']
+        ,displayField: 'value'
+        ,valueField: 'key'
+        ,emptyText: 'Condition'
+        ,store: [
+            ['AND', 'AND']
+            ,['OR', 'OR']
+        ]
+    });
+    Campaigner.combo.FilterConditions.superclass.constructor.call(this,config);
+}
+Ext.extend(Campaigner.combo.FilterConditions,MODx.combo.ComboBox);
+Ext.reg('campaigner-combo-filterconditions', Campaigner.combo.FilterConditions);
+
+
+
 Campaigner.window.AssignSubscriber = function(config) {
     config = config || {};
     this.ident = config.ident || 'campaigner-'+Ext.id();
@@ -283,6 +684,7 @@ Campaigner.window.AssignSubscriber = function(config) {
         // ,id: this.ident
         ,height: 500
         ,width: 750
+        ,autoScroll: true
         ,id: this.ident
         ,url: Campaigner.config.connector_url
         ,action: 'mgr/group/assignsubscriber'

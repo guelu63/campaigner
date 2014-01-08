@@ -1,4 +1,12 @@
 <?php
+/**
+ * Processor: Remove queue items
+ * 
+ * Remove single or multiple queue items and reduce the total of sent items
+ * in the newsletter (which sound weird afterwards)
+ *
+ * @return JSON Error or success message
+ */
 $ids = explode(',', $_REQUEST['marked']);
 
 $queue = $modx->getCollection('Queue', array('id:IN' => $ids));

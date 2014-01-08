@@ -92,10 +92,18 @@ foreach ($newsletters as $newsletter) {
         
     $groups = explode(';', $newsletter['groups']);
     $grpArray = array();
+    $subscribers = array();
     foreach($groups as $grp) {
         if(false === strpos($grp, ',')) continue;
         $grpArray[] = explode(',', $grp);
+        $c = $modx->newQuery('GroupSubscriber', array('group' => $grp[0]));
+        $c->leftJoin('Subscriber', 'Subscriber');
+        $c->where('`Subscriber`.`active` = 1');
+        $subscribers[] = $modx->getCount('GroupSubscriber', $c);
+        // $subscribers = $modx->getCollection('GroupSubscriber', $c);
+
     }
+    $newsletter['subscribers'] = array_sum($subscribers);
     $newsletter['groups'] = $grpArray;
         
     $list[] = $newsletter;

@@ -61,14 +61,15 @@ if(!empty($_POST['email'])) {
         $subscriber = $modx->getObject('Subscriber', array('email' => $_POST['email']));
     
     $tags = $modx->campaigner->getNewsletterTags($newsletter);
-    
+
     // the messages
-    $message = $modx->campaigner->processNewsletter($message, $subscriber, $tags);
     $message = $modx->campaigner->makeTrackingUrls($message, $newsletter, $subscriber);
+    $message = $modx->campaigner->processNewsletter($message, $subscriber, $tags);
+
     $textual = $modx->campaigner->textify($message);
-    // die();
+    
     // set properties
-    if($subscriber && $subscriber->get('text')) {
+    if($subscriber->get('text') || $_POST['textify']) {
         $mailer->setHTML(false);
         $mailer->set(modMail::MAIL_BODY, $textual);
     } else {
@@ -111,7 +112,7 @@ if(!empty($_POST['email'])) {
         // and send
         if (!$mailer->send()) {
             $sent = false;
-            $modx->log(modX::LOG_LEVEL_ERROR,'An error occurred while trying to send the confirmation email to '.$subscriber->get('email'));
+            $modx->log(MODX_LOG_LEVEL_ERROR,'An error occurred while trying to send the confirmation email to '.$subscriber->get('email'));
         }
     } else {
         // personilzed for every subscriber

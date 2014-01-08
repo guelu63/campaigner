@@ -1,3 +1,9 @@
+/*
+    CONSOLE
+ */
+var topic = '/autonewsletter/';
+var register = 'mgr';
+
 Campaigner.grid.Autonewsletter = function(config) {
     config = config || {};
     this.sm = new Ext.grid.CheckboxSelectionModel();
@@ -36,8 +42,18 @@ Campaigner.grid.Autonewsletter = function(config) {
         },{
             header: _('campaigner.autonewsletter.start')
             ,dataIndex: 'start'
+            // ,type: 'date'
+            // ,dateFormat: 'timestamp'
             ,sortable: true
             ,width: 15
+            // ,renderer: function(value) {
+            //     var dt = new Date();
+            //     //dt = Thu May 25 2006 (today's month/day in 2006)
+            //     dt = Date.parseDate(value, "U");
+            //     // var date = Ext.Date.parse(value, 'U');
+
+            //     return Ext.Date.format(dt, 'd/m/Y');
+            // }
         },{
             header: _('campaigner.autonewsletter.last')
             ,dataIndex: 'last'
@@ -237,14 +253,53 @@ Ext.extend(Campaigner.grid.Autonewsletter,MODx.grid.Grid,{
     }
     ,testNewsletter: function(e) {
         var w = MODx.load({
-           xtype: 'campaigner-window-autonewsletter-test'
-           ,record: this.menu.record
-           ,listeners: {
-            'success': {fn:this.refresh,scope:this}
-        }
-    });
+            xtype: 'campaigner-window-autonewsletter-test'
+            ,record: this.menu.record
+            ,listeners: {
+                'success': {fn:this.refresh,scope:this}
+            }
+        });
         w.show(e);
         return;
+    }
+    ,triggerSchedule: function() {
+        MODx.msg.confirm({
+            title: _('campaigner.autonewsletter.trigger.title')
+            ,text: _('campaigner.autonewsletter.trigger.text')
+            ,url: Campaigner.config.connector_url
+            ,params: {
+                action: 'mgr/autonewsletter/trigger'
+                ,id: this.menu.record.id
+            }
+            ,listeners: {
+                'success': {fn:this.refresh,scope:this}
+            }
+        });
+    }
+    ,getSchedule: function() {
+        var w = MODx.load({
+            xtype: 'campaigner-window-autonewsletter-schedule'
+            ,record: this.menu.record
+        });
+        // w.setValues(this.menu.record);
+        w.show();
+        return;
+        // if (this.console === null || this.console === undefined) {
+        //     this.console = MODx.load({
+        //        xtype: 'modx-console'
+        //        ,register: register
+        //        ,topic: topic
+        //        ,show_filename: 0
+        //        ,listeners: {
+        //          'shutdown': {fn:function() {
+        //              // Ext.getCmp('modx-layout').refreshTrees();
+        //          },scope:this}
+        //        }
+        //     });
+        // } else {
+        //     this.console.setRegister(register, topic);
+        // }
+        // this.console.show(Ext.getBody());
     }
     ,getMenu: function() {
         var m = [];
@@ -285,13 +340,6 @@ Ext.extend(Campaigner.grid.Autonewsletter,MODx.grid.Grid,{
                 });
                 m.push('-');
             }
-            if(MODx.perm.autonewsletter_kick) {
-                m.push({
-                    text: _('campaigner.newsletter.kicknow')
-                    ,handler: this.kickNewsletter
-                });
-                m.push('-');
-            }
             if(MODx.perm.autonewsletter_preview) {
                 m.push({
                     text: _('campaigner.newsletter.preview')
@@ -302,6 +350,25 @@ Ext.extend(Campaigner.grid.Autonewsletter,MODx.grid.Grid,{
                 m.push({
                     text: _('campaigner.newsletter.sendtest')
                     ,handler: this.testNewsletter
+                });
+            }
+            // if(MODx.perm.autonewsletter_triggerschedule) {
+                m.push({
+                    text: _('campaigner.newsletter.triggerschedule')
+                    ,handler: this.triggerSchedule
+                });
+            // }
+            // if(MODx.perm.autonewsletter_planschedule) {
+                m.push({
+                    text: _('campaigner.newsletter.getschedule')
+                    ,handler: this.getSchedule
+                });
+            // }
+            if(MODx.perm.autonewsletter_kick) {
+                m.push('-');
+                m.push({
+                    text: _('campaigner.newsletter.kicknow')
+                    ,handler: this.kickNewsletter
                 });
             }
         }
@@ -315,6 +382,7 @@ Ext.reg('campaigner-grid-autonewsletter',Campaigner.grid.Autonewsletter);
 
 Campaigner.window.AutonewsletterProperties = function(config) {
     config = config || {};
+    console.log(config.record);
     this.ident = config.ident || 'campaigner-'+Ext.id();
     Ext.applyIf(config,{
         title: _('campaigner.newsletter.properties')
@@ -343,29 +411,29 @@ Campaigner.window.AutonewsletterProperties = function(config) {
             ,hiddenName: 'state'
             ,submitValue: false
         },{
-            xtype: 'container'
-            ,layout: {
-                type: 'hbox',
-                align: 'stretch'
-            }
-            ,fieldLabel: _('campaigner.newsletter.date_time')
-            ,defaults: {flex: 1, layout: 'form', border: false, margins: '0 5 0 0'}
-            ,style: 'border-bottom: 1px solid #ccc; margin-bottom: 15px; padding-bottom: 15px'
-            ,items: [
-            {
-                xtype: 'datefield'
-                ,fieldLabel: _('campaigner.autonewsletter.start')
-                ,name: 'start'
-                ,format: 'd.m.Y'
-                ,id: 'campaigner-'+this.ident+'-start'
-            },{
-                xtype: 'timefield'
-                ,fieldLabel: _('campaigner.autonewsletter.time')
-                ,name: 'time'
-                ,id: 'campaigner-'+this.ident+'-time'
-                ,format: 'H:i:s'
-            }
-            ]
+            xtype: 'xdatetime'
+            ,fieldLabel: _('campaigner.autonewsletter.start')
+            ,name: 'start'
+            ,dateFormat: MODx.config.manager_date_format
+            ,timeFormat: MODx.config.manager_time_format
+            ,startDay: parseInt(MODx.config.manager_week_start)
+            ,dateWidth: 120
+            ,timeWidth: 120
+            ,offset_time: MODx.config.server_offset_time
+            ,value: config.record.start
+            ,id: 'campaigner-'+this.ident+'-start'
+        },{
+            xtype: 'xdatetime'
+            ,fieldLabel: _('campaigner.autonewsletter.last')
+            ,name: 'last'
+            ,dateFormat: MODx.config.manager_date_format
+            ,timeFormat: MODx.config.manager_time_format
+            ,startDay: parseInt(MODx.config.manager_week_start)
+            ,dateWidth: 120
+            ,timeWidth: 120
+            ,offset_time: MODx.config.server_offset_time
+            ,value: config.record.last
+            ,id: 'campaigner-'+this.ident+'-last'
         },{
             xtype: 'container'
             ,layout: {
@@ -394,57 +462,46 @@ Campaigner.window.AutonewsletterProperties = function(config) {
                 ,triggerAction: 'all'
                 ,lastQuery: ''
                 ,hiddenName: 'interval'
-                ,submitValue: false
-            },{
-                xtype: 'combo'
-                ,name: 'interval'
-                ,emptyText: _('campaigner.weekdays')
-                ,id: 'campaigner-'+this.ident+'-weekday'
-                ,store: [
-                    [1, _('campaigner.day.1')],
-                    [2, _('campaigner.day.2')],
-                    [3, _('campaigner.day.3')],
-                    [4, _('campaigner.day.4')],
-                    [5, _('campaigner.day.5')],
-                    [6, _('campaigner.day.6')],
-                    [7, _('campaigner.day.7')]
-                ]
-                ,editable: false
-                ,triggerAction: 'all'
-                ,lastQuery: ''
-                ,hiddenName: 'interval'
-                ,submitValue: false
+                // ,submitValue: false
             }
+            // ,{
+            //     xtype: 'combo'
+            //     ,name: 'interval_day'
+            //     ,emptyText: _('campaigner.weekdays')
+            //     ,id: 'campaigner-'+this.ident+'-weekday'
+            //     ,store: [
+            //         [1, _('campaigner.day.1')],
+            //         [2, _('campaigner.day.2')],
+            //         [3, _('campaigner.day.3')],
+            //         [4, _('campaigner.day.4')],
+            //         [5, _('campaigner.day.5')],
+            //         [6, _('campaigner.day.6')],
+            //         [7, _('campaigner.day.7')]
+            //     ]
+            //     ,editable: false
+            //     ,triggerAction: 'all'
+            //     ,lastQuery: ''
+            //     ,hiddenName: 'interval_day'
+            //     // ,submitValue: false
+            // }
             ]
         },{
-            xtype: 'container'
-            ,layout: {
-                type: 'hbox',
-                align: 'stretch'
-            }
-            ,fieldLabel: _('campaigner.newsletter.sender_email')
-            ,defaults: {flex: 1, layout: 'form', border: false, margins: '0 5 0 0'}
-            ,style: 'border-bottom: 1px solid #ccc; margin-bottom: 15px; padding-bottom: 15px'
-            ,items: [
-            {
-                xtype: 'textfield'
-                ,fieldLabel: _('campaigner.newsletter.sender')
-                ,name: 'sender'
-                ,id: 'campaigner-'+this.ident+'-sender'
-                ,flex: 1
-            },{
-                xtype: 'textfield'
-                ,fieldLabel: _('campaigner.newsletter.senderemail')
-                ,name: 'sender_email'
-                ,id: 'campaigner-'+this.ident+'-sender-email'
-                ,flex: 1
-            }
-            ]
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.newsletter.sender')
+            ,name: 'sender'
+            ,anchor: '100%'
+            ,id: 'campaigner-'+this.ident+'-sender'
+        },{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.newsletter.senderemail')
+            ,name: 'sender_email'
+            ,anchor: '100%'
+            ,id: 'campaigner-'+this.ident+'-sender-email'
         },{
             xtype: 'textarea'
-            ,width: 300
             ,fieldLabel: _('campaigner.autonewsletter.description')
             ,name: 'description'
+            ,anchor: '100%'
             ,placeholder: 'A description of the autonewsletter'
             ,id: 'campaigner-'+this.ident+'-description'
         }]
@@ -564,25 +621,27 @@ Campaigner.window.AutonewsletterTest = function(config) {
             xtype: 'hidden'
             ,name: 'id'
             ,id: this.ident+'-id'
-        },{
-            xtype: 'checkbox'
-            ,fieldLabel: _('campaigner.newsletter.sendtest.personalize')
-            ,name: 'personalize'
-            ,id: this.ident+'-personalize'
-            ,inputValue: 1
-            ,labelSeparator: ''
-            ,hideLabel: true
-            ,boxLabel: _('campaigner.newsletter.sendtest.personalize')
-        },{
-            xtype: 'checkbox'
-            ,fieldLabel: _('campaigner.newsletter.sendtest.attachments_add')
-            ,name: 'add_attachments'
-            ,id: this.ident+'-add_attachments'
-            ,inputValue: 1
-            ,labelSeparator: ''
-            ,hideLabel: true
-            ,boxLabel: _('campaigner.newsletter.sendtest.add_attachments')
-        },{
+        }
+        // ,{
+        //     xtype: 'checkbox'
+        //     ,fieldLabel: _('campaigner.newsletter.sendtest.personalize')
+        //     ,name: 'personalize'
+        //     ,id: this.ident+'-personalize'
+        //     ,inputValue: 1
+        //     ,labelSeparator: ''
+        //     ,hideLabel: true
+        //     ,boxLabel: _('campaigner.newsletter.sendtest.personalize')
+        // },{
+        //     xtype: 'checkbox'
+        //     ,fieldLabel: _('campaigner.newsletter.sendtest.attachments_add')
+        //     ,name: 'add_attachments'
+        //     ,id: this.ident+'-add_attachments'
+        //     ,inputValue: 1
+        //     ,labelSeparator: ''
+        //     ,hideLabel: true
+        //     ,boxLabel: _('campaigner.newsletter.sendtest.add_attachments')
+        // }
+        ,{
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.newsletter.sendtest.email')
             ,name: 'email'
@@ -648,6 +707,74 @@ Campaigner.window.AutonewsletterTest = function(config) {
 Ext.extend(Campaigner.window.AutonewsletterTest,MODx.Window);
 Ext.reg('campaigner-window-autonewsletter-test',Campaigner.window.AutonewsletterTest);
 
+Campaigner.window.AutonewsletterSchedule = function(config) {
+    config = config || {};
+    this.ident = config.ident || 'campaigner-'+Ext.id();
+    Ext.applyIf(config,{
+        title: _('campaigner.autonewsletter.schedule')
+        ,id: this.ident
+        ,height: 600
+        ,width: 750
+        // ,url: Campaigner.config.connector_url
+        // ,baseParams: {
+        //     action: 'mgr/autonewsletter/getschedule'
+        // }
+        ,items: [
+            {
+                html: '<p>'+_('campaigner.autonewsletter.schedule_info')+'</p>',
+                border: false,
+                bodyStyle: 'padding: 10px'
+            },{
+                xtype: 'campaigner-grid-autonewsletter-schedule'
+                ,params: {
+                    id: config.record.id
+                }
+                // ,fieldLabel: _('campaigner.statistics_details')
+                ,id: 'campaigner-grid-autonewsletter-schedule'
+                ,scope: this
+                ,preventRender: true
+            }]
+    });
+    Campaigner.window.AutonewsletterSchedule.superclass.constructor.call(this,config);
+};
+Ext.extend(Campaigner.window.AutonewsletterSchedule,MODx.Window);
+Ext.reg('campaigner-window-autonewsletter-schedule',Campaigner.window.AutonewsletterSchedule);
+
+Campaigner.grid.AutonewsletterSchedule = function(config) {
+    config = config || {};
+    this.sm = new Ext.grid.CheckboxSelectionModel();
+    Ext.applyIf(config,{
+        id: 'campaigner-grid-autonewsletter-schedule'
+        ,url: Campaigner.config.connectorUrl
+        // ,requires: ['Campaigner.Utilities']
+        ,baseParams: {
+            action: 'mgr/autonewsletter/getschedule',
+            id: config.params.id
+        }
+        ,viewConfig: {
+            forceFit: true,
+            enableRowBody: true,
+            autoScroll: true,
+            emptyText: _('campaigner.grid.no_data')
+        }
+        ,primaryKey: 'id'
+        ,sm: this.sm
+        ,fields: ['start']
+        ,paging: true
+        ,remoteSort: true
+        ,columns: [{
+            header: _('campaigner.statistics.link')
+            ,dataIndex: 'start'
+            ,sortable: true
+            ,width: 15
+        }]
+    });
+    Campaigner.grid.AutonewsletterSchedule.superclass.constructor.call(this,config);
+};
+Ext.extend(Campaigner.grid.AutonewsletterSchedule,MODx.grid.Grid, {
+
+});
+Ext.reg('campaigner-grid-autonewsletter-schedule',Campaigner.grid.AutonewsletterSchedule);
 
 Campaigner.window.AutonewsletterPreview = function(config) {
     config = config || {};

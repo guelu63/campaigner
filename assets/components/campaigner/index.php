@@ -10,4 +10,7 @@ $modx->campaigner = new Campaigner($modx);
 $modx->lexicon->load('campaigner:default');
 $modx->addPackage('campaigner', $campaignerCorePath .'model/', 'camp_');
 // $modx->log(MODX_LOG_LEVEL_ERROR, 'tracking image requested');
+var_dump($_GET);
+if($_GET['calendar'])
+	return $modx->campaigner->getCalendar();
 $modx->campaigner->logAction('image');

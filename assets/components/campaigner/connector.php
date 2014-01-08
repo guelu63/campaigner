@@ -8,6 +8,7 @@ require_once $campaignerCorePath.'model/campaigner/campaigner.class.php';
 $modx->campaigner = new Campaigner($modx);
 
 $modx->lexicon->load('campaigner:default');
+// $modx->lexicon->load('campaigner:inspector');
 $modx->addPackage('campaigner', $campaignerCorePath .'model/', 'camp_');
 
 /* handle request */

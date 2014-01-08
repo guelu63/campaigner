@@ -31,7 +31,7 @@ if($_REQUEST['file']){
 	// if(!move_uploaded_file ($temp_file_name, $new_name))
 	// 	return $modx->error->failure('Could not save file');
 	ini_set("auto_detect_line_endings", true);
-	
+	// var_dump($_POST);
 	$delimiter = $_POST['delimiter'];
 	if (($handle = fopen($modx->getOption('base_path') . $file, 'r')) !== FALSE)
     {
@@ -53,7 +53,7 @@ if($_REQUEST['file']){
                 break;
     	$_data = array();
     	foreach($line as $key => $value) {
-    		if(array_search($key, $fields) == 'groups')
+    		if(array_search($key, $fields) == 'group')
     			continue;
     		$_data[array_search($key, $fields)] = $value;
     	}
@@ -66,16 +66,45 @@ if($_REQUEST['file']){
     		$_data['key'] = $modx->campaigner->generate_key(array('email' => $_data['email']));
     		$_data['since'] = time();
             $_data['import'] = 1;
+            if($_POST['auto_activate'])
+                $_data['active'] = 1;
     	}
     	if(is_null($subscriber) and !is_object($subscriber) and !$subscriber instanceof Subscriber)
     		return $modx->error->failure('Something went wrong');
     	$subscriber->fromArray($_data);
-    	$subscriber->save();
+        $subscriber->save();
         $i++;
+
+        // Assign to selected group
+        if($_POST['group']) {
+            // var_dump($_POST['group']);
+            $group = $modx->getObject('Group', array('name:LIKE' => $_POST['group']));
+            if(!$group)
+                return $modx->error->failure('Something went wrong');
+            $c = $modx->newQuery('GroupSubscriber');
+            $c->where(array('subscriber' => $subscriber->get('id'), 'group' => $group->get('id')));
+            $sub_group = $modx->getObject('GroupSubscriber', $c);
+            
+            if($sub_group)
+                continue;
+
+            $sub_group = $modx->newObject('GroupSubscriber');
+            $_gdata = array(
+                'subscriber' => $subscriber->get('id'),
+                'group' => $group->get('id')
+                );
+            
+            $sub_group->fromArray($_gdata);
+            $sub_group->save();
+        }
+
+    	$subscriber->save();
+
+        
     }
 	// if(!$_POST['save_file'])
 	// 	if(!unlink($new_name))
 	// 		return $modx->error->failure('Could not remove file');
-	return $modx->error->success();
+	return $modx->error->success('', array('count' => $i));
 }
 return $modx->error->failure('Please upload a file');

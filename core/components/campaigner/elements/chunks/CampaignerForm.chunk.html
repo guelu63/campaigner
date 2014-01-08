@@ -1,36 +1,43 @@
 <div class="newsletterSignupBox">
   [[+msg:notempty=`<div class="notice positive">[[+msg]]</div>`]]
-  [[+error:notempty=`<div class="notice negative">[[+error]]</div>`]]
+  [[+error.top:notempty=`<div class="notice negative">[[+error.top]]</div>`:default=``]]
+  [[+error:notempty=`<div class="notice negative">[[+error]]</div>`:default=``]]
+  [[+error.required:notempty=`<div class="notice negative">[[+error.required]]</div>`:default=``]]
   <form method="post" action="[[~[[*id]]]]" class="letterForm">
     <input type="hidden" name="subscribed" value="subscribed" />
     <div class="row gender">
-      <div class="label"><label for="email">Anrede*:</label></div>
+      <div class="label"><label for="address">Anrede*:</label></div>
       <div class="right">
-        <label><input type="radio" name="gender" id="gender" value="female" />Frau</label>
-        <label><input type="radio" name="gender" id="gender" value="male" />Herr</label>
+        <label><input type="radio" name="address" id="address" value="Herr" />Herr</label>
+        <label><input type="radio" name="address" id="address" value="Frau" />Frau</label>
       </div>
+      <span>[[+error.field.address]]</span>
     </div>
     <div class="row">
       <div class="label"><label for="email">Email*:</label></div>
       <div class="right"><input type="text" name="email" id="email" value="[[+email]]" class="medium" /></div>
+      <span>[[+error.field.email]]</span>
     </div>
     <div class="row">
       <div class="label"><label for="firstname">Vorname*:</label></div>
       <div class="right"><input type="text" name="firstname" id="firstname" value="[[+firstname]]" class="medium" /></div>
+      <span>[[+error.field.firstname]]</span>
     </div>
     <div class="row">
       <div class="label"><label for="lastname">Nachname*:</label></div>
       <div class="right"><input type="text" name="lastname" id="lastname" value="[[+lastname]]" class="medium" /></div>
+      <span>[[+error.field.lastname]]</span>
     </div>
     
     <div class="row categories">
       <div class="label">Kategorien*:</div>
       <div class="right">[[+groups_check]]</div>
+      <span>[[+error.field.groups]]</span>
     </div>
     <br/>
     <hr/>
     
-      <label for="rightsCheck"><input type="checkbox" name="rights" id="rightsCheck" value="1" [[+rights:eq=`1`:then=`checked`:else=``]] />Nutzungbestimmungen zustimmen</label>      
+      [[+rights_check]]      
     
     <hr/>
     <div class="clearfix w-100">

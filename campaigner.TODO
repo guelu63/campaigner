@@ -1,0 +1,49 @@
+Campaigner:
+Task list for all things related to our newsletter component
+
+Basic:
+  ☐ Window-Heights flexible
+  ☐ List of all available tags
+  ☐ Preview manipulates CSS
+  ☐ Layout optimizing for smaller screens
+
+Refactor newsletter editing:
+      ☐ Complete independence from resource editing
+      ✔ Drag / Drop functionality @done (13-10-29 23:35)
+      ✔ Placeholder @done (13-10-29 23:33)
+      ✔ Snippets @done (13-10-29 23:33)
+      ☐ Custom property handling for easy to use
+      ☐ Attachements (single, multiple, D&D)
+      Content:
+            ✔ RTE implementation @done (13-09-28 13:30)
+            ☐ Placeholder
+            ☐ Send test mail
+            ☐ Attachments via Context-Menu
+            ☐ Multiple Files
+            ☐ TV -> Multiple Files ?
+Groups:
+  Segment groups:
+    ✔ Basics @done (13-09-19 23:50)
+    ✔ Extended with all kind of filters, operators @done (13-10-02 22:40)
+  Create segments from subscribers:
+    ✔ Basics @done (13-09-19 23:50)
+    ☐ Respect all grid items 
+  Queue:
+      ✔ Optional group queue by newsletter @done (13-10-29 23:32)
+      ☐ Realtime Logging
+    Reporting:
+      ☐ Scheduled
+      ☐ Sent
+Statistitcs:
+  Refactoring:
+    ☐ Stash window
+    ☐ Panel creation
+    ☐ Heatmap
+    ☐ Clicks
+    ☐ Time-Tracking of Queue (create, process) + Newsletter (compose, processTags)
+    ☐ Grid with extended filtering
+    ☐ Export to CSV, XML, other used formats
+Lexicon:
+  ☐ Collect lexicon entries and translate
+Subscribers:
+ ☐ File-Upload (e.g.: Photo)

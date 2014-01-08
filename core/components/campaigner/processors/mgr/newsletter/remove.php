@@ -4,7 +4,6 @@
  * @package  campaigner
  */
 $ids = explode(',', $_REQUEST['marked']);
-var_dump($ids);
 $newsletters = $modx->getCollection('Newsletter', array('id:IN' => $ids));
 
 if(!$newsletters)

@@ -10,6 +10,11 @@ $xpdo_meta_map['Queue']= array (
     'sent' => NULL,
     'key' => NULL,
     'priority' => NULL,
+    'error' => NULL,
+    'created' => NULL,
+    'properties' => NULL,
+    'type' => NULL,
+    'scheduled' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -56,6 +61,42 @@ $xpdo_meta_map['Queue']= array (
     array (
       'dbtype' => 'tinyint',
       'precision' => '1',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => true,
+    ),
+    'error' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '255',
+      'phptype' => 'string',
+      'null' => true,
+    ),
+    'created' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '11',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => true,
+    ),
+    'properties' => 
+    array (
+      'dbtype' => 'text',
+      'phptype' => 'string',
+      'null' => true,
+    ),
+    'type' =>
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '10',
+      'phptype' => 'string',
+      'null' => true,
+    ),
+    'scheduled' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '11',
       'attributes' => 'unsigned',
       'phptype' => 'integer',
       'null' => true,

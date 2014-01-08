@@ -1,14 +1,25 @@
 <?php
-// validate properties
-if (empty($_POST['email'])) $modx->error->addField('email',$modx->lexicon('campaigner.subscriber.error.noemail'));
+/**
+ * Processor: Save a subscriber
+ * @param array $_POST The data
+ * @return mixed Object containing success message and subscriber data
+ */
 
-if(!preg_match("/^(.+)@([^@]+)$/", $_POST['email'])) {
+// Validate e-mail not empty
+if (empty($_POST['email']))
     $modx->error->addField('email',$modx->lexicon('campaigner.subscriber.error.noemail'));
-}
 
-if ($modx->error->hasError()) {
+// Validate e-mail itself
+if(!preg_match("/^(.+)@([^@]+)$/", $_POST['email']))
+    $modx->error->addField('email',$modx->lexicon('campaigner.subscriber.error.noemail'));
+
+// Check for duplicates
+if(!$_POST['id'])
+    if($modx->campaigner->emailTaken($_POST['email']))
+        $modx->error->addField('email',$modx->lexicon('campaigner.subscribe.error.emailtaken'));
+
+if ($modx->error->hasError())
     return $modx->error->failure();
-}
 
 $groups = $_POST['groups']; unset($_POST['groups']);
 

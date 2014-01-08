@@ -85,4 +85,5 @@ foreach ($subscribers as $subscriber) {
     $subscriber['groups'] = $grpArray;
     $list[] = $subscriber;
 }
+// var_dump($list);
 return $this->outputArray($list,$count);

@@ -12,6 +12,8 @@ $xpdo_meta_map['Fields']= array (
     'active' => NULL,
     'format' => NULL,
     'menuindex' => NULL,
+    'tab' => NULL,
+    'tabindex' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -67,6 +69,21 @@ $xpdo_meta_map['Fields']= array (
       'null' => true,
     ),
     'menuindex' =>
+    array(
+      'dbtype' => 'int',
+      'precision' => '3',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => true,
+    ),
+    'tab' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '50',
+      'phptype' => 'string',
+      'null' => true,
+    ),
+    'tabindex' =>
     array(
       'dbtype' => 'int',
       'precision' => '3',

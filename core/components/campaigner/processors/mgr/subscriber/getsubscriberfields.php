@@ -9,11 +9,15 @@
 // ));
 // 
 $c = $modx->newQuery('Fields');
-$c->leftJoin('SubscriberFields', 'SubscriberFields', 'SubscriberFields.field = Fields.id AND SubscriberFields.subscriber = ' . $_POST['subscriber']);
-$c->select($modx->getSelectColumns('Fields', 'Fields', '', array('id', 'name', 'label', 'type', 'required', 'values')));
-$c->select(array(
-  '`SubscriberFields`.`value`'
-));
+// If a subscriber is present, let's grab the values
+if($_POST['subscriber']) {
+	$c->leftJoin('SubscriberFields', 'SubscriberFields', 'SubscriberFields.field = Fields.id AND SubscriberFields.subscriber = ' . $_POST['subscriber']);
+	$c->select(array(
+	  '`SubscriberFields`.`value`'
+	));
+}
+$c->select($modx->getSelectColumns('Fields', 'Fields', '', array('id', 'name', 'label', 'type', 'required', 'values', 'tab', 'tabindex')));
+
 $c->where(array('Fields.active' => 1));
 $c->prepare();
 // echo $c->toSQL();
@@ -33,6 +37,7 @@ foreach ($subfields as $subfield) {
 		$val_arr[] = array('id' => $value, 'name' => $value);
 	}
 	$subfield['values'] = json_encode($val_arr);
+
     $list[] = $subfield;
 }
 return $modx->error->success('',$list);

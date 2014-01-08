@@ -66,6 +66,7 @@ $_lang['campaigner.newsletter.edit'] = 'Newsletter bearbeiten';
 $_lang['campaigner.newsletter.sender'] = 'Sender';
 $_lang['campaigner.newsletter.senderemail'] = 'Sender Email';
 $_lang['campaigner.newsletter.properties'] = 'Newsletter Eigenschaften';
+$_lang['campaigner.newsletter.subscribers'] = 'Abonnenten';
 
 $_lang['campaigner.newsletter.editproperties'] = 'Eigenschaften bearbeiten';
 $_lang['campaigner.newsletter.assigngroups'] = 'Gruppen zuweisen';
@@ -112,6 +113,12 @@ $_lang['campaigner.autonewsletter.remove.title'] = 'Auto-Newsletter entfernen?';
 $_lang['campaigner.autonewsletter.remove.confirm'] = 'Wenn sie best&auml;tigen wird dieser Newsletter entfernt und alle damit verbundenen Ressourcen ebenfalls.<br/>Sind sie sicher?';
 $_lang['campaigner.autonewsletter.description'] = 'Beschreibung';
 $_lang['campaigner.subscribe.confirm.subject'] = 'Newsletter best&auml;tigen';
+
+$_lang['campaigner.newsletter.triggerschedule'] = 'Plan anstossen';
+$_lang['campaigner.autonewsletter.trigger.title'] = 'Plan anstossen';
+$_lang['campaigner.autonewsletter.trigger.text'] = 'Durch best&auml;tigen l&ouml;sen Sie die Generierung eines Newsletters aus, der automatisch geplant ist.';
+
+$_lang['campaigner.newsletter.getschedule'] = 'Plan einsehen';
 
 //groups
 $_lang['campaigner.groups'] = 'Gruppen';
@@ -413,14 +420,51 @@ $_lang['campaigner.fields.update'] = 'Editieren';
 $_lang['campaigner.fields.remove'] = 'Entfernen';
 $_lang['campaigner.fields.remove_confirm'] = 'Wollen Sie das Element wirklich entfernen?';
 
+// System mail
+$_lang['campaigner.system.mail.newsletter_new.subject'] = 'Neuer Newsletter generiert!';
+
+$body =<<<BODY
+Ein neuer Newsletter wurde generiert.\r\n
+Dieser kann unter [[+link]] eingesehen werden.\r\n
+\r\n
+Bitte kontrollieren Sie die Korrektheit dieses Newsletters.\r\n
+BODY;
+$_lang['campaigner.system.mail.newsletter_new.body'] = $body;
+
+$_lang['campaigner.system.mail.subscriber_new.subject'] = 'Neuer Abonnent!';
+
+$body =<<<BODY
+Es hat sich soeben eine neuer Abonnent angemeldet.\r\n
+Der Abonnent hat sich mit [[+email]] angemeldet und es wird noch auf die Best&auml;tigung gewartet.\r\n
+<a href="[[+link]]">Zu den Abonnenten</a>\r\n
+BODY;
+$_lang['campaigner.system.mail.subscriber_new.body'] = $body;
+$_lang['campaigner.system.mail.subscriber_confirmed.subject'] = 'Abonnent aktiviert!';
+
+$body =<<<BODY
+Es wurde soeben ein Abonnent aktiviert.\r\n
+Der Abonnent hat sich mit [[+email]] aktiviert und wird von nun an mit Newsletter adressiert.\r\n
+<a href="[[+link]]">Zu den Abonnenten</a>\r\n
+BODY;
+$_lang['campaigner.system.mail.subscriber_confirmed.body'] = $body;
+
+$_lang['campaigner.system.mail.queue_new.subject'] = 'Warteschlange erstellt';
+$body =<<<BODY
+Es wurde soeben eine neue Warteschlange erstellt.\r\n
+Die Warteschlange umfasst [[+count]] Elemente (Mails), die versendet werden.\r\n
+<a href="[[+link]]">Zur Warteschlange</a>\r\n
+BODY;
+$_lang['campaigner.system.mail.queue_new.body'] = $body;
+
+$_lang['campaigner.system.mail.queue_finished.subject'] = 'Warteschlange abgearbeitet';
+$body =<<<BODY
+Es wurde soebene eine Warteschlange komplett abgearbeitet.\r\n
+Die Warteschlange hatte [[+count]] Elemente.\r\n
+<a href="[[+link]]">Zur Warteschlange</a>\r\n
+BODY;
+$_lang['campaigner.system.mail.queue_finished.body'] = $body;
 
 
-// $_lang[''] = '';
-// $_lang[''] = '';
-// $_lang[''] = '';
-// $_lang[''] = '';
-// $_lang[''] = '';
-// $_lang[''] = '';
 // $_lang[''] = '';
 // $_lang[''] = '';
 // $_lang[''] = '';

@@ -4,7 +4,7 @@ Campaigner.grid.Fields = function(config) {
     Ext.applyIf(config,{
         url: Campaigner.config.connector_url
         ,baseParams: { action: 'mgr/fields/getList' }
-        ,fields: ['id', 'name', 'label', 'type', 'required', 'active', 'values', 'format', 'menuindex']
+        ,fields: ['id', 'name', 'label', 'type', 'required', 'active', 'values', 'format', 'menuindex', 'tab', 'tabindex']
         ,paging: true
         ,remoteSort: true
         ,enableDragDrop: true
@@ -80,7 +80,7 @@ Campaigner.grid.Fields = function(config) {
             header: _('campaigner.fields.name')
             ,dataIndex: 'name'
             ,sortable: true
-            ,width: 10
+            ,width: 7
         },{
             header: _('campaigner.fields.label')
             ,dataIndex: 'label'
@@ -126,6 +126,16 @@ Campaigner.grid.Fields = function(config) {
         },{
             header: _('campaigner.fields.menuindex')
             ,dataIndex: 'menuindex'
+            ,sortable: true
+            ,width: 5
+        },{
+            header: _('campaigner.fields.tab')
+            ,dataIndex: 'tab'
+            ,sortable: true
+            ,width: 10 
+        },{
+            header: _('campaigner.fields.tabindex')
+            ,dataIndex: 'tabindex'
             ,sortable: true
             ,width: 5
         }]
@@ -222,6 +232,11 @@ Campaigner.window.CreateFields = function(config) {
         ,fileUpload: true
         ,fields: [{
             xtype: 'textfield'
+            ,fieldLabel: _('campaigner.fields.type')
+            ,name: 'type'
+            ,anchor: '100%'
+        },{
+            xtype: 'textfield'
             ,fieldLabel: _('campaigner.fields.name')
             ,name: 'name'
             ,anchor: '100%'
@@ -234,11 +249,6 @@ Campaigner.window.CreateFields = function(config) {
             ,anchor: '100%'
             ,allowBlank: false
             ,blankText: _('campaigner.field.required')
-        },{
-            xtype: 'textfield'
-            ,fieldLabel: _('campaigner.fields.type')
-            ,name: 'type'
-            ,anchor: '100%'
         },{
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.fields.values')
@@ -263,6 +273,16 @@ Campaigner.window.CreateFields = function(config) {
             ,hideLabel: true
             ,boxLabel: _('campaigner.fields.active')
             ,name: 'active'
+        },{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.fields.tab')
+            ,name: 'tab'
+            ,anchor: '100%'
+        },{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.fields.tabindex')
+            ,name: 'tabindex'
+            ,anchor: '100%'
         }]
     });
     Campaigner.window.CreateFields.superclass.constructor.call(this,config);
@@ -280,6 +300,11 @@ Campaigner.window.UpdateFields = function(config) {
         }
         ,fileUpload: true
         ,fields: [{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.fields.type')
+            ,name: 'type'
+            ,anchor: '100%'
+        },{
             xtype: 'hidden'
             ,name: 'id'
         },{
@@ -298,11 +323,6 @@ Campaigner.window.UpdateFields = function(config) {
             ,blankText: _('campaigner.field.required')
         },{
             xtype: 'textfield'
-            ,fieldLabel: _('campaigner.fields.type')
-            ,name: 'type'
-            ,anchor: '100%'
-        },{
-            xtype: 'textfield'
             ,fieldLabel: _('campaigner.fields.values')
             ,name: 'values'
             ,anchor: '100%'
@@ -325,6 +345,16 @@ Campaigner.window.UpdateFields = function(config) {
             ,hideLabel: true
             ,boxLabel: _('campaigner.fields.active')
             ,name: 'active'
+        },{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.fields.tab')
+            ,name: 'tab'
+            ,anchor: '100%'
+        },{
+            xtype: 'textfield'
+            ,fieldLabel: _('campaigner.fields.tabindex')
+            ,name: 'tabindex'
+            ,anchor: '100%'
         }]
     });
     Campaigner.window.UpdateFields.superclass.constructor.call(this,config);

@@ -12,9 +12,9 @@
 $isLimit        = !empty($_REQUEST['limit']);
 $start          = $modx->getOption('start',$_REQUEST,0);
 $limit          = $modx->getOption('limit',$_REQUEST,20);
-$sort           = $modx->getOption('sort',$_REQUEST,'id');
-$dir            = $modx->getOption('dir',$_REQUEST,'ASC');
-$showProcessed  = $modx->getOption('showProcessed',$_REQUEST,0);
+$sort           = $modx->getOption('sort',$_REQUEST,'newsletter');
+$dir            = $modx->getOption('dir',$_REQUEST,'DESC');
+$state  		= $modx->getOption('state',$_REQUEST,0);
 $search         = $modx->getOption('search',$_REQUEST,0);
 
 $sort = '`Queue`.'. $sort;
@@ -26,9 +26,7 @@ $c->sortby($sort,$dir);
 if ($isLimit) $c->limit($limit,$start);
 
 /* only get the already sent newsletters */
-if(!$showProcessed) {
-    $c->where(array('state:!=' => '1'));
-}
+$c->where(array('state' => $state));
 
 /* get the newsletters of a subscriber */
 if(!empty($search)) {
@@ -36,9 +34,9 @@ if(!empty($search)) {
 }
 
 $count = $modx->getCount('Queue',$c);
-$c->leftJoin('Autonewsletter', 'Autonewsletter', '`Autonewsletter`.`id` = `Queue`.`newsletter`');
+
 $c->leftJoin('Newsletter', 'Newsletter', '`Newsletter`.`id` = `Queue`.`newsletter`');
-$c->leftJoin('modDocument', 'Document', '`Document`.`id` = `Newsletter`.`docid` OR `Document`.`id` = `Autonewsletter`.`docid`');
+$c->leftJoin('modDocument', 'Document', '`Document`.`id` = `Newsletter`.`docid`');
 $c->leftJoin('Subscriber', 'Subscriber', '`Subscriber`.`id` = `Queue`.`subscriber`');
 
 $c->select('`Newsletter`.`docid`, `Newsletter`.`total`, `Newsletter`.`state`, `Newsletter`.`bounced`, `Document`.`pagetitle` AS subject, `Document`.`publishedon` AS date, `Queue`.*, `Subscriber`.`firstname`, `Subscriber`.`lastname`, `Subscriber`.`email`, `Subscriber`.`text`');
@@ -48,10 +46,10 @@ $queue = $modx->getCollection('Queue',$c);
 /* iterate through subscribers */
 $list = array();
 foreach ($queue as $item) {
-    $queueItem = $item->toArray();
-    if($queueItem['priority'] === 0)
-    	$queueItem['priority'] = 'TEST (0)';
-    $queueItem['sent'] = ($queueItem['sent']) ? date('d.m.Y H:i:s', $queueItem['sent']) : '';
-    $list[] = $queueItem;
+        $queueItem = $item->toArray();
+        $queueItem['sent'] = ($queueItem['sent']) ? date('Y-m-d H:i:s', $queueItem['sent']) : '';
+        $queueItem['created'] = ($queueItem['created']) ? date('Y-m-d H:i:s', $queueItem['created']) : '';
+        $queueItem['scheduled'] = ($queueItem['scheduled']) ? date('Y-m-d H:i:s', $queueItem['scheduled']) : '';
+        $list[] = $queueItem;
 }
 return $this->outputArray($list,$count);

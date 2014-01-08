@@ -256,6 +256,21 @@ Campaigner.window.Statistics = function(config) {
                     ,scope: this
                     ,preventRender: true
                 }]
+            },{
+                title: _('campaigner.statistics.geolocations'),
+                defaults: { autoHeight: true },
+                id: 'campaigner-tab-statistics-details-geolocations',
+                items: [{
+                    html: '<p>'+_('campaigner.statistics.geolocations_info'),
+                    border: false,
+                    bodyStyle: 'padding: 10px'
+                },{
+                    xtype: 'campaigner-grid-statistics-details-geolocations'
+                    // ,fieldLabel: _('campaigner.statistics_details')
+                    ,id: 'campaigner-grid-statistics-details-geolocations'
+                    ,scope: this
+                    ,preventRender: true
+                }]
             }]
         }]
         ,buttons: [{
@@ -275,6 +290,131 @@ Campaigner.window.Statistics = function(config) {
 
 Ext.extend(Campaigner.window.Statistics,MODx.Window);
 Ext.reg('campaigner-window-statistics-details',Campaigner.window.Statistics);
+
+
+Campaigner.grid.StatisticsGeolocations = function(config) {
+    config = config || {};
+    Ext.applyIf(config, {
+        id: 'campaigner-grid-statistics-geolocations'
+        ,url: Campaigner.config.connectorUrl
+        ,baseParams: {
+            action: 'mgr/statistics/geolocations'
+        }
+        ,viewConfig: {
+            forceFit: true
+            ,enableRowBody: true
+            ,autoScroll: true
+            ,emptyText: _('campaigner.grid.no_data')
+        }
+        ,primaryKey: 'id'
+        ,fields: ['id','subscriber', 'ip', 'loc', 'latitude', 'longitude', 'timezone']
+        ,paging: true
+        ,remoteSort: true
+        ,columns: [{
+            header: _('campaigner.statistics.subscriber')
+            ,dataIndex: 'subscriber'
+            ,sortable: true
+            ,width: 15
+        },{
+            header: _('campaigner.ip')
+            ,dataIndex: 'ip'
+            ,sortable: true
+            ,width: 25
+        },{
+            header: _('campaigner.statistics.locations')
+            ,dataIndex: 'loc'
+            ,sortable: true
+            ,width: 25
+        },{
+            header: _('campaigner.statistics.latitude')
+            ,dataIndex: 'latitude'
+            ,sortable: true
+            ,width: 25
+        },{
+            header: _('campaigner.statistics.longitude')
+            ,dataIndex: 'longitude'
+            ,sortable: true
+            ,width: 25
+        },{
+            header: _('campaigner.statistics.timezone')
+            ,dataIndex: 'timezone'
+            ,sortable: true
+            ,width: 25
+        }]
+    });
+    Campaigner.grid.StatisticsGeolocations.superclass.constructor.call(this,config);
+}
+Ext.extend(Campaigner.grid.StatisticsGeolocations, MODx.grid.Grid, {
+    getMenu: function() {
+        var m = [];
+    
+        m.push({
+            text: _('campaigner.statistics.show_location')
+            ,handler: this.showLocation
+        });
+        if (m.length > 0) {
+            this.addContextMenuItem(m);
+        }
+    }
+    ,showLocation: function(btn, e) {
+        var w = MODx.load({
+            xtype: 'campaigner-window-statistics-geolocations'
+            ,params: {
+                record: this.menu.record
+            }
+        });
+        w.setValues(this.menu.record);
+        w.show(e);
+        return;
+    }
+});
+Ext.reg('campaigner-grid-statistics-details-geolocations', Campaigner.grid.StatisticsGeolocations);
+
+Campaigner.window.StatisticsGeoLocations = function(config) {
+    config = config || {};
+    console.log(config);
+
+    Ext.applyIf(config,{
+        title: _('campaigner.statistics_details')
+        ,width: 850
+        ,height: 500
+        ,url: Campaigner.config.connectorUrl
+        ,baseParams: {
+            action: 'mgr/statistics/details'
+        }
+        ,items: [{
+            xtype: 'gmappanel',
+            height: 400,
+            zoomLevel: 14,
+            gmapType: 'map',
+            id: 'my_map',
+            mapConfOpts: ['enableScrollWheelZoom','enableDoubleClickZoom','enableDragging'],
+            // mapControls: [new GSmallMapControl(),'GMapTypeControl','NonExistantControl'],
+            setCenter: {
+                lat: config.params.record.latitude,
+                lng: config.params.record.longitude,
+                // geoCodeAddr: '4 Yawkey Way, Boston, MA, 02215-3409, USA',
+                // marker: {title: 'Fenway Park'}
+            },
+            markers: [{
+                lat: config.params.record.latitude,
+                lng: config.params.record.longitude,
+                marker: {title: config.params.record.subscriber},
+                listeners: {
+                    click: function(e){
+                        Ext.Msg.alert('Its fine', 'and its art.');
+                    }
+                }
+            }
+            ]
+        }]
+    });
+    Campaigner.window.StatisticsGeoLocations.superclass.constructor.call(this,config);
+};
+
+
+Ext.extend(Campaigner.window.StatisticsGeoLocations,MODx.Window);
+Ext.reg('campaigner-window-statistics-geolocations',Campaigner.window.StatisticsGeoLocations);    
 
 Campaigner.grid.StatisticsDetailsOpen = function(config) {
     config = config || {};

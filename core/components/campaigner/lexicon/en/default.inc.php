@@ -6,8 +6,13 @@
  * @subpackage lexicon
  */
 
+$_lang['campaigner.getresources_template'] = 'Vorlage';
+
 //general
 $_lang['campaigner.grid.no_data'] = 'Keine Daten gefunden';
+$_lang['campaigner.save'] = 'Speichern';
+$_lang['campaigner.back'] = 'Zur&uuml;ck';
+
 
 $_lang['campaigner'] = 'Newsletter';
 $_lang['campaigner.fulltitle'] = 'Newsletter Management';
@@ -67,6 +72,7 @@ $_lang['campaigner.newsletter.edit'] = 'Newsletter bearbeiten';
 $_lang['campaigner.newsletter.sender'] = 'Sender';
 $_lang['campaigner.newsletter.senderemail'] = 'Sender Email';
 $_lang['campaigner.newsletter.properties'] = 'Newsletter Eigenschaften';
+$_lang['campaigner.newsletter.subscribers'] = 'Abonnenten';
 
 $_lang['campaigner.newsletter.editproperties'] = 'Eigenschaften bearbeiten';
 $_lang['campaigner.newsletter.assigngroups'] = 'Gruppen zuweisen';
@@ -98,14 +104,27 @@ $_lang['campaigner.newsletter.batch_actions'] = 'Stapel-Aktionen';
 $_lang['campaigner.newsletter.batch_remove'] = 'Markierte entfernen';
 $_lang['campaigner.newsletter.batch_errors'] = 'Es traten Fehler beim Entfernen der Newsletter auf!';
 
-$_lang['campaigner.newsletter.editarticles'] = 'Artikel bearbeiten';
-$_lang['campaigner.newsletter.editarticles_info'] = 'Hier k&ouml;nnen die Artikel eingesehen werden, die Sie an diesen Newsletter beim Erstellen oder Bearbeiten der Ressource hinzugef&uuml;gt haben';
-// $_lang['campaigner.newsletter.editarticles_info'] .= '<br/><strong>UNDER CONSTRUCTION</strong>';
-$_lang['campaigner.newsletter.editarticles.goto'] = 'Artikel bearbeiten';
+$_lang['campaigner.newsletter.actions'] = 'Aktionen';
+$_lang['campaigner.newsletter.actions.clean_all'] = 'Alles bereinigen';
+$_lang['campaigner.newsletter.actions.clear_trash'] = 'Entr&uuml;peln';
+$_lang['campaigner.newsletter.actions.archive'] = 'Archivieren';
+$_lang['campaigner.newsletter.actions.clean_html'] = 'HTML reinigen';
 
-$_lang['campaigner.newsletter.articles.pagetitle'] = 'Seitentitel';
-$_lang['campaigner.newsletter.articles.id'] = 'ID';
-$_lang['campaigner.newsletter.articles.section'] = 'Bereich';
+	// Edit Articles
+	$_lang['campaigner.newsletter.editarticles'] = 'Artikel bearbeiten';
+	$_lang['campaigner.newsletter.editarticles_info'] = 'Hier k&ouml;nnen die Artikel eingesehen werden, die Sie an diesen Newsletter beim Erstellen oder Bearbeiten der Ressource hinzugef&uuml;gt haben';
+	// $_lang['campaigner.newsletter.editarticles_info'] .= '<br/><strong>UNDER CONSTRUCTION</strong>';
+	$_lang['campaigner.newsletter.edit.goto'] = 'Artikel bearbeiten';
+	$_lang['campaigner.newsletter.edit.placeholder'] = 'Platzhalter';
+	$_lang['campaigner.newsletter.edit.attachments'] = 'Anh&auml;nge';
+
+		// Edit Articles Panel
+		$_lang['campaigner.newsletter.back'] = 'Zur&uuml;ck';
+		$_lang['campaigner.newsletter.form.section_add'] = 'Bereich hinzuf&uuml;gen';
+
+	$_lang['campaigner.newsletter.articles.pagetitle'] = 'Seitentitel';
+	$_lang['campaigner.newsletter.articles.id'] = 'ID';
+	$_lang['campaigner.newsletter.articles.section'] = 'Bereich';
 
 // autonewsletter
 $_lang['campaigner.newsletter.date_time'] = 'Start (Datum & Zeit)';
@@ -123,7 +142,17 @@ $_lang['campaigner.autonewsletter.remove.confirm'] = 'Wenn sie best&auml;tigen w
 $_lang['campaigner.autonewsletter.description'] = 'Beschreibung';
 $_lang['campaigner.subscribe.confirm.subject'] = 'Newsletter best&auml;tigen';
 
-//groups
+$_lang['campaigner.newsletter.triggerschedule'] = 'Plan anstossen';
+$_lang['campaigner.autonewsletter.trigger.title'] = 'Plan anstossen';
+$_lang['campaigner.autonewsletter.trigger.text'] = 'Durch best&auml;tigen l&ouml;sen Sie die Generierung eines Newsletters aus, der automatisch geplant ist.';
+
+$_lang['campaigner.newsletter.getschedule'] = 'Plan einsehen';
+
+// Schedule Window
+$_lang['campaigner.autonewsletter.schedule'] = 'Plan des Auto-Newsletter';
+$_lang['campaigner.autonewsletter.schedule_info'] = 'Hier sehen Sie die n&auml;chsten Auslieferungstermine des gew&auml;hlten Auto-Newsletter';
+
+// Groups
 $_lang['campaigner.groups'] = 'Gruppen';
 $_lang['campaigner.group'] = 'Gruppe';
 $_lang['campaigner.groups.info'] = 'Gruppen f&uuml;r den Newsletter verwalten';
@@ -151,10 +180,18 @@ $_lang['campaigner.group.saved'] = 'Gruppe wurde gespeichert';
 $_lang['campaigner.group.notfound'] = 'Gruppe wurde nicht gefunden.';
 $_lang['campaigner.group.filter.public'] = 'Status filtern';
 
+	// Group segment
+	$_lang['campaigner.segment'] = 'Segment';
+	$_lang['campaigner.group.add_segment'] = 'Segment erstellen';
+	$_lang['campaigner.group.edit_segment'] = 'Segment bearbeiten';
+	$_lang['campaigner.segment.add_filter'] = 'Filter hinzuf&uuml;gen';
+	$_lang['campaigner.segment.filters'] = 'Filter';
 
-$_lang['campaigner.group.error.noname'] = 'Gruppenname muss angegeben werden.';
-$_lang['campaigner.group.error.nocolor'] = 'Die Gruppe muss eine Farbe haben.';
-$_lang['campaigner.group.error.invalidcolor'] = 'Bitte eine g&uuml;ltige Farbe angeben.';
+	// Group error
+	$_lang['campaigner.group.error.noname'] = 'Gruppenname muss angegeben werden.';
+	$_lang['campaigner.group.error.nocolor'] = 'Die Gruppe muss eine Farbe haben.';
+	$_lang['campaigner.group.error.invalidcolor'] = 'Bitte eine g&uuml;ltige Farbe angeben.';
+
 
 // Subscribers
 $_lang['campaigner.subscribers'] = 'Abonnenten';
@@ -215,6 +252,7 @@ $_lang['campaigner.subscribe.error.emailtaken'] = 'Diese Email-Adresse wird bere
 $_lang['campaigner.subscribe.error.noemail'] = 'Es muss eine g&uuml;ltige Email-Adresse angegeben werden.';
 $_lang['campaigner.subscribe.error.nogroup'] = 'Bitte w&auml;hlen sie eine Gruppe.';
 $_lang['campaigner.subscribe.success'] = 'Newsletter erfolgreich abonniert.';
+$_lang['campaigner.subscriber.error.unknown'] = 'Ein Fehler ist aufgetreten';
 
 	// Toolbar
 	$_lang['campaigner.subscriber.filter.type'] = 'Art filtern...';
@@ -223,6 +261,7 @@ $_lang['campaigner.subscribe.success'] = 'Newsletter erfolgreich abonniert.';
 	$_lang['campaigner.subscriber.batch_actions'] = 'Stapel-Aktionen';
 	$_lang['campaigner.subscribers.batch_deactivate'] = 'Markierte deaktivieren';
 	$_lang['campaigner.subscribers.batch_remove'] = 'Markierte entfernen';
+	$_lang['campaigner.subscriber.actions'] = 'Aktionen';
 	$_lang['campaigner.subscriber.exports'] = 'Import/Export';
 	$_lang['campaigner.subscribers.exportcsv'] = 'CSV exportieren';
 	$_lang['campaigner.subscribers.exportxml'] = 'XML exportieren';
@@ -243,8 +282,10 @@ $_lang['campaigner.subscribe.success'] = 'Newsletter erfolgreich abonniert.';
 	$_lang['campaigner.subscriber.import.email'] = 'E-Mail';
 	$_lang['campaigner.subscriber.import.active'] = 'Active';
 	$_lang['campaigner.subscriber.import.groups'] = 'Gruppen';
+	$_lang['campaigner.subscriber.import.auto_activate'] = 'Auto-Aktivierung';
 	$_lang['campaigner.subscriber.import.default_group'] = 'bei Standard-Gruppe anmelden?';
 	$_lang['campaigner.subscriber.import.test'] = 'Test-Import (Anzahl)';
+	$_lang['campaigner.subscribers.createsegment'] = 'Segment erstellen';
 
 		// Descriptions
 		$_lang['campaigner.subscriber.import.select_file.description'] = 'W&auml;hlen Sie eine g&uuml;ltige Datei aus.';
@@ -257,6 +298,7 @@ $_lang['campaigner.subscribe.success'] = 'Newsletter erfolgreich abonniert.';
 		$_lang['campaigner.subscriber.import.analyze.controls'] = 'Kontroll-Zeichen';
 		$_lang['campaigner.subscriber.import.analyze.header'] = 'Kopfzeile';
 		$_lang['campaigner.subscriber.import.analyze.line'] = 'Zeile';
+		$_lang['campaigner.subscriber.import.detected_columns'] = 'Folgende Spalten wurden gefunden:';
 
 	// Subscriber Statistics Window
 	$_lang['campaigner.statistics.link'] = 'Link';
@@ -284,16 +326,22 @@ $_lang['campaigner.confirm.success'] = 'Best&auml;tigung erfolgreich! Ab sofort 
 // Queue - Warteschlange
 $_lang['campaigner.queue'] = 'Warteschlange';
 $_lang['campaigner.queue.info'] = 'Jede Nachricht die &uuml;ber Campaigner verschickt wird, oder wurde, kommt in die Warteschlange';
+$_lang['campaigner.queue.group_single'] = 'Element';
+$_lang['campaigner.queue.group_plural'] = 'Elemente';
 $_lang['campaigner.queue.receiver'] = 'Empf&auml;nger';
 $_lang['campaigner.queue.newsletter'] = 'Newsletter';
 $_lang['campaigner.queue.state'] = 'Status';
 $_lang['campaigner.queue.priority'] = 'Priorit&auml;t';
 $_lang['campaigner.queue.sent'] = 'gesendet';
+$_lang['campaigner.queue.created'] = 'erstellt';
+$_lang['campaigner.queue.scheduled'] = 'geplant';
+$_lang['campaigner.queue.error'] = 'Fehler';
 $_lang['campaigner.queue.waiting'] = 'wartend';
 $_lang['campaigner.queue.show_processed'] = 'Verarbeitete anzeigen';
 $_lang['campaigner.queue.hide_processed'] = 'Verarbeitete verstecken';
 $_lang['campaigner.queue.remove'] = 'Element entfernen';
 $_lang['campaigner.queue.send'] = 'Element versenden';
+$_lang['campaigner.queue.actions'] = 'Aktionen';
 $_lang['campaigner.queue.batch_actions'] = 'Stapel-Aktionen';
 $_lang['campaigner.queue.remove_marked'] = 'Markierte entfernen';
 $_lang['campaigner.queue.send_marked'] = 'Markierte senden';
@@ -307,6 +355,24 @@ $_lang['campaigner.queue.remove.confirm'] = 'Wollen sie dieses Element wirklich 
 $_lang['campaigner.queue.remove.unsend'] = 'Wollen sie dieses Element wirklich entfernen? Der Newsletter wurde noch nicht an den Empf&auml;nger versandt. Wenn sie dieses Element jetzt l&ouml;schen wird das auch nicht geschehen.';
 $_lang['campaigner.queue.process_queue'] = 'Warteschlange abarbeiten';
 $_lang['campaigner.queue.process_queue_text'] = 'Wenn Sie best&auml;tigen werden alle Elemente in der Warteschlange abgearbeitet, sprich versendet.';
+$_lang['campaigner.queue.set_state'] = 'Status bearbeiten';
+$_lang['campaigner.queue.set_state_text'] = 'Wenn Sie best&auml;tigen werden alle ausgew&auml;hlten Elemente auf den eingegebenen Status ge&aumlndert.';
+
+// Queue filtering
+$_lang['campaigner.queue.filter_processed'] = 'Abgearbeitete anzeigen';
+$_lang['campaigner.queue.filter_unprocessed'] = 'Unversendete anzeigen';
+$_lang['campaigner.queue.filter_currentbatch'] = 'Wird gerade versendet';
+$_lang['campaigner.queue.filter_halted'] = 'Abgebrochene (5) anzeigen';
+$_lang['campaigner.queue.filter_resend'] = 'Neuversand (8) anzeigen';
+$_lang['campaigner.queue.filter_failed'] = 'Fehlerhafte (6) anzeigen';
+
+// Queue actions
+$_lang['campaigner.queue.logwindow'] = 'Log-Window anzeigen';
+$_lang['campaigner.queue.logwindow.interval'] = 'Intervall';
+$_lang['campaigner.queue.logwindow.file'] = 'Datei';
+$_lang['campaigner.queue.logwindow.interval_empty'] = 'Intervall';
+$_lang['campaigner.queue.logwindow.file_empty'] = 'Datei';
+
 
 $_lang['campaigner.autonewsletter'] = 'Auto-Newsletter';
 $_lang['campaigner.autonewsletter.info'] = 'Auto-Newsletter werden automatisch an vorbestimmten Zeiten versendet';
@@ -398,6 +464,7 @@ $_lang['campaigner.statistics.hit_date'] = 'Datum';
 $_lang['campaigner.statistics.bounces'] = 'Bounces';
 $_lang['campaigner.statistics.unsubcribers'] = 'Abgemeldet';
 $_lang['campaigner.statistics.unsubscriptions'] = 'Abmeldungen';
+$_lang['campaigner.statistics.geolocations'] = 'GEO-Orte';
 
 $_lang['campaigner.statistics.open'] = 'Ge&ouml;ffnet';
 $_lang['campaigner.statistics.opened'] = 'Ge&ouml;ffnet';
@@ -405,6 +472,7 @@ $_lang['campaigner.statistics.open_info'] = 'Von welchen Empf&auml;ngern wurde d
 $_lang['campaigner.statistics.hits_info'] = 'Daten &uuml;ber die Klicks eines Newsletter aufgeschl&uuml;sselt nach Link';
 $_lang['campaigner.statistics.bounces_info'] = '';
 $_lang['campaigner.statistics.unsubcribers_info'] = 'Abmeldungen, die durch diesen Newsletter aufgerufen wurden / durchgef&uuml;hrt wurden';
+$_lang['campaigner.statistics.geolocations_info'] = 'Orte von denen aus die Newsletter aufgerufen wurden';
 
 $_lang['campaigner.statistics.type.click'] = 'Klick';
 $_lang['campaigner.statistics.type.open'] = 'Ansicht';
@@ -454,19 +522,82 @@ $_lang['campaigner.fields.active'] = 'Aktiv';
 $_lang['campaigner.fields.values'] = 'Werte';
 $_lang['campaigner.fields.format'] = 'Format';
 $_lang['campaigner.fields.menuindex'] = 'Sortierung';
+$_lang['campaigner.fields.tab'] = 'Tab';
+$_lang['campaigner.fields.tabindex'] = 'Positionierung';
 $_lang['campaigner.fields.add'] = 'Neues Element';
 $_lang['campaigner.fields.update'] = 'Editieren';
 $_lang['campaigner.fields.remove'] = 'Entfernen';
 $_lang['campaigner.fields.remove_confirm'] = 'Wollen Sie das Element wirklich entfernen?';
 
+// Auto-Responders
+$_lang['campaigner.autoresponders'] = 'Auto-Responders';
+$_lang['campaigner.autoresponders.info'] = 'Auto-Responder senden definierte Mails wenn gewisse Events eintreten';
+$_lang['campaigner.autoresponders.add'] = 'Neues Element';
+$_lang['campaigner.autoresponders.update'] = 'Editieren';
+$_lang['campaigner.autoresponders.remove'] = 'Entfernen';
+$_lang['campaigner.autoresponders.name'] = 'Name';
+$_lang['campaigner.autoresponders.active'] = 'Aktiv';
+$_lang['campaigner.autoresponders.event'] = 'Event';
+$_lang['campaigner.autoresponders.field'] = 'Feld';
+$_lang['campaigner.autoresponders.time'] = 'Zeit';
+$_lang['campaigner.autoresponders.weekday'] = 'Wochentag';
+$_lang['campaigner.autoresponders.newsletter'] = 'Betreffenden Newsletter';
+$_lang['campaigner.autoresponders.period_value'] = 'Wert';
+$_lang['campaigner.autoresponders.period_unit'] = 'Einheit';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+// $_lang[''] = '';
+
+// System mail
+$_lang['campaigner.system.mail.newsletter_new.subject'] = 'Neuer Newsletter generiert!';
+
+$body =<<<BODY
+Ein neuer Newsletter wurde generiert.\r\n
+Dieser kann unter [[+link]] eingesehen werden.\r\n
+\r\n
+Bitte kontrollieren Sie die Korrektheit dieses Newsletters.\r\n
+BODY;
+$_lang['campaigner.system.mail.newsletter_new.body'] = $body;
+
+$_lang['campaigner.system.mail.subscriber_new.subject'] = 'Neuer Abonnent!';
+
+$body =<<<BODY
+Es hat sich soeben eine neuer Abonnent angemeldet.\r\n
+Der Abonnent hat sich mit [[+email]] angemeldet und es wird noch auf die Best&auml;tigung gewartet.\r\n
+<a href="[[+link]]">Zu den Abonnenten</a>\r\n
+BODY;
+$_lang['campaigner.system.mail.subscriber_new.body'] = $body;
+$_lang['campaigner.system.mail.subscriber_confirmed.subject'] = 'Abonnent aktiviert!';
+
+$body =<<<BODY
+Es wurde soeben ein Abonnent aktiviert.\r\n
+Der Abonnent hat sich mit [[+email]] aktiviert und wird von nun an mit Newsletter adressiert.\r\n
+<a href="[[+link]]">Zu den Abonnenten</a>\r\n
+BODY;
+$_lang['campaigner.system.mail.subscriber_confirmed.body'] = $body;
+
+$_lang['campaigner.system.mail.queue_new.subject'] = 'Warteschlange erstellt';
+$body =<<<BODY
+Es wurde soeben eine neue Warteschlange erstellt.\r\n
+Die Warteschlange umfasst [[+count]] Elemente (Mails), die versendet werden.\r\n
+<a href="[[+link]]">Zur Warteschlange</a>\r\n
+BODY;
+$_lang['campaigner.system.mail.queue_new.body'] = $body;
+
+$_lang['campaigner.system.mail.queue_finished.subject'] = 'Warteschlange abgearbeitet';
+$body =<<<BODY
+Es wurde soeben eine Warteschlange komplett abgearbeitet.\r\n
+Die Warteschlange hatte [[+count]] Elemente.\r\n
+<a href="[[+link]]">Zur Warteschlange</a>\r\n
+BODY;
+$_lang['campaigner.system.mail.queue_finished.body'] = $body;
 
 
-// $_lang[''] = '';
-// $_lang[''] = '';
-// $_lang[''] = '';
-// $_lang[''] = '';
-// $_lang[''] = '';
-// $_lang[''] = '';
 // $_lang[''] = '';
 // $_lang[''] = '';
 // $_lang[''] = '';

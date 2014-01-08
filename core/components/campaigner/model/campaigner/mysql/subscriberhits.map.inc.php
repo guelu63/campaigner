@@ -12,6 +12,7 @@ $xpdo_meta_map['SubscriberHits']= array (
     'view_total' => NULL,
     'client' => NULL,
     'ip' => NULL,
+    'loc' => NULL,
   ),
   'fieldMeta' => 
   array (
@@ -72,6 +73,12 @@ $xpdo_meta_map['SubscriberHits']= array (
       'phptype' => 'integer',
       'null' => true,
       'unsigned' => true,
+    ),
+    'loc' => 
+    array (
+      'dbtype' => 'text',
+      'phptype' => 'string',
+      'null' => true,
     ),
   ),
   'indexes' => 

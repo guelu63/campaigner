@@ -40,7 +40,7 @@ $xpdo_meta_map['Group']= array (
       'dbtype' => 'varchar',
       'precision' => '7',
       'phptype' => 'string',
-      'null' => false,
+      'null' => true,
     ),
     'priority' => 
     array (
@@ -48,7 +48,7 @@ $xpdo_meta_map['Group']= array (
       'precision' => '1',
       'attributes' => 'unsigned',
       'phptype' => 'integer',
-      'null' => false,
+      'null' => true,
     ),
   ),
   'indexes' => 

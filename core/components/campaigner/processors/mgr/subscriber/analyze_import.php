@@ -10,7 +10,14 @@ if(pathinfo($file, PATHINFO_EXTENSION) !== 'csv')
 
 $file = new SplFileObject($modx->getOption('base_path') . $file);
 $concept['controls'] = $file->getCsvControl();
-$concept['header'] = explode(',', $file->current());
-$concept['line'] = explode(',', $file->next());
+$header = explode($concept['controls'][0], $file->current());
+$concept['line'] = explode($concept['controls'][0], $file->next());
 
+// Prepare the header for ExtJS output
+$head_arr = array();
+foreach($header as $key => $value) {
+	$head_arr[]['name'] = $value;
+}
+$concept['header'] = $head_arr;
+// var_dump($concept);
 return $modx->error->success($modx->lexicon('campaigner.subscriber.import.analyze.valid'), $concept);
