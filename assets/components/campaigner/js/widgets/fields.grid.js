@@ -28,7 +28,7 @@ Campaigner.grid.Fields = function(config) {
                             // here
                             // to send the new order
                             // and then reload the store
-                            
+
                             // alternatively, you can handle the
                             // changes
                             // in the order of the row as
@@ -132,14 +132,14 @@ Campaigner.grid.Fields = function(config) {
             header: _('campaigner.fields.tab')
             ,dataIndex: 'tab'
             ,sortable: true
-            ,width: 10 
+            ,width: 10
         },{
             header: _('campaigner.fields.tabindex')
             ,dataIndex: 'tabindex'
             ,sortable: true
             ,width: 5
         }]
-         /* Top toolbar */  
+         /* Top toolbar */
         ,tbar : [{
     	    xtype: 'button'
                 ,text: _('campaigner.fields.add')
@@ -231,10 +231,18 @@ Campaigner.window.CreateFields = function(config) {
         }
         ,fileUpload: true
         ,fields: [{
-            xtype: 'textfield'
+            xtype: 'combo'
             ,fieldLabel: _('campaigner.fields.type')
             ,name: 'type'
             ,anchor: '100%'
+            ,store: [
+              ['textfield', _('campaigner.fields.type_textfield')],
+              ['textarea', _('campaigner.fields.type_textarea')],
+              ['modx-combo', _('campaigner.fields.type_modx-combo')],
+              ['checkbox', _('campaigner.fields.type_checkbox')],
+              ['radiogroup', _('campaigner.fields.type_radiogroup')],
+              ['xdatetime', _('campaigner.fields.type_xdatetime')],
+            ]
         },{
             xtype: 'textfield'
             ,fieldLabel: _('campaigner.fields.name')

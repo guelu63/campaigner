@@ -11,15 +11,15 @@ $modx->regClientStartupScript($campaigner->config['jsUrl'].'campaigner.js');
 $modx->regClientStartupScript($campaigner->config['jsUrl'].'utils/ddview.js');
 $modx->regClientStartupScript('http://maps.google.com/maps/api/js?sensor=false');
 // $modx->regClientStartupScript('http://maps.google.com/maps?file=api&amp;v=3.x&amp;key=ABQIAAAAJDLv3q8BFBryRorw-851MRT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTyuslsNlFqyphYqv1PCUD8WrZA2A');
-$ckeditor = $modx->getService('ckeditor','CKEditor',$modx->getOption('ckeditor.core_path',null,$modx->getOption('core_path').'components/ckeditor/').'model/ckeditor/');
-$ckeditor->initialize();
+// $ckeditor = $modx->getService('ckeditor','CKEditor',$modx->getOption('ckeditor.core_path',null,$modx->getOption('core_path').'components/ckeditor/').'model/ckeditor/');
+// $ckeditor->initialize();
 
-// $tinyCorePath = $modx->getOption('tiny.core_path',null,$modx->getOption('core_path').'components/tinymce/');
-// if (file_exists($tinyCorePath.'tinymce.class.php')) {
-
+// $tinyCorePath = $modx->getOption('tiny.core_path',null,$modx->getOption('core_path').'components/tinymcerte/');
+// if (file_exists($tinyCorePath.'model/tinymcerte/tinymcerte.class.php')) {
+//
 //     $plugins =  $modx->getOption('gallery.tiny.custom_plugins');
 //     $theme =  $modx->getOption('gallery.tiny.theme');
-    
+//
 //     /* If the settings are empty, override them with the generic tinymce settings. */
 //     $tinyProperties = array(
 //         'height' => $modx->getOption('gallery.tiny.height',null,200),
@@ -28,13 +28,87 @@ $ckeditor->initialize();
 //         'tiny.custom_plugins' => (!empty($plugins)) ? $plugins : $modx->getOption('tiny.custom_plugins'),
 //         'tiny.editor_theme' => (!empty($theme)) ? $theme : $modx->getOption('tiny.editor_theme'),
 //     );
-    
-//     require_once $tinyCorePath.'tinymce.class.php';
-//     $tiny = new TinyMCE($modx,$tinyProperties);
-//     $tiny->setProperties($tinyProperties);
+//
+//     require_once $tinyCorePath.'model/tinymcerte/tinymcerte.class.php';
+//     $tiny = new TinyMCERTE($modx,$tinyProperties);
+//     // $tiny->setProperties($tinyProperties);
 //     $html = $tiny->initialize();
 //     $modx->regClientHTMLBlock($html);
 // }
+
+
+$modx->regClientStartupScript($modx->getOption('assets_url') . 'components/tinymcerte/js/vendor/tinymce/tinymce.min.js');
+$modx->regClientStartupScript($modx->getOption('assets_url') . 'components/tinymcerte/js/vendor/autocomplete.js');
+$modx->regClientStartupScript($modx->getOption('assets_url') . 'components/tinymcerte/js/mgr/tinymcerte.js');
+
+$language = $modx->getOption('manager_language');
+$objectResizing = $modx->getOption('object_resizing', array(), '1');
+
+if ($objectResizing === '1' || $objectResizing === 'true') {
+    $objectResizing = true;
+}
+
+if ($objectResizing === '0' || $objectResizing === 'false') {
+    $objectResizing = false;
+}
+
+$config = array(
+    'plugins' => $modx->getOption('plugins', array(), 'advlist autolink lists link image charmap print preview anchor visualblocks searchreplace code fullscreen insertdatetime media table contextmenu paste modxlink'),
+    'toolbar1' => $modx->getOption('toolbar1', array(), 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image'),
+    'toolbar2' => $modx->getOption('toolbar2', array(), ''),
+    'toolbar3' => $modx->getOption('toolbar3', array(), ''),
+    'modxlinkSearch' => $modx->getOption('jsUrl').'vendor/tinymce/plugins/modxlink/search.php',
+    'language' => $language,
+    'directionality' => $this->modx->getOption('manager_direction', array(), 'ltr'),
+    'menubar' => $modx->getOption('menubar', array(), 'file edit insert view format table tools'),
+    'statusbar' => $modx->getOption('statusbar', array(), 1) == 1,
+    'image_advtab' => $modx->getOption('image_advtab', array(), true) == 1,
+    'paste_as_text' => $modx->getOption('paste_as_text', array(), false) == 1,
+    'style_formats_merge' => $modx->getOption('style_formats_merge', array(), false) == 1,
+    'object_resizing' => $objectResizing,
+    'link_class_list' => $modx->fromJSON($modx->getOption('link_class_list', array(), '[]')),
+    'browser_spellcheck' => $modx->getOption('browser_spellcheck', array(), false) == 1,
+    'content_css' => $modx->getOption('content_css', array(), ''),
+    'image_class_list' => $modx->fromJSON($modx->getOption('image_class_list', array(), '[]')),
+);
+
+$styleFormats = $modx->getOption('style_formats', array(), '[]');
+$styleFormats = $modx->fromJSON($styleFormats);
+
+$finalFormats = array();
+
+foreach ($styleFormats as $format) {
+    if (!isset($format['items'])) continue;
+
+    $items = $modx->getOption($format['items'], array(), '[]');
+    $items = $modx->fromJSON($items);
+
+    if (empty($items)) continue;
+
+    $format['items'] = $items;
+
+    $finalFormats[] = $format;
+}
+
+if (!empty($finalFormats)) {
+    $config['style_formats'] = $finalFormats;
+}
+
+$externalConfig = $modx->getOption('external_config');
+if (!empty($externalConfig)) {
+    if (file_exists($externalConfig) && is_readable($externalConfig)) {
+        $externalConfig = file_get_contents($externalConfig);
+        $externalConfig = $modx->fromJSON($externalConfig);
+        if (is_array($externalConfig)) {
+            $config = array_merge($config, $externalConfig);
+        }
+    }
+}
+
+$modx->regClientStartupHTMLBlock('<script type="text/javascript">
+    TinyMCERTE.editorConfig = ' . $modx->toJSON($config) . ';
+</script>');
+
 // PRODUCTION
 // $perms = $modx->getCollection('modAccessPermission', array('name:LIKE' => 'campaigner.%'));
 
@@ -73,12 +147,12 @@ $perms = array(
 	'campaigner.autonewsletter_edit' => 1,
 	'campaigner.autonewsletter_preview' => 1,
 	'campaigner.autonewsletter_sendtest' => 1,
-	
+
 	'campaigner.group_create' => 1,
 	'campaigner.group_edit' => 1,
 	'campaigner.group_remove' => 1,
 	'campaigner.group_assignment' => 1,
-	
+
 	'campaigner.subscriber_create' => 1,
 	'campaigner.subscriber_edit' => 1,
 	'campaigner.subscriber_remove' => 1,
@@ -90,7 +164,7 @@ $perms = array(
 	'campaigner.subscriber_export_csv' => 1,
 	'campaigner.subscriber_export_xml' => 1,
 	'campaigner.subscriber_showstats' => 1,
-	
+
 	'campaigner.bounce_fetch' => 1,
 	'campaigner.bounce_hard_remove' => 1,
 	'campaigner.bounce_hard_togglestatus' => 1,
@@ -100,7 +174,7 @@ $perms = array(
 	'campaigner.bounce_soft_remove_batch' => 1,
 	'campaigner.bounce_soft_activate_batch' => 1,
 	'campaigner.bounce_soft_deactivate_batch' => 1,
-	
+
 	'campaigner.queue_process' => 1,
 	'campaigner.queue_remove' => 1,
 	'campaigner.queue_remove_tests' => 1,
@@ -108,13 +182,13 @@ $perms = array(
 	'campaigner.queue_send' => 1,
 	'campaigner.queue_send_batch' => 1,
 	'campaigner.queue_set_state' => 1,
-	
+
 	'campaigner.statistics_showdetails' => 1,
 	'campaigner.statistics_export' => 1,
 	'campaigner.statistics_opens_export' => 1,
 	'campaigner.statistics_clicks_export' => 1,
 	'campaigner.statistics_unsubscriptions_export' => 1,
-	
+
 	'campaigner.sharing_create' => 1,
 	'campaigner.sharing_edit' => 1,
 	'campaigner.sharing_remove' => 1,
@@ -129,7 +203,7 @@ $perms = array(
 foreach($perms as $perm => $value) {
 	// DEVELOPMENT
 	$js_perms .= 'MODx.perm.' . str_replace('campaigner.', '', $perm) . ' = '. ($value === 1 ? 1 : 'false') .';' . "\n";
-	
+
 	// PRODUCTION
 	// $js_perms .= 'MODx.perm.' . str_replace('campaigner.', '', $perm->get('name')) . ' = ' . ($modx->hasPermission($perm->get('name')) ? 1 : 0) . ';' . "\n";
 }

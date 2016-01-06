@@ -13,21 +13,23 @@ Campaigner.panel.Main = function(config) {
             ,items: [{
                 xtype: 'container'
                 ,id: 'campaigner-panel-newsletter-base'
-                
+
                 ,items: [{
                     html: '<p>'+_('campaigner.newsletter.info')+'</p>'
                     ,border: false
-                    ,bodyStyle: 'padding: 10px'    
+                    ,bodyStyle: 'padding: 10px'
                 },{
                     xtype: 'campaigner-grid-newsletter'
                     ,id: 'campaigner-grid-newsletter'
                     ,preventRender: true
                 }]
-            },{
+            }
+            ,{
                 xtype: 'campaigner-panel-newsletter-editarticles',
                 id: 'campaigner-panel-newsletter-editarticles',
                 preventRender: true
-            }]
+            }
+          ]
         });
     }
 
@@ -262,7 +264,7 @@ Campaigner.panel.Main = function(config) {
                 }, scope: this }
             }
         }]
-        
+
     });
     Campaigner.panel.Main.superclass.constructor.call(this,config);
 };

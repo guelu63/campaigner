@@ -25,9 +25,9 @@ if (! function_exists('stripPhpTags')) {
 
 $templateVars = array();
 
-$templateVars[1] = $modx->newObject('modTemplateVar');
-$templateVars[1]->fromArray(array(
-    'id' => '1',
+$templateVars[] = $modx->newObject('modTemplateVar');
+$templateVars[]->fromArray(array(
+    // 'id' => '1',
     'property_preprocess' => '',
     'type' => '',
     'name' => 'tvAttach',
@@ -41,4 +41,39 @@ $templateVars[1]->fromArray(array(
     'input_properties' => array(),
     'output_properties' => array(),
 ), '', true, true);
+
+$templateVars[] = $modx->newObject('modTemplateVar');
+$templateVars[]->fromArray(array(
+    // 'id' => '2',
+    'property_preprocess' => '',
+    'type' => '',
+    'name' => 'tvCampaignerData',
+    'caption' => 'Campaigner Data',
+    'description' => '',
+    'elements' => '',
+    'rank' => '0',
+    'display' => '',
+    'default_text' => '',
+    'properties' => '',
+    'input_properties' => array(),
+    'output_properties' => array(),
+), '', true, true);
+
+$templateVars[] = $modx->newObject('modTemplateVar');
+$templateVars[]->fromArray(array(
+    // 'id' => '2',
+    'property_preprocess' => '',
+    'type' => '',
+    'name' => 'tvCampaignerSent',
+    'caption' => 'Campaigner Sent',
+    'description' => '',
+    'elements' => '',
+    'rank' => '0',
+    'display' => '',
+    'default_text' => '',
+    'properties' => '',
+    'input_properties' => array(),
+    'output_properties' => array(),
+), '', true, true);
+
 return $templateVars;

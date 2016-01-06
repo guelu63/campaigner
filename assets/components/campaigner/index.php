@@ -7,6 +7,7 @@ $modx->initialize('web');
 $campaignerCorePath = $modx->getOption('campaigner.core_path',null,$modx->getOption('core_path').'components/campaigner/');
 require_once $campaignerCorePath.'model/campaigner/campaigner.class.php';
 $modx->campaigner = new Campaigner($modx);
+$modx->getService('lexicon','modLexicon');
 $modx->lexicon->load('campaigner:default');
 $modx->addPackage('campaigner', $campaignerCorePath .'model/', 'camp_');
 // $modx->log(MODX_LOG_LEVEL_ERROR, 'tracking image requested');

@@ -18,7 +18,7 @@ class Campaigner
     function __construct(modX &$modx,array $config = array())
     {
         $this->modx =& $modx;
-        
+
         // PHPMailer
         require_once $this->modx->getOption('core_path') .'/model/modx/mail/modphpmailer.class.php';
 
@@ -40,7 +40,7 @@ class Campaigner
             'connectorUrl'   => $assetsUrl.'connector.php',
             'actionId'       => $action->get('id'),
             ),$config);
-        
+
         // Package, lexicon, vendors
         $this->modx->addPackage('campaigner', $this->config['modelPath'], 'camp_');
         $this->modx->lexicon->load('campaigner:default');
@@ -68,7 +68,7 @@ class Campaigner
         }
         return true;
     }
-    
+
     /*
     private function parseUrls($match)
 	{
@@ -118,7 +118,7 @@ class Campaigner
             $this->reason = 'nogroup';
             // return false;
         }
-        
+
         if(!empty($this->reason))
             return false;
 
@@ -127,7 +127,7 @@ class Campaigner
 
         $groups = $data['groups'];
         unset($data['groups']);
-        
+
         // new subscriber
         $subscriber     = $this->modx->newObject('Subscriber');
         $data['key']    = $this->generate_key(array('email' => $data['email']));
@@ -173,7 +173,7 @@ class Campaigner
             'campaigner.confirm' => $this->modx->makeUrl($this->modx->getOption('campaigner.confirm_page'), '', $params, 'full')
             )
         );
-        
+
         // set properties
         $mailer->set(modMail::MAIL_SUBJECT, $document->get('pagetitle'));
         $mailer->set(modMail::MAIL_BODY, $message);
@@ -186,7 +186,7 @@ class Campaigner
             return false;
         }
         $this->errormsg[] = $this->modx->lexicon('campaigner.subscribe.success.confirm_mail');
-        
+
         // Send system mail
         $email = $subscriber->get('email');
         $link = $this->modx->getOption('manager_url') . '?a=' . $this->config['actionId'] . '#campaigner-tab-subscriber';
@@ -224,7 +224,7 @@ class Campaigner
 
     /**
      * Checks code and activates subscriber
-     * 
+     *
      * @access public
      * @param string $subscriber Subscribers email address or identifier correspondig to $type
      * @param string $key The subscribers key
@@ -251,7 +251,7 @@ class Campaigner
             $this->sendSystemMail($system_mail);
             return true;
         }
-        
+
         if(!$subscriber) {
             $this->errormsg[] = $this->modx->lexicon('campaigner.confirm.error.nosubscriber');
         } elseif($subscriber->get('active') == 1) {
@@ -264,7 +264,7 @@ class Campaigner
 
     /**
      * Checks code and removes subscriber
-     * 
+     *
      * @access public
      * @param  array $params Given data (e.g. groups, subscriber, key)
      * @param string $type The indentifier to identify a subscriber
@@ -279,10 +279,10 @@ class Campaigner
         // $c->prepare();
         // echo $c->toSQL();
         $subscriber = $this->modx->getObject('Subscriber', $c);
-        
+
         if(!$subscriber)
             $this->errormsg[] = $this->modx->lexicon('campaigner.unsubscribe.error.nosubscriber');
-        
+
         if($subscriber->get('key') !== $params['key'])
             $this->errormsg[] = $this->modx->lexicon('campaigner.unsubscribe.error.invalidkey');
 
@@ -349,7 +349,7 @@ class Campaigner
      * specific properties appropiately. A system setting allows
      * to decide if these new instances will be sent automatically or
      * must be approved.
-     * 
+     *
      * @param  int $id Autonewsletter ID
      * @return bool     Either true or false
      */
@@ -365,12 +365,12 @@ class Campaigner
 
         // the newsletters
         $c = $this->modx->newQuery('Autonewsletter');
-        
+
         $c->where('`Autonewsletter`.`state` = 1 AND UNIX_TIMESTAMP() > (GREATEST((`Autonewsletter`.`start`), COALESCE(`Autonewsletter`.`last`, 0)) + `Autonewsletter`.`frequency` + TIME_TO_SEC(`Autonewsletter`.`time`))');
 
         if($id)
             $c->where(array('id' => $id));
-		
+
         // $c->prepare();
         // var_dump($c->toSQL());
         // die();
@@ -381,11 +381,11 @@ class Campaigner
 		    //fwrite($fileHandlerShedule,"NO sheduleAutoNewsletter [".date('d.m.Y H:i:s',time())."]:\n");
             return false;
         }
-        
+
         // process all newsletters
-        foreach($newsletters as $newsletter) {	    
+        foreach($newsletters as $newsletter) {
             $document = $this->modx->getObject('modDocument', $newsletter->get('docid'));
-            $this->modx->user = $document->getOne('CreatedBy');	    
+            $this->modx->user = $document->getOne('CreatedBy');
     			//fwrite($fileHandlerShedule,"Autonewsletter [".$document->get('pagetitle')."]:\n");
 
             // Duplicate resource into newsletter folder
@@ -525,7 +525,7 @@ class Campaigner
         $c->prepare();
 		//$this->modx->log($this->modx->LOG_LEVEL_ERROR, "SQL NEWSLETTER QUERY --> " . $c->toSql());
         $subscribers = $this->modx->getCollection('Subscriber', $c);
-        
+
 		//fwrite($fileHandlerCreate,"build queue for [".$document->get('pagetitle')."]:\n");
         // build queue
         $count = 0;
@@ -546,7 +546,7 @@ class Campaigner
 			//md5 verschluesselte QueueID als key-Attribut mitspeichern
 			//fwrite($fileHandlerCreate,"CREATE KEY FOR QUEUE ELEMENT ".$queueItem->get('id')." [".md5($queueItem->get('id'))."]:\n");
             $queueItem->set('key', md5($queueItem->get('id')));
-            
+
             $tEnd = $this->modx->getMicroTime();
             $properties = unserialize($queueItem->get('properties'));
             $properties['created'] = sprintf("%2.4f", $tEnd - $tStart);
@@ -576,7 +576,7 @@ class Campaigner
 
 		//fwrite($fileHandlerCreate,"end build queue for [".$document->get('pagetitle')."]:\n");
         $this->modx->log(modX::LOG_LEVEL_ERROR, 'Everthing is fine. We saved the newsletter.');
-        
+
         // Save the date
         $newsletter->set('sent_date', time());
         $newsletter->set('total', $count);
@@ -610,7 +610,7 @@ class Campaigner
         // Check if only specific items need to be send
         if(count($ids) > 0 && is_array($ids))
             $c->where(array('id:IN' => $ids));
-        
+
         if(count($ids) == 0 || empty($ids))
             $c->limit($this->modx->getOption('campaigner.batchsize'));
 
@@ -626,7 +626,7 @@ class Campaigner
         $c->select('`Queue`.*, `Queue`.`key` AS queue_key, `Subscriber`.`firstname`, `Subscriber`.`lastname`, `Subscriber`.`email`, `Subscriber`.`text`, `Subscriber`.`key`, `Subscriber`.`address`, `Subscriber`.`title`');
         $c->sortby('`Queue`.`priority`');
         $c->prepare();
-        
+
         $queue = $this->modx->getCollection('Queue', $c);
 
         $ids = array();
@@ -635,7 +635,7 @@ class Campaigner
           $ids[] = $item->get('id');
         }
 
-        // $this->modx->query('UPDATE `camp_queue` SET `state` = 3 WHERE `id` IN('. implode(',', $ids) .')');	
+        // $this->modx->query('UPDATE `camp_queue` SET `state` = 3 WHERE `id` IN('. implode(',', $ids) .')');
 
         $sumTime = 0;
         $cnt = 0;
@@ -654,9 +654,9 @@ class Campaigner
                 $c->where('`Newsletter`.`id` = '. $item->get('newsletter'));
                 $c->select('`Newsletter`.*, `modDocument`.`content`, `modDocument`.`pagetitle`, `modDocument`.`publishedon`');
     				//$c->prepare(); var_dump($c->toSql()); die;
-                $newsletter = $this->modx->getObject('Newsletter', $c);       
+                $newsletter = $this->modx->getObject('Newsletter', $c);
             }
-            
+
             $mailer = $this->getMailer(
                 array(
                    'sender' => $newsletter->get('sender'),
@@ -684,7 +684,7 @@ class Campaigner
 
             $message = $this->makeTrackingUrls($content, $newsletter, $subscriber);
             $message = $this->processNewsletter($message, $subscriber, $tags);
-            
+
 			// $message = $this->processNewsletter($newsletter->get('content'), $subscriber, $tags);
             $textual = $this->textify($message);
             // echo $message;
@@ -695,7 +695,7 @@ class Campaigner
 			 * Don't forget to reverse your commentary lines when done!
 			 */
 			//$mailer->address('to', 'andreas@subsolutions.at' );
-			
+
 			/**
 			 * Normal behaviour picks the current subscriber
 			 */
@@ -709,10 +709,10 @@ class Campaigner
 				$mailer->set(modMail::MAIL_BODY_TEXT, $textual);
 				//$mailer->mailer->MsgHTML($message, $this->modx->getOption('base_path'));
 			}
-			
+
 			$item_array = $item->toArray();
 			$mailer->mailer->AddCustomHeader('X-Campaigner-Mail-ID:'. $item->get('queue_key'));
-			
+
 			/**
 			* Add attachment(s) to mail
 			* @todo: none yet */
@@ -728,7 +728,7 @@ class Campaigner
 					$mailer->mailer->AddAttachment($this->modx->getOption('base_path').$val);
 				}
 			}
-			
+
             // Prepare array for log file action
             $options = array(
                 'newsletter'    => $newsletter->toArray(),
@@ -812,7 +812,7 @@ class Campaigner
         // WHERE all queue items which are not sent of this newsletter
         $c = $this->modx->newQuery('Queue');
         $c->where(array('newsletter' => $newsletter->get('id'), 'state' => 0));
-        
+
         // Get count of unsent queue items
         $unsent = $this->modx->getCount('Queue', $c);
         if($unsent == 0) {
@@ -824,7 +824,7 @@ class Campaigner
             'subject'   => $this->modx->lexicon('campaigner.system.mail.queue_finished.subject'),
             'body'      => $this->modx->lexicon('campaigner.system.mail.queue_finished.body', array('count' => $sent, 'link' => $link)),
             );
-            
+
             $this->sendSystemMail($system_mail);
         }
 
@@ -860,7 +860,7 @@ class Campaigner
         $this->modx->resourceIdentifier = $resource->get('id');
         $this->modx->elementCache = array();
         $resourceOutput = $this->modx->resource->process();
-        
+
         $resourceOutput = $this->parseCampaignerTags($resourceOutput);
 
         $this->modx->parser->processElementTags('', $resourceOutput, true, false, '[[', ']]', array(), $maxIterations);
@@ -973,16 +973,9 @@ class Campaigner
         $c->select(array(
             '`Fields`.`name`'
         ));
-        // $c->prepare();
-        // echo $c->toSQL();
-        $customs = $this->modx->getCollection('SubscriberFields', $c);
-
-        foreach($customs as $custom) {
-            $values['campaigner.custom_'.$custom->get('name')] = $custom->get('value');
-        }
 
         $salutation = $this->modx->getOption('campaigner.salutation') . ' ' . ($subscriber->get('firstname') && $subscriber->get('lastname') ? $subscriber->get('firstname') . ' ' . $subscriber->get('lastname') : $subscriber->get('email'));
-        
+
         $params = array(
             'subscriber' => $subscriber->get('email'),
             'key' => $subscriber->get('key'),
@@ -1000,6 +993,12 @@ class Campaigner
                 'campaigner.tracking_image' => $this->modx->getOption('site_url').'assets/components/campaigner/?t='.base_convert($this->created_urls['trackingImage'],10,36).'|[[+campaigner.key]]&amp;',
             )
         );
+
+        $customs = $this->modx->getCollection('SubscriberFields', $c);
+        foreach($customs as $custom) {
+            $values['campaigner.custom_'.$custom->get('name')] = $custom->get('value');
+        }
+
         foreach ($sub_tags as $key => $value) {
             $dump[] = $key . ': ' . $value;
         }
@@ -1010,7 +1009,7 @@ class Campaigner
         // var_dump($sub_tags);
         return $sub_tags;
     }
-    
+
     /**
      * Get campaigner newsletter tags
      *
@@ -1029,7 +1028,7 @@ class Campaigner
             'campaigner.newsletter_letter'       => $newsletter->get('id'),
             'campaigner.newsletter_instructions' => $newsletter->get('instructions'),
             );
-        
+
         foreach($nl_tags as $key => $value) {
             $dump[] = $key . ': ' . $value;
         }
@@ -1088,7 +1087,7 @@ class Campaigner
 
     /**
      * Parses placeholders in pagetitle
-     * 
+     *
      * @access public
      * @param string $title The pagetitle to parse
      * @param int $time The timestamp to use
@@ -1112,7 +1111,7 @@ class Campaigner
             date('y', $time),
             ), $title);
     }
-    
+
     public function createAutoresponder()
     {
         $active = $this->modx->getCollection('Autoresponder', array('active' => 1));
@@ -1139,7 +1138,7 @@ class Campaigner
             // Sum-up today's date (00:00) + delayed (1... days/weeks/months/years) + time of day
             // All in seconds
             $scheduled = strtotime(date('Y-m-d')) + $options->delay_sec + $options->time_sec - 3600;
-            
+
             $count = $this->createQueue(array('nl' => $newsletter, 'subscriber' => $subscriber, 'type' => 'AR', 'scheduled' => $scheduled));
             if($count > 0)
                 echo $count . ' Elemente zur Queue';
@@ -1178,20 +1177,20 @@ class Campaigner
 
         $mailer = new modPHPMailer($this->modx, array(
             // modMail::PHPMAILER_LANG => 'de',
-            modMail::MAIL_CHARSET => $this->modx->getOption('campaigner.mail_charset'),	
-            modMail::MAIL_ENCODING => $this->modx->getOption('campaigner.mail_encoding'),	
-            modMail::MAIL_SMTP_AUTH => $this->modx->getOption('campaigner.mail_smtp_auth'),	
-            modMail::MAIL_SMTP_HELO => $this->modx->getOption('campaigner.mail_smtp_helo'),	
-            modMail::MAIL_SMTP_HOSTS => $this->modx->getOption('campaigner.mail_smtp_hosts'),	
-            modMail::MAIL_SMTP_KEEPALIVE => $this->modx->getOption('campaigner.mail_smtp_keepalive'),		
-            modMail::MAIL_SMTP_PASS => $this->modx->getOption('campaigner.mail_smtp_pass'),		
-            modMail::MAIL_SMTP_PORT => $this->modx->getOption('campaigner.mail_smtp_port'),		
-            modMail::MAIL_SMTP_PREFIX => $this->modx->getOption('campaigner.mail_smtp_prefix'),			
-            modMail::MAIL_SMTP_TIMEOUT => $this->modx->getOption('campaigner.mail_smtp_timeout'),				
+            modMail::MAIL_CHARSET => $this->modx->getOption('campaigner.mail_charset'),
+            modMail::MAIL_ENCODING => $this->modx->getOption('campaigner.mail_encoding'),
+            modMail::MAIL_SMTP_AUTH => $this->modx->getOption('campaigner.mail_smtp_auth'),
+            modMail::MAIL_SMTP_HELO => $this->modx->getOption('campaigner.mail_smtp_helo'),
+            modMail::MAIL_SMTP_HOSTS => $this->modx->getOption('campaigner.mail_smtp_hosts'),
+            modMail::MAIL_SMTP_KEEPALIVE => $this->modx->getOption('campaigner.mail_smtp_keepalive'),
+            modMail::MAIL_SMTP_PASS => $this->modx->getOption('campaigner.mail_smtp_pass'),
+            modMail::MAIL_SMTP_PORT => $this->modx->getOption('campaigner.mail_smtp_port'),
+            modMail::MAIL_SMTP_PREFIX => $this->modx->getOption('campaigner.mail_smtp_prefix'),
+            modMail::MAIL_SMTP_TIMEOUT => $this->modx->getOption('campaigner.mail_smtp_timeout'),
             modMail::MAIL_SMTP_USER => $this->modx->getOption('campaigner.mail_smtp_user'),
             modMail::MAIL_FROM => !empty($options['sender_email']) ? $options['sender_email'] : $this->modx->getOption('campaigner.default_from'),
             modMail::MAIL_FROM_NAME => !empty($options['sender']) ? $options['sender'] : $this->modx->getOption('campaigner.default_name'),
-            modMail::MAIL_SENDER => !empty($options['sender']) ? $options['sender'] : $this->modx->getOption('campaigner.default_from')	    
+            modMail::MAIL_SENDER => !empty($options['sender']) ? $options['sender'] : $this->modx->getOption('campaigner.default_from')
          ));
 
 		//echo "Verschluesselung: ".$mailer->mailer->SMTPSecure."\n";
@@ -1199,7 +1198,7 @@ class Campaigner
 
         $mailer->address('reply-to', $this->modx->getOption('campaigner.return_path'));
         $mailer->mailer->CharSet = 'utf-8';
-        return $mailer;   
+        return $mailer;
     }
 
     /**
@@ -1244,13 +1243,13 @@ class Campaigner
 		//$message = str_replace(array('</h5>', '</h6>'), ' ===' . "\n", $message);
 
         $message = str_replace(array('</p>'), "\n", $message);
-        
+
         $message = str_replace('<li>', "* ", $message);
         $message = str_replace('</td>', '', $message);
         $message = str_replace('</tr>', '<br/>', $message);
 
         $message = preg_replace('#<br\s*/?>#', "\n\n", $message);
-        
+
         // $message = preg_replace('#<a\\s[^>]*href="([^"]+)"[^>]*>(.+)</a>#iUm', '\\2 ( \\1 )', $message);
         $message = preg_replace('#(^[ \\t]*$\\r?\\n){2,}#iU', "", $message);
 
@@ -1268,7 +1267,7 @@ class Campaigner
     public function makeTrackingUrls ($html, $newsletter, $subscriber) {
         // 1. get all existing tracking URLs for current newsletter:
         $this->getTrackingUrls($newsletter->get('id'));
-        
+
         $doc = new DOMDocument();
         $doc->loadHTML($html);
         // $aTags = $doc->find('[title^=Download:]');
@@ -1278,7 +1277,7 @@ class Campaigner
         foreach($aTags as $aTag) {
             $text = $aTag->nodeValue;
             $url = $aTag->getAttribute('href');
-            
+
             // URL is empty => skip
             if(empty($url) || $url == '')
                 continue;
@@ -1293,7 +1292,7 @@ class Campaigner
         }
         return $doc->saveHTML();
     }
-    
+
     /**
      * [makeUrl description]
      * @param  [type] $url          [description]
@@ -1326,7 +1325,7 @@ class Campaigner
         // $url = str_replace(array('%5B%5B%2B','%5B%5B&#43;', '%5B%5B', '%5D%5D'), array('[[+', '[[+', '[[', ']]'), $url);
         return str_replace('https://', 'http://', $url);
     }
-    
+
     /**
      * [getTrackingUrls description]
      * @param  [type] $newsletterID [description]
@@ -1364,7 +1363,7 @@ class Campaigner
             // get the link:
             $conditions = array('id' => $link_id, 'type' => $type );
             $link = $this->modx->getObject('NewsletterLink', $conditions );
-            
+
             if ( is_object($link) ) {
                 $placeholders = array();
                 // get the subscriber:
@@ -1438,7 +1437,7 @@ class Campaigner
                     $click->save();
                     $placeholders = $subscriber->toArray();
                 }
-                
+
                 // set cookies?
                 if ( $type == 'click' ) {
                     // set all info and process the string:
@@ -1449,7 +1448,7 @@ class Campaigner
                     // add image(open) stat if not already:
                     $conditions = array('newsletter' => $link->get('newsletter'), 'url' => 'trackingImage', 'type' => 'image' );
                     $image = $this->modx->getObject('NewsletterLink', $conditions );
-                    
+
                     if ( is_object($image) && is_object($subscriber) ){
                         $opened = $this->modx->getObject('SubscriberHits', array('link' => $image->get('id'), 'subscriber' => $subscriber->get('id')));
                         if ( is_object($opened) ) {
@@ -1468,7 +1467,7 @@ class Campaigner
                             $opened->save();
                         }
                     }
-                    
+
                     $c = $this->modx->newQuery('modResource');
                     $c->leftJoin('Newsletter', 'Newsletter', '`modResource`.`id` = `Newsletter`.`docid`');
                     $c->leftJoin('Autonewsletter', 'Autonewsletter', '`modResource`.`id` = `Autonewsletter`.`docid`');
@@ -1500,12 +1499,12 @@ class Campaigner
             } else {
                 $filename = MODX_ASSETS_PATH.'components'.DIRECTORY_SEPARATOR.'campaigner'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'sent.png';
             }
-            
+
             $filesize = filesize($filename);
-            
+
             # get the type of file
             $file_ext = substr($filename, strripos($filename, '.')+1 );
-            
+
             $mime = '';
             switch ($file_ext) {
                 case 'jpeg':
@@ -1524,8 +1523,8 @@ class Campaigner
                     $mime = 'image/gif';
                     break;
             }
-            
-            // /** 
+
+            // /**
             // header_remove("Pragma");
             // header_remove("Cache-Control");
             // header_remove("Expires");
@@ -1535,12 +1534,12 @@ class Campaigner
             // header("Content-length: ".$filesize);
             //header("Content-Transfer-Encoding: binary");
             //header('Accept-Ranges: bytes');
-            
+
             /* Read It */
             $handle = fopen($filename, "rb");
             $contents = fread($handle, $filesize);
             fclose($handle);
-            
+
             //$this->modx->log(modX::LOG_LEVEL_ERROR,'EletterNewsletter->logAction() headers: '. print_r(headers_list(),TRUE) );
             /* Print It */
             echo $contents;
@@ -1567,7 +1566,7 @@ class Campaigner
         // they have to be in the group
         $c->innerJoin('GroupSubscriber', 'GroupSubscriber', '`GroupSubscriber`.`subscriber` = `Subscriber`.`id`');
         $c->leftJoin('Group', 'Group', '`Group`.id = `GroupSubscriber`.`group`');
-        
+
         $c->select($this->modx->getSelectColumns('Subscriber', 'Subscriber', '', array('id')));
         $c->select($this->modx->getSelectColumns('Group', 'Group', 'g_'));
         $c->select($this->modx->getSelectColumns('GroupSubscriber', 'GroupSubscriber', 'gs_'));
@@ -1594,7 +1593,7 @@ class Campaigner
      * * recipients - A comma-separated list of recipients to receive this mail
      * * subject - The subject of this system mail
      * * body - The prepared content of this mail
-     * 
+     *
      * @param  array  $options Optional properties
      * @return bool          Either true or false
      */
@@ -1607,7 +1606,7 @@ class Campaigner
             return;
         $mailer = $this->getMailer();
         foreach($mail_addresses as $address) {
-            $mailer->address('to', $address);    
+            $mailer->address('to', $address);
         }
         $mailer->setHtml(true);
 

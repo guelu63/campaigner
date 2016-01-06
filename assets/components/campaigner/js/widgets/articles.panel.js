@@ -3,14 +3,16 @@ MODx.tree.CampaignerElement = function(config) {
         Ext.applyIf(config,{
             rootVisible: false
             ,title: ''
-            ,url: MODx.config.connectors_url+'element/index.php'
+            // ,url: MODx.config.connectors_url+'element/index.php'
+            ,url: MODx.config.connector_url
+            ,action: 'element/getnodes'
             ,useDefaultToolbar: false
             ,menuConfig: []
             ,baseParams: {
                 currentElement: MODx.request.id || 0
                 ,currentAction: MODx.request.a || 0
             }
-        });     
+        });
         MODx.tree.CampaignerElement.superclass.constructor.call(this,config);
 };
 Ext.extend(MODx.tree.CampaignerElement,MODx.tree.Element);
@@ -20,6 +22,7 @@ MODx.tree.CampaignerPlaceholder = function(config) {
         config = config || {};
         Ext.applyIf(config,{
             url: Campaigner.config.connector_url
+            ,action: 'mgr/newsletter/articles/getplaceholders'
             ,root_id: '0'
             ,root_name: _('campaigner.newsletter.edit.placeholder')
             ,menuConfig: []
@@ -27,7 +30,6 @@ MODx.tree.CampaignerPlaceholder = function(config) {
             ,rootVisible: true
             ,ddAppendOnly: false
             ,useDefaultToolbar: false
-            ,action: 'mgr/newsletter/articles/getplaceholders'
         });
         MODx.tree.CampaignerPlaceholder.superclass.constructor.call(this,config);
 };
@@ -40,7 +42,7 @@ Campaigner.panel.NewsletterEditArticles = function(config) {
     // this.ident = config.ident || 'campaigner-'+Ext.id();
     Ext.applyIf(config, {
         id: 'campaigner-panel-newsletter-editarticles'
-        ,cls: 'container form-with-labels'
+        // ,cls: 'container form-with-labels'
         ,defaults: { collapsible: false ,autoHeight: true }
         ,forceLayout: true
         ,forceFit: true
@@ -63,9 +65,9 @@ Campaigner.panel.NewsletterEditArticles = function(config) {
                     ,allowDrop: true
                     ,enableDD: true
                     ,ddGroup: 'modx-treedrop-dd'
-                    
+
                     ,id: 'campaigner-newsletter-edit-content'
-                    ,cls: 'modx-richtext'
+                    // ,cls: 'modx-richtext'
                     ,html: true
                     ,height: 600
                     ,listeners: {
@@ -91,7 +93,7 @@ Campaigner.panel.NewsletterEditArticles = function(config) {
                     ,displayField: 'email'
                     ,emptyText: 'E-Mail'
                     ,fieldLabel: _('campaigner.subscriber.email')
-                    ,cls: 'modx-combo'
+                    // ,cls: 'modx-combo'
                     ,name: 'email'
                     ,listeners: {
                         'select': {fn: this.getContent, scope: this}
@@ -131,7 +133,8 @@ Campaigner.panel.NewsletterEditArticles = function(config) {
                     //         console.log(arguments);
                     //     }
                     // }
-                },{
+                }
+                ,{
                     xtype: 'modx-tree-campaigner-element'
                     ,listeners: {
                         'afterrender': function(tree) {
@@ -141,28 +144,29 @@ Campaigner.panel.NewsletterEditArticles = function(config) {
                             console.log(arguments);
                         }
                     }
-                }]
+                }
+              ]
             }]
         }]
         ,listeners: {
             'activate': function(w,e) {
-                // MODx.loadRTE('campaigner-newsletter-edit-content');
+                MODx.loadRTE('campaigner-newsletter-edit-content');
             }
             ,'deactivate': function(w,e) {
                 // tinyMCE.execCommand('mceRemoveControl',true,'campaigner-newsletter-edit-content');
             }
         }
-        
+
     });
     Campaigner.panel.NewsletterEditArticles.superclass.constructor.call(this,config);
-    this.on('show',this.setup,this)
+    this.on('show',this.setup,this);
 }
 Ext.extend(Campaigner.panel.NewsletterEditArticles, MODx.FormPanel
     ,{
         setup: function() {
             var results = {};
             this.fireEvent('ready');
-            console.log(this);
+
             // var template = new Ext.template({
             //     x
             // });
@@ -172,7 +176,7 @@ Ext.extend(Campaigner.panel.NewsletterEditArticles, MODx.FormPanel
                     element: document.getElementById('file-upload')
                     // ,debug: true
                     ,maxConnections: 50
-                    ,template: '<div id="campaigner-uploader" class="campaigner-uploader qq-uploader">' + 
+                    ,template: '<div id="campaigner-uploader" class="campaigner-uploader qq-uploader">' +
                         '<div class="qq-upload-area"><div class="qq-upload-drop-area"><span>Dateien hier loslassen!</span></div>' +
                         '<div class="qq-upload-button">Dateien hierher ziehen oder klicken</div></div>' +
                         '<p class="qq-upload-actions"><a href="#" onclick="clearSuccess(); return false;">Erfolgreiche leeren</a> ' +
@@ -221,7 +225,7 @@ Ext.extend(Campaigner.panel.NewsletterEditArticles, MODx.FormPanel
         ,addAttachment: function(data) {
             if(!Campaigner.attachments)
                 Campaigner.attachments = [];
-            
+
             // var attachments = Ext.getCmp('campaigner-panel-newsletter-editarticles').getForm().findField('attachments');
             // var already = attachments.getValue().split(',');
             // already.push(data.relativeUrl);
@@ -235,7 +239,7 @@ Ext.extend(Campaigner.panel.NewsletterEditArticles, MODx.FormPanel
             // console.log(data);
             var array = [data.image, data.pathName, data.cls];
             Campaigner.attachments.push(array);
-            
+
             var store = new Ext.data.ArrayStore({
                 data: Campaigner.attachments
                 ,fields: [
@@ -243,14 +247,14 @@ Ext.extend(Campaigner.panel.NewsletterEditArticles, MODx.FormPanel
                 ]
             });
             var listview = Ext.getCmp('campaigner-newsletter-edit-attachment-list-view');
-            
+
             if(listview) {
                 listview.getView().refresh();
                 return;
             }
-                
+
             // store.load(data);
-            
+
             var listView = new Ext.list.ListView({
                 id: 'campaigner-newsletter-edit-attachment-list-view',
                 store: store,
@@ -281,11 +285,10 @@ Ext.extend(Campaigner.panel.NewsletterEditArticles, MODx.FormPanel
             // console.log(tpl.applyTemplate(data));
         }
         ,activate: function(){
-            console.log(this.config);
-            
+
             if(!this.config.newsletter)
                 return;
-            
+
             MODx.Ajax.request({
                 url: Campaigner.config.connector_url
                 ,params: {
@@ -295,8 +298,8 @@ Ext.extend(Campaigner.panel.NewsletterEditArticles, MODx.FormPanel
                 ,listeners: {
                     'success': {fn:function(r) {
                         // console.log(r);
-                        // Ext.getCmp('campaigner-newsletter-edit-content').setValue(r.object.html);
-                        // tinyMCE.get('campaigner-newsletter-edit-content').setContent(r.object.html);
+                        Ext.getCmp('campaigner-newsletter-edit-content').setValue(r.object.html);
+                        tinyMCE.get('campaigner-newsletter-edit-content').setContent(r.object.html);
                     },scope:this}
                 }
             });
@@ -327,7 +330,7 @@ Ext.extend(Campaigner.panel.NewsletterEditArticles, MODx.FormPanel
             this.wait.hide();
         }
         ,addSection: function(btn, e) {
-            
+
             var form = Ext.getCmp('campaigner-newsletter-form-articles');
             // var fieldset = btn.ownerCt.ownerCt;
             form.add({

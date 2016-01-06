@@ -42,8 +42,8 @@ Campaigner.grid.Group = function(config) {
             ,dataIndex: 'priority'
             ,sortable: true
             ,width: 20
-        }],  
-        /* Top toolbar */  
+        }],
+        /* Top toolbar */
         tbar : [{
             xtype: 'combo'
             ,name: 'public'
@@ -116,18 +116,22 @@ Ext.extend(Campaigner.grid.Group,MODx.grid.Grid,{
         return true;
     }
     ,addGroup: function(btn, e, segment) {
-        if(!w) {
-        	var w = MODx.load({
-                xtype: 'campaigner-window-' + (segment ? 'segment' : 'group')
-                ,blankValues: true
-                ,listeners: {
-                    'success': {fn:this.refresh,scope:this}
-                }
-            });
-        } else {
-            w.reset();
-        }
-        w.show(e.target);
+      var type;
+
+      type = 'campaigner-window-' + (segment ? 'segment' : 'group');
+
+        // if(!w) {
+        	MODx.load({
+                xtype: type
+                // ,blankValues: true
+                // ,listeners: {
+                //     'success': {fn:this.refresh,scope:this}
+                // }
+            }).show();
+        // } else {
+            // w.reset();
+        // }
+        // w.show(e.target);
     }
     ,editGroup: function(e) {
         var w = MODx.load({
@@ -206,7 +210,7 @@ Ext.extend(Campaigner.grid.Group,MODx.grid.Grid,{
     //                 'success': {fn:this.refresh,scope:this}
     //             }
     //         });
-    //     } 
+    //     }
     //     this.updateDoodleListWindow.setValues(this.menu.record);
     //     this.updateDoodleListWindow.show(e.target);
     //     var optionsgrid = Ext.getCmp('campaigner-grid-group-subscribers');
@@ -223,6 +227,7 @@ Ext.reg('campaigner-grid-group',Campaigner.grid.Group);
 Campaigner.window.Group = function(config) {
     config = config || {};
     this.ident = config.ident || 'campaigner-'+Ext.id();
+
     Ext.applyIf(config,{
         title: _('campaigner.group') + ' ' + (config.record ? config.record.name : '')
         ,id: this.ident
@@ -239,36 +244,33 @@ Campaigner.window.Group = function(config) {
             ,fieldLabel: _('campaigner.group.name')
             ,name: 'name'
             ,id: 'campaigner-'+this.ident+'-name'
-        },{
-            xtype: 'checkbox'
-            ,fieldLabel: _('campaigner.group.public')
-            ,name: 'public'
-            ,value: 1
-            ,id: 'campaigner-'+this.ident+'-public'
-        },{
-            xtype: 'colorfield'
-            ,fieldLabel: _('campaigner.group.color')
-            ,name: 'color'
-            ,id: 'campaigner-'+this.ident+'-color'
-            ,showHexValue:true
-            ,hiddenName: 'color'
-        },{
+            ,anchor: '100%'
+        }
+        // ,{
+        //     xtype: 'colorfield'
+        //     ,fieldLabel: _('campaigner.group.color')
+        //     ,name: 'color'
+        //     ,id: 'campaigner-'+this.ident+'-color'
+        //     ,showHexValue:true
+        //     ,hiddenName: 'color'
+        // }
+        ,{
             xtype: 'combo'
             ,fieldLabel: _('campaigner.group.priority')
             ,name: 'campaigner'
             ,id: 'campaigner-'+this.ident+'-priority'
-            ,width: 200
+            ,anchor: '100%'
             ,emptyText: '5'
             ,fields: [
-            'id',
-            'display'
+              'id',
+              'display'
             ]
             ,store: [
-            [1, 'Sehr wichtig'],
-            [2, 'Schon wichtig'],
-            [3, 'Wichtig'],
-            [4, 'Geht so'],
-            [5, 'Unwichtig']
+              [1, 'Sehr wichtig'],
+              [2, 'Schon wichtig'],
+              [3, 'Wichtig'],
+              [4, 'Geht so'],
+              [5, 'Unwichtig']
             ]
             ,valueField: 'id'
             ,displayField: 'display'
@@ -277,6 +279,15 @@ Campaigner.window.Group = function(config) {
             ,lastQuery: ''
             ,triggerAction: 'all'
             ,hiddenName: 'priority'
+        },{
+            xtype: 'checkbox'
+            ,labelSeparator: ''
+            ,hideLabel: true
+            ,boxLabel: _('campaigner.group.public')
+            ,fieldLabel: _('campaigner.group.public')
+            ,name: 'public'
+            ,value: 1
+            ,id: 'campaigner-'+this.ident+'-public'
         }]
     });
     Campaigner.window.Group.superclass.constructor.call(this,config);
@@ -318,18 +329,20 @@ Campaigner.window.Segment = function(config) {
                 ,value: 1
                 ,id: 'campaigner-'+this.ident+'-public'
                 ,columnWidth: .33
-            },{
-                xtype: 'colorfield'
-                ,fieldLabel: _('campaigner.group.color')
-                ,name: 'color'
-                ,id: 'campaigner-'+this.ident+'-color'
-                ,showHexValue:true
-                ,hiddenName: 'color'
-                ,columnWidth: .33
-                ,allowBlank: false
-                ,wheelImage: this.wheelImage
-                ,gradientImage: this.gradientImage,
-            },{
+            }
+            // ,{
+            //     xtype: 'colorfield'
+            //     ,fieldLabel: _('campaigner.group.color')
+            //     ,name: 'color'
+            //     ,id: 'campaigner-'+this.ident+'-color'
+            //     ,showHexValue:true
+            //     ,hiddenName: 'color'
+            //     ,columnWidth: .33
+            //     ,allowBlank: false
+            //     ,wheelImage: this.wheelImage
+            //     ,gradientImage: this.gradientImage,
+            // }
+            ,{
                 xtype: 'combo'
                 ,fieldLabel: _('campaigner.group.priority')
                 ,name: 'campaigner'
@@ -403,7 +416,7 @@ Campaigner.panel.FilterFields = function(config) {
     config = config || {};
     var cnt = 1;
     if(config.params)
-        cnt = config.params.cnt;
+      cnt = config.params.cnt;
     // console.log(config);
     Ext.applyIf(config,{
         layout: 'column'
@@ -503,14 +516,14 @@ Ext.extend(Campaigner.panel.FilterFields, Ext.Container, {
                     // var store = new Ext.data.ArrayStore({
                     //     fields: ['id', 'firstname', 'lastname', 'email', 'since']
                     //     // ,reader: new Ext.data.JsonReader({
-                    //     //     root: 'dataIndexta' 
+                    //     //     root: 'dataIndexta'
                     //     // })
                     // });
                     // console.log(response.object);
                     // store.loadData(response.object.data);
                     // // console.log(store);
-                    
-                    
+
+
                     // var res_el = result_container.getEl();
 
                     // // res_el.dom.style.backgroundColor = '#99ff99';

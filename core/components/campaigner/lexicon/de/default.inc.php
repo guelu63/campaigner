@@ -125,7 +125,7 @@ $_lang['campaigner.groups'] = 'Gruppen';
 $_lang['campaigner.group'] = 'Gruppe';
 $_lang['campaigner.groups.info'] = 'Gruppen f&uuml;r den Newsletter verwalten';
 $_lang['campaigner.group.name'] = 'Name';
-$_lang['campaigner.group.public'] = 'Allgemein';
+$_lang['campaigner.group.public'] = 'Öffentlich';
 $_lang['campaigner.group.private'] = 'Privat';
 $_lang['campaigner.group.color'] = 'Farbe';
 $_lang['campaigner.group.priority'] = 'Priorit&auml;t';
@@ -419,6 +419,13 @@ $_lang['campaigner.fields.add'] = 'Neues Element';
 $_lang['campaigner.fields.update'] = 'Editieren';
 $_lang['campaigner.fields.remove'] = 'Entfernen';
 $_lang['campaigner.fields.remove_confirm'] = 'Wollen Sie das Element wirklich entfernen?';
+// Fields - Types
+$_lang['campaigner.fields.type_textfield'] = 'Einzeiliges Textfeld';
+$_lang['campaigner.fields.type_textarea'] = 'Mehrzeiliges Textfeld';
+$_lang['campaigner.fields.type_modx-combo'] = 'Kombo-Box (Auswahl)';
+$_lang['campaigner.fields.type_checkbox'] = 'Checkboxes (Mehrfachauswahl)';
+$_lang['campaigner.fields.type_radiogroup'] = 'Radios (Auswahl)';
+$_lang['campaigner.fields.type_xdatetime'] = 'Datums- & Zeit Feld';
 
 // System mail
 $_lang['campaigner.system.mail.newsletter_new.subject'] = 'Neuer Newsletter generiert!';
