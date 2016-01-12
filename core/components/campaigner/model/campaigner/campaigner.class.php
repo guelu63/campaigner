@@ -360,9 +360,6 @@ class Campaigner
         // #1: Automatically send ('campaigner.newsletter.autosend')
         $autosend = $this->modx->getOption('campaigner.newsletter.autosend', 0);
 
-		//$fileHandlerShedule=fopen("/var/www/modx/buli/v1.1/core/components/campaigner/send_log.txt",a);
-		//fwrite($fileHandlerShedule,"Start sheduleAutoNewsletter [".date('d.m.Y H:i:s',time())."]:\n");
-
         // the newsletters
         $c = $this->modx->newQuery('Autonewsletter');
 
@@ -371,14 +368,8 @@ class Campaigner
         if($id)
             $c->where(array('id' => $id));
 
-        // $c->prepare();
-        // var_dump($c->toSQL());
-        // die();
-
         $newsletters = $this->modx->getCollection('Autonewsletter', $c);
-
         if(!$newsletters) {
-		    //fwrite($fileHandlerShedule,"NO sheduleAutoNewsletter [".date('d.m.Y H:i:s',time())."]:\n");
             return false;
         }
 
@@ -386,10 +377,9 @@ class Campaigner
         foreach($newsletters as $newsletter) {
             $document = $this->modx->getObject('modDocument', $newsletter->get('docid'));
             $this->modx->user = $document->getOne('CreatedBy');
-    			//fwrite($fileHandlerShedule,"Autonewsletter [".$document->get('pagetitle')."]:\n");
 
             // Duplicate resource into newsletter folder
-    		// Plus 3600 at the end: for example "14:00:00" results in 13 hours
+    		    // Plus 3600 at the end: for example "14:00:00" results in 13 hours
             $timestamp = max($newsletter->get('last'), $newsletter->get('start')) + $newsletter->get('frequency') + strtotime('1970-01-01 ' . $newsletter->get('time'))+3600;
             $newDoc   = $document->duplicate(array(
                 'parent'  => $this->modx->getOption('campaigner.newsletter_folder'),
@@ -442,9 +432,7 @@ class Campaigner
                     ));
                 $ng->save();
             }
-    	    //fwrite($fileHandlerShedule,"End Autonewsletter [".$document->get('pagetitle')."]:\n");
         }
-        // $link = $this->modx->makeUrl(0, 'mgr', array('a' => 30, 'id' => $newNl->get('docid'), 'letter' => 1), 'full');
         $link = $this->modx->getOption('site_url') . 'manager/?a=30&id=' . $newNl->get('docid');
         $system_mail = array(
             'subject'   => $this->modx->lexicon('campaigner.system.mail.newsletter_new.subject'),
@@ -454,8 +442,6 @@ class Campaigner
         if(!$autosend)
             $this->sendSystemMail($system_mail);
 
-        //fwrite($fileHandlerShedule,"End sheduleAutoNewsletter [".date('d.m.Y H:i:s',time())."]:\n");
-        //fclose($fileHandlerShedule);
         return true;
     }
 
@@ -485,19 +471,15 @@ class Campaigner
     		$c->sortby('`modDocument`.`publishedon`', 'ASC'); // first document first
         }
         $c->limit(1, 0); // one per run is enough
-        // $c->prepare();
-		// echo $c->toSQL();
-        //$this->modx->log($this->modx->LOG_LEVEL_ERROR, "SQL NEWSLETTER QUERY --> " . $c->toSql());
+
         $newsletter = $this->modx->getObject('Newsletter',$c);
         if(!$newsletter) {
-			//fwrite($fileHandlerCreate,"NO createQueue [".date('d.m.Y H:i:s',time())."]:\n");
             return;
         }
 
         $document   = $this->modx->getObject('modDocument', $newsletter->get('docid'));
         $composedNewsletter = $this->composeNewsletter($document);
 
-		//fwrite($fileHandlerCreate,"Start createQueue [".date('d.m.Y H:i:s',time())."] [".$document->get('pagetitle')."]:\n");
         /**
          * @since 2013-04-11 Added a cache file creation instead of storing composed newsletter in content of resource
          */
@@ -522,11 +504,8 @@ class Campaigner
         }
         $c->select('`Subscriber`.`id`');
         $c->where(array('active:=' => 1)); // only active ones
-        $c->prepare();
-		//$this->modx->log($this->modx->LOG_LEVEL_ERROR, "SQL NEWSLETTER QUERY --> " . $c->toSql());
         $subscribers = $this->modx->getCollection('Subscriber', $c);
 
-		//fwrite($fileHandlerCreate,"build queue for [".$document->get('pagetitle')."]:\n");
         // build queue
         $count = 0;
         foreach($subscribers as $subscriber) {
@@ -543,8 +522,7 @@ class Campaigner
                 'scheduled'  => $options['scheduled'],
                 ));
             $queueItem->save();
-			//md5 verschluesselte QueueID als key-Attribut mitspeichern
-			//fwrite($fileHandlerCreate,"CREATE KEY FOR QUEUE ELEMENT ".$queueItem->get('id')." [".md5($queueItem->get('id'))."]:\n");
+			      //md5 verschluesselte QueueID als key-Attribut mitspeichern
             $queueItem->set('key', md5($queueItem->get('id')));
 
             $tEnd = $this->modx->getMicroTime();
@@ -574,7 +552,6 @@ class Campaigner
            $l->save();
         }
 
-		//fwrite($fileHandlerCreate,"end build queue for [".$document->get('pagetitle')."]:\n");
         $this->modx->log(modX::LOG_LEVEL_ERROR, 'Everthing is fine. We saved the newsletter.');
 
         // Save the date
@@ -582,8 +559,7 @@ class Campaigner
         $newsletter->set('total', $count);
         if(!$newsletter->save())
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'An error occurred while saving the newsletter.');
-		//fwrite($fileHandlerCreate,"End createQueue [".date('d.m.Y H:i:s',time())."]:\n");
-        //fclose($fileHandlerCreate);
+
         $link = $this->modx->getOption('manager_url') . '?a=' . $this->config['actionId'] . '#campaigner-tab-queue';
         $system_mail = array(
             'subject'   => $this->modx->lexicon('campaigner.system.mail.queue_new.subject'),
@@ -647,13 +623,12 @@ class Campaigner
             //Testing - only sends to the 2 first recipients
             // if($cnt > 1) break;
 
-    		// don't fetch allready loaded newsletters
+    		    // don't fetch allready loaded newsletters
             if(!$newsletter || $newsletter->get('id') !== $item->get('newsletter')) {
                 $c = $this->modx->newQuery('Newsletter');
                 $c->innerJoin('modDocument', 'modDocument', '`modDocument`.`id` = `Newsletter`.`docid`');
                 $c->where('`Newsletter`.`id` = '. $item->get('newsletter'));
                 $c->select('`Newsletter`.*, `modDocument`.`content`, `modDocument`.`pagetitle`, `modDocument`.`publishedon`');
-    				//$c->prepare(); var_dump($c->toSql()); die;
                 $newsletter = $this->modx->getObject('Newsletter', $c);
             }
 
@@ -665,7 +640,7 @@ class Campaigner
             $mailer->set(modMail::MAIL_SUBJECT, $newsletter->get('pagetitle'));
 
             $tags = $this->getNewsletterTags($newsletter);
-			// compose message
+			      // compose message
             $subscriber = $this->modx->newObject('Subscriber', $item->toArray());
 
             /**
@@ -685,49 +660,46 @@ class Campaigner
             $message = $this->makeTrackingUrls($content, $newsletter, $subscriber);
             $message = $this->processNewsletter($message, $subscriber, $tags);
 
-			// $message = $this->processNewsletter($newsletter->get('content'), $subscriber, $tags);
             $textual = $this->textify($message);
-            // echo $message;
-			// compose mail
-			/**
-			 * For testing reasons use any available account
-			 * Uncomment / Comment the lines
-			 * Don't forget to reverse your commentary lines when done!
-			 */
-			//$mailer->address('to', 'andreas@subsolutions.at' );
+      			/**
+      			 * For testing reasons use any available account
+      			 * Uncomment / Comment the lines
+      			 * Don't forget to reverse your commentary lines when done!
+      			 */
+      			//$mailer->address('to', 'andreas@subsolutions.at' );
 
-			/**
-			 * Normal behaviour picks the current subscriber
-			 */
-			$mailer->address('to', $subscriber->get('email'));
-			if($subscriber->get('text')) {
-				$mailer->setHtml(false);
-				$mailer->set(modMail::MAIL_BODY, $textual);
-			} else {
-				$mailer->setHtml(true);
-				$mailer->set(modMail::MAIL_BODY, $message);
-				$mailer->set(modMail::MAIL_BODY_TEXT, $textual);
-				//$mailer->mailer->MsgHTML($message, $this->modx->getOption('base_path'));
-			}
+      			/**
+      			 * Normal behaviour picks the current subscriber
+      			 */
+      			$mailer->address('to', $subscriber->get('email'));
+      			if($subscriber->get('text')) {
+      				$mailer->setHtml(false);
+      				$mailer->set(modMail::MAIL_BODY, $textual);
+      			} else {
+      				$mailer->setHtml(true);
+      				$mailer->set(modMail::MAIL_BODY, $message);
+      				$mailer->set(modMail::MAIL_BODY_TEXT, $textual);
+      				//$mailer->mailer->MsgHTML($message, $this->modx->getOption('base_path'));
+      			}
 
-			$item_array = $item->toArray();
-			$mailer->mailer->AddCustomHeader('X-Campaigner-Mail-ID:'. $item->get('queue_key'));
+      			$item_array = $item->toArray();
+      			$mailer->mailer->AddCustomHeader('X-Campaigner-Mail-ID:'. $item->get('queue_key'));
 
-			/**
-			* Add attachment(s) to mail
-			* @todo: none yet */
-			$tv = $this->modx->getObject('modTemplateVar',array('name'=>'tvAttach'));
+      			/**
+      			* Add attachment(s) to mail
+      			* @todo: none yet */
+      			$tv = $this->modx->getObject('modTemplateVar',array('name'=>'tvAttach'));
 
-			/* get the raw content of the TV */
-			$val = $tv->getValue($newsletter->get('docid'));
-			if($val) {
-				$vals = explode(',', $val);
-				$vals = array_filter($vals, 'trim');
+      			/* get the raw content of the TV */
+      			$val = $tv->getValue($newsletter->get('docid'));
+      			if($val) {
+      				$vals = explode(',', $val);
+      				$vals = array_filter($vals, 'trim');
 
-				foreach($vals as $val) {
-					$mailer->mailer->AddAttachment($this->modx->getOption('base_path').$val);
-				}
-			}
+      				foreach($vals as $val) {
+      					$mailer->mailer->AddAttachment($this->modx->getOption('base_path').$val);
+      				}
+      			}
 
             // Prepare array for log file action
             $options = array(
@@ -737,37 +709,34 @@ class Campaigner
                 );
 
             // Check sending status and write to log file
-			if (!$mailer->send()) {
-				//If the mail was not sent, set state to 0.
-				$item->set('state', 6);
-                // var_dump($mailer->mailer->ErrorInfo);
-                // return;
-                $item->set('error', $mailer->mailer->ErrorInfo);
+      			if (!$mailer->send()) {
+      				//If the mail was not sent, set state to 0.
+      				$item->set('state', 6);
+              $item->set('error', $mailer->mailer->ErrorInfo);
+              $options['message'] = $mailer->mailer->ErrorInfo;
+      				$this->logFile($options);
+      			} else {
+      				//Wenn es sich bei diesem Item um ein Resend handelt (state = 8) oder einen der gerade bearbeitet wird (state = 10)
+      				if($item->get('state') == 8) {
+      					$item->set('state', 9);
+      					//Dazugehoerigen ResendCheck Eintrag auf erfolgreich (state = 1) setzen
+      					//ResendCheck Objekt holen
+      					$resend_check = $this->modx->getObject('ResendCheck', array('queue_id' => trim($item->get('id'))));
+      					if($resend_check) {
+      						$resend_check->set('state',1);
+      						$resend_check->save();
+      					}
+      				} else {
                 $options['message'] = $mailer->mailer->ErrorInfo;
-				$this->logFile($options);
-                // $this->modx->log(modX::LOG_LEVEL_ERROR,'An error occurred while trying to send the an email to '.$subscriber->get('email') .' ### '. $mailer->mailer->ErrorInfo);
-			} else {
-				//Wenn es sich bei diesem Item um ein Resend handelt (state = 8) oder einen der gerade bearbeitet wird (state = 10)
-				if($item->get('state') == 8) {
-					$item->set('state', 9);
-					//Dazugehoerigen ResendCheck Eintrag auf erfolgreich (state = 1) setzen
-					//ResendCheck Objekt holen
-					$resend_check = $this->modx->getObject('ResendCheck', array('queue_id' => trim($item->get('id'))));
-					if($resend_check) {
-						$resend_check->set('state',1);
-						$resend_check->save();
-					}
-				} else {
-                    $options['message'] = $mailer->mailer->ErrorInfo;
-                    $this->logFile($options);
-					$item->set('state', 1);
-				}
-                // Set time of delivery
-				$item->set('sent', time());
-			}
-			// partial reset
-			$mailer->mailer->ClearAllRecipients();
-			$mailer->mailer->ClearCustomHeaders();
+                $this->logFile($options);
+      					$item->set('state', 1);
+      				}
+              // Set time of delivery
+      				$item->set('sent', time());
+      			}
+      			// partial reset
+      			$mailer->mailer->ClearAllRecipients();
+      			$mailer->mailer->ClearCustomHeaders();
 
             // Add timing information
             $tEnd = $this->modx->getMicroTime();
@@ -775,7 +744,7 @@ class Campaigner
             $properties['processed'] = sprintf("%2.4f", $tEnd - $tStart);
             $item->set('properties', serialize($properties));
             $item->save();
-			$cnt++;
+      			$cnt++;
         }
 
         // Write batch information to manager log
@@ -827,22 +796,17 @@ class Campaigner
 
             $this->sendSystemMail($system_mail);
         }
-
-        //fclose($fileHandler);
-       return;
+        return;
     }
 
     public function logFile($options = array())
     {
-        // error_reporting(-1);
         $log_target = array(
             'target'=>'FILE',
             'options' => array(
                 'filename'=> 'campaigner/' . $options['newsletter']['id'] . '.log'
             )
         );
-        // $this->modx->setLogTarget($log_target);
-        // var_dump($log_target);
         $message = 'SUBSCRIBER: ' . $options['subscriber']['email'] . ' QUEUE-ITEM: ' . $options['item']['id'] . ' - ' . $options['message'];
         $this->modx->log(MODX_LOG_LEVEL_ERROR, $message, $log_target);
     }
@@ -882,11 +846,10 @@ class Campaigner
     {
         $newsletter = str_replace(array('%5B%5B%2B','%5B%5B&#43;', '%5B%5B', '%5D%5D'), array('[[+', '[[+', '[[', ']]'), $newsletter);
         $allTags = array_merge($tags, $this->getSubscriberTags($subscriber));
-        // var_dump($allTags);
-        // die();
-        // var_dump($tags);
+
         $this->modx->unsetPlaceholders(array_keys($allTags));
         $this->modx->setPlaceholders($allTags);
+
         if($tags['process'] === 'false')
             return $newsletter;
         $this->modx->parser->processElementTags('', $newsletter, true, false, '[[', ']]', array(), $maxIterations);
@@ -916,7 +879,6 @@ class Campaigner
         /* get the raw content of the TV */
         $vals = json_decode($tv->getValue($resource->get('id')));
 
-        // die();
         if(is_string($vals) && !is_array($vals))
             $vals = array_filter(explode(',', $val), 'trim');
 
@@ -952,18 +914,18 @@ class Campaigner
     public function getSubscriberTags($subscriber = null)
     {
         if(is_null($subscriber)) {
-            return array(
-                'campaigner.email'       => null,
-                'campaigner.address'     => null,
-                'campaigner.title'       => null,
-                'campaigner.salutation'  => null,
-                'campaigner.firstname'   => null,
-                'campaigner.lastname'    => null,
-                'campaigner.unsubscribe' => null,
-                'campaigner.istext'      => null,
-                'campaigner.key'         => null,
-                'campaigner.tracking_image' => null,
-                );
+          return array(
+            'campaigner.email'       => null,
+            'campaigner.address'     => null,
+            'campaigner.title'       => null,
+            'campaigner.salutation'  => null,
+            'campaigner.firstname'   => null,
+            'campaigner.lastname'    => null,
+            'campaigner.unsubscribe' => null,
+            'campaigner.istext'      => null,
+            'campaigner.key'         => null,
+            'campaigner.tracking_image' => null,
+          );
         }
         $values = array();
         $c = $this->modx->newQuery('SubscriberFields');
@@ -993,6 +955,7 @@ class Campaigner
                 'campaigner.tracking_image' => $this->modx->getOption('site_url').'assets/components/campaigner/?t='.base_convert($this->created_urls['trackingImage'],10,36).'|[[+campaigner.key]]&amp;',
             )
         );
+        // var_dump($sub_tags);
 
         $customs = $this->modx->getCollection('SubscriberFields', $c);
         foreach($customs as $custom) {
@@ -1003,10 +966,6 @@ class Campaigner
             $dump[] = $key . ': ' . $value;
         }
         $sub_tags['campaigner.dump'] = '<pre>' . implode('<br/>', $dump) . '</pre>';
-        // var_dump($this->created_urls['trackingImage']);
-        // echo base_convert($this->created_urls['trackingImage'],10,36);
-        // die();
-        // var_dump($sub_tags);
         return $sub_tags;
     }
 
@@ -1155,24 +1114,24 @@ class Campaigner
     public function getMailer($options = array())
     {
         if($this->modx->getOption('campaigner.use_modxmailer')) {
-            $mailer = $this->modx->getService('mail', 'mail.modPHPMailer');
-            $mailer->reset();
+          $mailer = $this->modx->getService('mail', 'mail.modPHPMailer');
+          $mailer->reset();
 
-            $mailer->mailer->CharSet = $this->modx->getOption('campaigner.mail_charset');;
-			//$mailer->set(modMail::MAIL_FROM, !empty($options['sender_email']) ? $options['sender_email'] : $this->modx->getOption('campaigner.default_from') );
-            $mailer->set(modMail::MAIL_FROM,!empty($options['sender_email']) ? $options['sender_email'] : $this->modx->getOption('campaigner.default_from'));
-            $mailer->set(modMail::MAIL_FROM_NAME,!empty($options['sender']) ? $options['sender'] : $this->modx->getOption('campaigner.default_name'));
-            $mailer->set(modMail::MAIL_SENDER,!empty($options['sender']) ? $options['sender'] : $this->modx->getOption('campaigner.default_from'));
+          $mailer->mailer->CharSet = $this->modx->getOption('campaigner.mail_charset');;
+		      //$mailer->set(modMail::MAIL_FROM, !empty($options['sender_email']) ? $options['sender_email'] : $this->modx->getOption('campaigner.default_from') );
+          $mailer->set(modMail::MAIL_FROM,!empty($options['sender_email']) ? $options['sender_email'] : $this->modx->getOption('campaigner.default_from'));
+          $mailer->set(modMail::MAIL_FROM_NAME,!empty($options['sender']) ? $options['sender'] : $this->modx->getOption('campaigner.default_name'));
+          $mailer->set(modMail::MAIL_SENDER,!empty($options['sender']) ? $options['sender'] : $this->modx->getOption('campaigner.default_from'));
 
-			//$mailer->set(modMail::MAIL_FROM_NAME, !empty($options['sender']) ? $options['sender'] : $this->modx->getOption('campaigner.default_name'));
-			//$mailer->set(modMail::MAIL_FROM_NAME, !empty($options['sender']) ? $options['sender'] : '=?UTF-8?B?'.base64_encode($this->modx->getOption('campaigner.default_name')).'?=' );
-			//$mailer->set(modMail::MAIL_SENDER, !empty($options['sender']) ? $options['sender'] : '=?UTF-8?B?'.base64_encode($this->modx->getOption('campaigner.default_name')).'?=' );
-			//$mailer->set(modMail::MAIL_SENDER, !empty($options['sender']) ? $options['sender'] : 'news@bundesliga.at' );
+    			//$mailer->set(modMail::MAIL_FROM_NAME, !empty($options['sender']) ? $options['sender'] : $this->modx->getOption('campaigner.default_name'));
+    			//$mailer->set(modMail::MAIL_FROM_NAME, !empty($options['sender']) ? $options['sender'] : '=?UTF-8?B?'.base64_encode($this->modx->getOption('campaigner.default_name')).'?=' );
+    			//$mailer->set(modMail::MAIL_SENDER, !empty($options['sender']) ? $options['sender'] : '=?UTF-8?B?'.base64_encode($this->modx->getOption('campaigner.default_name')).'?=' );
+    			//$mailer->set(modMail::MAIL_SENDER, !empty($options['sender']) ? $options['sender'] : 'news@bundesliga.at' );
 
-			//$mailer->set(modMail::MAIL_SENDER, !empty($options['sender']) ? $options['sender'] : $this->modx->getOption('campaigner.default_name'));
-            $mailer->address('reply-to', $this->modx->getOption('campaigner.return_path'));
-            $mailer->mailer->SMTPSecure = $this->modx->getOption('campaigner.mail_smtp_prefix');
-            return $mailer;
+    			//$mailer->set(modMail::MAIL_SENDER, !empty($options['sender']) ? $options['sender'] : $this->modx->getOption('campaigner.default_name'));
+          $mailer->address('reply-to', $this->modx->getOption('campaigner.return_path'));
+          $mailer->mailer->SMTPSecure = $this->modx->getOption('campaigner.mail_smtp_prefix');
+          return $mailer;
         }
 
         $mailer = new modPHPMailer($this->modx, array(
@@ -1193,8 +1152,8 @@ class Campaigner
             modMail::MAIL_SENDER => !empty($options['sender']) ? $options['sender'] : $this->modx->getOption('campaigner.default_from')
          ));
 
-		//echo "Verschluesselung: ".$mailer->mailer->SMTPSecure."\n";
-		//echo "Authentifizierung: ".$mailer->mailer->SMTPAuth." - ".$mailer->mailer->Username." / ".$mailer->mailer->Password."\n";
+		    //echo "Verschluesselung: ".$mailer->mailer->SMTPSecure."\n";
+		    //echo "Authentifizierung: ".$mailer->mailer->SMTPAuth." - ".$mailer->mailer->Username." / ".$mailer->mailer->Password."\n";
 
         $mailer->address('reply-to', $this->modx->getOption('campaigner.return_path'));
         $mailer->mailer->CharSet = 'utf-8';
@@ -1229,7 +1188,7 @@ class Campaigner
         $message = str_replace("\n", '', $message);
         $message = preg_replace('/\t+/', '', $message);
         $message = preg_replace('/\s+/', ' ',$message);
-		// now some simple rules
+		    // now some simple rules
         $ruler = str_repeat('-', 50);
         $message = str_replace(array('<h1>'), "\n" . '# ' , $message);
         $message = str_replace(array('</h1>'), "\n" . $ruler . "\n", $message);
@@ -1239,8 +1198,8 @@ class Campaigner
         $message = str_replace(array('</h3>'), "\n" . $ruler . "\n", $message);
         $message = str_replace(array('<h4>'), "\n" . '#### ', $message);
         $message = str_replace(array('</h4>'), "\n" . $ruler, $message);
-		//$message = str_replace(array('<h5>', '<h6>'), '=== ', $message);
-		//$message = str_replace(array('</h5>', '</h6>'), ' ===' . "\n", $message);
+    		//$message = str_replace(array('<h5>', '<h6>'), '=== ', $message);
+    		//$message = str_replace(array('</h5>', '</h6>'), ' ===' . "\n", $message);
 
         $message = str_replace(array('</p>'), "\n", $message);
 
@@ -1253,7 +1212,7 @@ class Campaigner
         // $message = preg_replace('#<a\\s[^>]*href="([^"]+)"[^>]*>(.+)</a>#iUm', '\\2 ( \\1 )', $message);
         $message = preg_replace('#(^[ \\t]*$\\r?\\n){2,}#iU', "", $message);
 
-		// kill the rest of the html stuff
+		    // kill the rest of the html stuff
         $message = strip_tags($message);
         return $message;
     }
@@ -1498,6 +1457,7 @@ class Campaigner
                 }
             } else {
                 $filename = MODX_ASSETS_PATH.'components'.DIRECTORY_SEPARATOR.'campaigner'.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.'sent.png';
+                // var_dump($filename);
             }
 
             $filesize = filesize($filename);

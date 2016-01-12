@@ -19,6 +19,7 @@ $subscriber = null;
 if($_POST['email']) {
     $subscriber = $modx->getObject('Subscriber', array('email' => $_POST['email']));
 }
+$message = $modx->campaigner->makeTrackingUrls($message, $newsletter, $subscriber);
 $message = $modx->campaigner->processNewsletter($message, $subscriber, array('process' => $_POST['tags']));
 $textual = $modx->campaigner->textify($message);
 

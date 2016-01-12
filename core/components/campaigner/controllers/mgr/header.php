@@ -131,6 +131,7 @@ $perms = array(
 	'campaigner.newsletter_kick' => 1,
 	'campaigner.newsletter_edit' => 1,
 	'campaigner.newsletter_editprops' => 1,
+  'campaigner.newsletter_editautoprops' => 1,
 	'campaigner.newsletter_editgroups' => 1,
 	'campaigner.newsletter_editarticles' => 1,
 	'campaigner.newsletter_clean' => 1,

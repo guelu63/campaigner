@@ -133,19 +133,7 @@ Campaigner.panel.NewsletterEditArticles = function(config) {
                     //         console.log(arguments);
                     //     }
                     // }
-                }
-                ,{
-                    xtype: 'modx-tree-campaigner-element'
-                    ,listeners: {
-                        'afterrender': function(tree) {
-                            tree.getTopToolbar().hide();
-                        }
-                        ,'dragdrop': function( t, node, dd, e ) {
-                            console.log(arguments);
-                        }
-                    }
-                }
-              ]
+                }]
             }]
         }]
         ,listeners: {

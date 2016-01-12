@@ -69,6 +69,7 @@ $_lang['campaigner.newsletter.properties'] = 'Newsletter Eigenschaften';
 $_lang['campaigner.newsletter.subscribers'] = 'Abonnenten';
 
 $_lang['campaigner.newsletter.editproperties'] = 'Eigenschaften bearbeiten';
+$_lang['campaigner.newsletter.editautoproperties'] = 'Auto-Eigenschaften bearbeiten';
 $_lang['campaigner.newsletter.assigngroups'] = 'Gruppen zuweisen';
 $_lang['campaigner.newsletter.sendtest'] = 'Test senden';
 
@@ -285,17 +286,80 @@ $_lang['campaigner.autonewsletter.activate'] = 'aktivieren';
 $_lang['campaigner.autonewsletter.error.notfound'] = 'Newsletter wurde nicht.';
 
 //Settings - Einstellungen
-$_lang['campaigner.settings.use_modxmailer'] = 'Verwende MODx Mailer';
-$_lang['campaigner.settings.use_modxmailer.desc'] = 'If this option is set to yes the integrated Modx mailer and the core mailer settings will be used for sending. Otherwise you can specify your own SMTP settings.';
-$_lang['campaigner.settings'] = 'Einstellungen';
-$_lang['campaigner.settings.name'] = 'Name';
-$_lang['campaigner.settings.email'] = 'Email';
-$_lang['campaigner.settings.bounceemail'] = 'Bounce email address';
-$_lang['campaigner.settings.confirmpage'] = 'Best&auml;tigungs-Ressource';
-$_lang['campaigner.settings.unsubscribepage'] = 'Abmelde-Resource';
-$_lang['campaigner.settings.template'] = 'Template';
-$_lang['campaigner.settings.saved'] = 'Einstellungen gespeichert';
-$_lang['campaigner.settings.error'] = 'Fehler beim Speichern der Einstellungen';
+$_lang['setting_campaigner.attachment_tv'] = 'Attachment TV';
+$_lang['setting_campaigner.autonewsletter_folder'] = 'Autonewsletter Ressource-Folder';
+$_lang['setting_campaigner.confirm_mail'] = 'Bestätigungs-Mail';
+$_lang['setting_campaigner.confirm_page'] = 'Best&auml;tigungs-Ressource';
+$_lang['setting_campaigner.newsletter_folder'] = 'Newsletter Ressource-Folder';
+$_lang['setting_campaigner.newsletter_subfolders'] = 'Newsletter mit Unterordnern?';
+$_lang['setting_campaigner.unsubscribe_page'] = 'Abmeldungs-Ressource';
+$_lang['setting_campaigner.batchsize'] = 'Stapelgröße';
+$_lang['setting_campaigner.default_from'] = 'Absender-Email (Standard)';
+$_lang['setting_campaigner.default_groups'] = 'Gruppe (Standard)';
+$_lang['setting_campaigner.default_name'] = 'Absender-Name (Standard)';
+$_lang['setting_campaigner.mail_smtp_auth'] = 'SMTP Authentifizierung';
+$_lang['setting_campaigner.mail_smtp_helo'] = 'SMTP Helo';
+$_lang['setting_campaigner.mail_smtp_hosts'] = 'SMTP Host';
+$_lang['setting_campaigner.mail_smtp_keepalive'] = 'SMTP Keepalive';
+$_lang['setting_campaigner.mail_smtp_pass'] = 'SMTP Passwort';
+$_lang['setting_campaigner.mail_smtp_port'] = 'SMTP Port';
+$_lang['setting_campaigner.mail_smtp_prefix'] = 'SMTP Prefix';
+$_lang['setting_campaigner.mail_smtp_timeout'] = 'SMTP Timeout';
+$_lang['setting_campaigner.mail_smtp_user'] = 'SMTP Benutzer';
+$_lang['setting_campaigner.return_path'] = 'Antwort-Adresse';
+$_lang['setting_campaigner.test_mail'] = 'Test-Abonnenten';
+$_lang['setting_campaigner.tracking_enabled'] = 'Tracking aktiviert';
+$_lang['setting_campaigner.tracking_page'] = 'Tracking-Ressource';
+$_lang['setting_campaigner.unsubscribe_reasons'] = 'Abmelde-Gründe';
+$_lang['setting_campaigner.has_autonewsletter'] = 'Mit Autonewsletter';
+$_lang['setting_campaigner.mail_charset'] = 'Charset';
+$_lang['setting_campaigner.mail_encoding'] = 'Encoding';
+
+$_lang['setting_campaigner.attachment_tv_desc'] = 'TV in der Anhänge gespeichert werden.';
+$_lang['setting_campaigner.autonewsletter_folder_desc'] = 'Autonewsletter Ressource-Folder';
+$_lang['setting_campaigner.confirm_mail_desc'] = 'Bestätigungs-Mail';
+$_lang['setting_campaigner.confirm_page_desc'] = 'Best&auml;tigungs-Ressource';
+$_lang['setting_campaigner.newsletter_folder_desc'] = 'Newsletter Ressource-Folder';
+$_lang['setting_campaigner.newsletter_subfolders_desc'] = 'Newsletter mit Unterordnern?';
+$_lang['setting_campaigner.unsubscribe_page_desc'] = 'Abmeldungs-Ressource';
+$_lang['setting_campaigner.batchsize_desc'] = 'Wieviele Elemente pro Lauf';
+$_lang['setting_campaigner.default_from_desc'] = 'Absender-Email (Standard)';
+$_lang['setting_campaigner.default_groups_desc'] = 'Gruppe (Standard)';
+$_lang['setting_campaigner.default_name_desc'] = 'Absender-Name (Standard)';
+$_lang['setting_campaigner.mail_smtp_auth_desc'] = 'Muss die SMTP-Verbindung authentiziert werden?';
+$_lang['setting_campaigner.mail_smtp_helo_desc'] = 'SMTP Helo';
+$_lang['setting_campaigner.mail_smtp_hosts_desc'] = 'SMTP Host';
+$_lang['setting_campaigner.mail_smtp_keepalive_desc'] = 'SMTP Keepalive';
+$_lang['setting_campaigner.mail_smtp_pass_desc'] = 'SMTP Passwort';
+$_lang['setting_campaigner.mail_smtp_port_desc'] = 'SMTP Port';
+$_lang['setting_campaigner.mail_smtp_prefix_desc'] = 'SMTP Prefix';
+$_lang['setting_campaigner.mail_smtp_timeout_desc'] = 'SMTP Timeout';
+$_lang['setting_campaigner.mail_smtp_user_desc'] = 'SMTP Benutzer';
+$_lang['setting_campaigner.return_path_desc'] = 'Antwort-Adresse';
+$_lang['setting_campaigner.test_mail_desc'] = 'Test-Abonnenten';
+$_lang['setting_campaigner.tracking_enabled_desc'] = 'Tracking aktiviert';
+$_lang['setting_campaigner.tracking_page_desc'] = 'Tracking-Ressource';
+$_lang['setting_campaigner.unsubscribe_reasons_desc'] = 'Abmelde-Gründe';
+$_lang['setting_campaigner.has_autonewsletter_desc'] = 'Mit Autonewsletter';
+$_lang['setting_campaigner.mail_charset_desc'] = 'Charset';
+$_lang['setting_campaigner.mail_encoding_desc'] = 'Encoding';
+
+
+
+
+
+$_lang['setting_campaigner.use_modxmailer'] = 'Verwende MODx Mailer';
+$_lang['setting_campaigner.use_modxmailer.desc'] = 'If this option is set to yes the integrated Modx mailer and the core mailer settings will be used for sending. Otherwise you can specify your own SMTP settings.';
+$_lang['setting_campaigner'] = 'Einstellungen';
+$_lang['setting_campaigner.name'] = 'Name';
+$_lang['setting_campaigner.email'] = 'Email';
+$_lang['setting_campaigner.bounceemail'] = 'Bounce email address';
+
+$_lang['setting_campaigner.unsubscribe_page'] = 'Abmelde-Resource';
+$_lang['setting_campaigner.template'] = 'Template';
+$_lang['setting_campaigner.saved'] = 'Einstellungen gespeichert';
+$_lang['setting_campaigner.error'] = 'Fehler beim Speichern der Einstellungen';
+
 
 // Bounce lexicons
 $_lang['campaigner.bounce'] = 'Bouncing';
